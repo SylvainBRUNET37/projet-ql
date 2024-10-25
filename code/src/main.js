@@ -3,7 +3,7 @@ import App from './App.vue'
 
 import "bulma/css/bulma.css"
 
-import { db, auth } from "./firebaseConfig"; // importer le fichier firebase
+import { db, auth } from "./firebase.js"; // importer le fichier firebase
 
 const app = createApp(App).mount('#app')
 
