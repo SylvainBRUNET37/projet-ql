@@ -37,7 +37,6 @@
 
 <script lang="ts">
 import { ref } from 'vue'
-import { useAuthStore } from '../stores/auth'
 
 // CSS
 import '../assets/styles/authForm.css'
@@ -45,7 +44,6 @@ import '../assets/styles/authForm.css'
 export default {
   name: 'AuthForm',
   setup() {
-    const authStore = useAuthStore()
     const email = ref('')
     const password = ref('')
     const errorMessage = ref('')
