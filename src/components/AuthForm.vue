@@ -26,7 +26,11 @@
         />
       </div>
 
+      <!-- Error message -->
       <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
+
+      <!-- Success message -->
+      <p v-if="successMessage" class="success-message">{{ successMessage }}</p>
 
       <div class="form-group">
         <button type="submit" class="submit-button">Login</button>
@@ -37,9 +41,7 @@
 
 <script lang="ts">
 import { ref } from 'vue'
-
-// CSS
-import '../assets/styles/authForm.css'
+import { AuthStore } from '../stores/auth'
 
 export default {
   name: 'AuthForm',
@@ -47,16 +49,25 @@ export default {
     const email = ref('')
     const password = ref('')
     const errorMessage = ref('')
+    const successMessage = ref('')
+
+    const authStore = AuthStore()
 
     const handleLogin = async () => {
       errorMessage.value = ''
+      successMessage.value = ''
+
+      // Make sure authStore is being properly used
       await authStore.login(email.value, password.value)
+
       if (authStore.errorMessage) {
         errorMessage.value = authStore.errorMessage
+      } else {
+        successMessage.value = 'Login successful! Welcome back.'
       }
     }
 
-    return { email, password, handleLogin, errorMessage }
+    return { email, password, handleLogin, errorMessage, successMessage }
   },
 }
 </script>

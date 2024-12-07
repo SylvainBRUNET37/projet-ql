@@ -1,23 +1,18 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { auth } from '../firebase'
-import { signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth'
+import { signInWithEmailAndPassword, signOut } from 'firebase/auth'
 
-export const useAuthStore = defineStore('auth', () => {
+export const AuthStore = defineStore('auth', () => {
   const user = ref(null)
   const errorMessage = ref('')
-
-  // Observer l'état de l'utilisateur connecté
-  onAuthStateChanged(auth, (currentUser) => {
-    user.value = currentUser
-  })
 
   // Connexion de l'utilisateur
   const login = async (email, password) => {
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password)
       user.value = userCredential.user
-      errorMessage.value = ''
+      errorMessage.value = '' // Clear any previous errors
     } catch (error) {
       errorMessage.value = `Erreur: ${error.message}`
     }

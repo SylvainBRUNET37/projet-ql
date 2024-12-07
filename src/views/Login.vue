@@ -7,6 +7,9 @@
 <script>
 import AuthForm from '../components/AuthForm.vue'
 
+// CSS
+import '../assets/styles/authForm.css'
+
 export default {
   name: 'Login',
   components: {
