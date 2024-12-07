@@ -14,7 +14,7 @@ export const AuthStore = defineStore('auth', () => {
       user.value = userCredential.user
       errorMessage.value = '' // Clear any previous errors
     } catch (error) {
-      errorMessage.value = `Erreur: ${error.message}`
+      errorMessage.value = 'Invalid password or email'
     }
   }
 
