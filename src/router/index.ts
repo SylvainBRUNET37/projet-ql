@@ -1,5 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import AuthExample from '@/components/Login.vue'
+import { useAuthStore } from '@/stores/auth'
+import Home from '@/views/Home.vue'
+import Login from '@/views/Login.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -7,17 +9,25 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: AuthExample,
+      component: Home,
+      meta: { requiresAuth: true },
     },
     {
-      path: '/about',
-      name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('@/components/Login.vue'),
+      path: '/login',
+      name: 'login',
+      component: Login,
     },
   ],
+})
+
+// Middleware pour protéger les routes nécessitant une authentification
+router.beforeEach((to, from, next) => {
+  const authStore = useAuthStore()
+  if (to.meta.requiresAuth && !authStore.user) {
+    next({ name: 'login' })
+  } else {
+    next()
+  }
 })
 
 export default router

@@ -1,38 +1,41 @@
-<!-- src/App.vue -->
 <template>
   <div id="app">
-    <FirestoreExample />
-    <AuthExample />
+    <router-view />
   </div>
 </template>
 
-<script>
-import AuthExample from './components/Login.vue'
-
+<script lang="ts">
 export default {
   name: 'App',
-  components: {
-    AuthExample,
-  },
 }
 </script>
 
-<style>
-/* Global CSS */
-body,
-html {
+<style scoped>
+/* Style général de l'application */
+#app {
+  font-family: 'Arial', sans-serif; /* Police de caractère simple et lisible */
+  color: #333; /* Couleur de texte principale */
+  background-color: #f4f4f9; /* Fond légèrement gris pour l'application */
   margin: 0;
   padding: 0;
-  width: 100%;
-  height: 100%;
-  font-family: Arial, sans-serif;
-  background-color: #f5f5f5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* Pour occuper toute la hauteur de la fenêtre */
 }
 
-#app {
-  display: flex;
-  justify-content: center; /* Centrage horizontal */
-  align-items: center; /* Centrage vertical */
-  min-height: 100vh; /* Occupe toute la hauteur de la fenêtre */
+/* Container général de l'application */
+#app > * {
+  width: 100%;
+  max-width: 1200px; /* Limite de largeur pour éviter un trop grand étirement sur grands écrans */
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+/* Assure un bon espacement et un alignement propre du contenu dans le composant */
+router-view {
+  display: block;
+  text-align: center; /* Centrer tout le contenu à l'intérieur du router-view */
+  width: 100%;
 }
 </style>
