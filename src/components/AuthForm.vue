@@ -42,7 +42,7 @@
 <script lang="ts">
 import { ref, computed } from 'vue'
 import { AuthStore } from '../stores/AuthStore'
-import { validateEmail, validatePassword } from '../utils/validator' // Import validators
+import { validateEmail, validatePassword } from '../utils/validator'
 
 export default {
   name: 'AuthForm',
