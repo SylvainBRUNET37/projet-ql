@@ -41,6 +41,7 @@
 
 <script lang="ts">
 import { ref, computed } from 'vue'
+import { useRouter } from 'vue-router'
 import { AuthStore } from '../stores/AuthStore'
 import { validateEmail, validatePassword } from '../utils/validator'
 
@@ -51,7 +52,8 @@ export default {
     const password = ref('')
     const errorMessage = ref('')
     const successMessage = ref('')
-    const userTriedSubmit = ref(false) // Track if the user tried to submit while the form is invalid
+    const userTriedSubmit = ref(false)
+    const router = useRouter()
 
     const authStore = AuthStore()
 
@@ -73,6 +75,7 @@ export default {
         errorMessage.value = authStore.errorMessage
       } else {
         successMessage.value = 'Login successful! Welcome back.'
+        router.push('/create-account')
       }
     }
 
