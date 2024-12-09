@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Auth from '../views/Auth.vue'
-import CreateAccount from '../views/CreateAccount.vue'
+import Register from '../views/Register.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -11,9 +11,9 @@ const router = createRouter({
       component: Auth,
     },
     {
-      path: '/create-account',
-      name: 'create-account',
-      component: CreateAccount,
+      path: '/register',
+      name: 'register',
+      component: Register,
     },
   ],
 })
