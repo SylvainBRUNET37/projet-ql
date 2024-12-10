@@ -1,10 +1,10 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { auth, db } from '../firebase'
-import { createUserWithEmailAndPassword } from 'firebase/auth'
+import { createUserWithEmailAndPassword, fetchSignInMethodsForEmail } from 'firebase/auth'
 import { doc, setDoc } from 'firebase/firestore'
 
-export const RegisterStore = defineStore('auth', () => {
+export const RegisterStore = defineStore('register', () => {
   const user = ref(null)
   const userData = ref(null)
   const errorMessage = ref('')
@@ -12,6 +12,15 @@ export const RegisterStore = defineStore('auth', () => {
   // Enregistrement de l'utilisateur
   const register = async (lastName, firstName, role, email, password) => {
     try {
+      // Vérifier si l'email est déjà utilisé
+      const signInMethods = await fetchSignInMethodsForEmail(auth, email)
+
+      if (signInMethods.length > 0) {
+        // L'email est déjà utilisé, retourner une erreur
+        errorMessage.value = 'Email is already in use.'
+        return
+      }
+
       // Créer un utilisateur via Firebase Authentication
       const userCredential = await createUserWithEmailAndPassword(auth, email, password)
       user.value = userCredential.user
@@ -27,6 +36,7 @@ export const RegisterStore = defineStore('auth', () => {
         role,
         email,
         createdAt: new Date().toISOString(),
+        status: 'active',
       })
 
       // Mettre à jour les données locales

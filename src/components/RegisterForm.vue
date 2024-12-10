@@ -9,9 +9,11 @@
           id="firstName"
           class="form-input"
           v-model="form.firstName"
+          @input="validateFirstName"
           placeholder="Enter first name"
           required
         />
+        <p v-if="errors.firstName" class="error-message">{{ errors.firstName }}</p>
       </div>
 
       <div class="form-group">
@@ -21,9 +23,11 @@
           id="lastName"
           class="form-input"
           v-model="form.lastName"
+          @input="validateLastName"
           placeholder="Enter last name"
           required
         />
+        <p v-if="errors.lastName" class="error-message">{{ errors.lastName }}</p>
       </div>
 
       <div class="form-group">
@@ -33,17 +37,20 @@
           id="email"
           class="form-input"
           v-model="form.email"
+          @input="validateEmail"
           placeholder="Enter email address"
           required
         />
+        <p v-if="errors.email" class="error-message">{{ errors.email }}</p>
       </div>
 
       <div class="form-group">
         <label for="role">Role <span class="required">*</span></label>
-        <select id="role" class="form-input" v-model="form.role" required>
+        <select id="role" class="form-input" v-model="form.role" @change="validateRole" required>
           <option value="user">User</option>
           <option value="admin">Admin</option>
         </select>
+        <p v-if="errors.role" class="error-message">{{ errors.role }}</p>
       </div>
 
       <div class="form-group">
@@ -53,9 +60,11 @@
           id="password"
           class="form-input"
           v-model="form.password"
+          @input="validatePassword"
           placeholder="Enter password"
           required
         />
+        <p v-if="errors.password" class="error-message">{{ errors.password }}</p>
       </div>
 
       <div class="form-group">
@@ -65,25 +74,25 @@
           id="confirmPassword"
           class="form-input"
           v-model="form.confirmPassword"
+          @input="validateConfirmPassword"
           placeholder="Confirm password"
           required
         />
+        <p v-if="errors.confirmPassword" class="error-message">{{ errors.confirmPassword }}</p>
       </div>
 
-      <button type="submit" class="submit-button">Add</button>
+      <button type="submit" class="submit-button" :disabled="!isFormValid">Add</button>
     </form>
   </div>
 </template>
 
 <script>
-import { createUserWithEmailAndPassword } from 'firebase/auth'
-import { doc, setDoc } from 'firebase/firestore'
-import { auth, db } from '../firebase'
-import '../assets/styles/authForm.css'
+import { validateEmail, validatePassword, validateName, validateRole } from '../utils/validator'
+import { RegisterStore } from '../stores/RegisterStore'
 
 export default {
-  name: 'CreateAccount',
-  setup() {
+  name: 'RegisterForm',
+  data() {
     return {
       form: {
         lastName: '',
@@ -93,46 +102,85 @@ export default {
         password: '',
         confirmPassword: '',
       },
+      errors: {
+        lastName: '',
+        firstName: '',
+        email: '',
+        role: '',
+        password: '',
+        confirmPassword: '',
+      },
+      fields: [
+        { name: 'firstName', validate: validateName, errorMsg: 'Invalid firstname' },
+        { name: 'lastName', validate: validateName, errorMsg: 'Invalid name' },
+        { name: 'email', validate: validateEmail, errorMsg: 'Invalid email' },
+        { name: 'role', validate: validateRole, errorMsg: 'Invalid role' },
+        {
+          name: 'password',
+          validate: validatePassword,
+          errorMsg: 'Password length must be between 6 and 20 characters',
+        },
+        {
+          name: 'confirmPassword',
+          validate: (value) => value === this.form.password,
+          errorMsg: 'Passwords do not match',
+        },
+      ],
     }
   },
+  computed: {
+    isFormValid() {
+      return this.fields.every((field) => !this.errors[field.name] && this.form[field.name])
+    },
+  },
   methods: {
-    async handleSubmit() {
-      if (this.form.password !== this.form.confirmPassword) {
-        alert('Passwords do not match!')
-        return
+    validateField(field) {
+      if (field.name === 'confirmPassword') {
+        const valid = field.validate(this.form.confirmPassword, this.form.password) // Passe les deux valeurs à la validation
+        this.errors[field.name] = valid ? '' : field.errorMsg
+      } else {
+        const valid = field.validate(this.form[field.name])
+        this.errors[field.name] = valid ? '' : field.errorMsg
       }
+    },
+    handleSubmit() {
+      this.fields.forEach((field) => this.validateField(field))
 
-      try {
-        // Enregistrement de l'utilisateur dans Firebase Authentication
-        const userCredential = await createUserWithEmailAndPassword(
-          auth,
+      if (this.isFormValid) {
+        const { register, errorMessage } = RegisterStore()
+
+        register(
+          this.form.lastName,
+          this.form.firstName,
+          this.form.role,
           this.form.email,
           this.form.password,
         )
-        const uid = userCredential.user.uid
 
-        // Sauvegarde des données supplémentaires dans Firestore
-        await setDoc(doc(db, 'users', uid), {
-          lastName: this.form.lastName,
-          firstName: this.form.firstName,
-          email: this.form.email,
-          role: this.form.role,
-          createdAt: new Date().toISOString(),
-        })
-
-        alert('User added successfully!')
-        // Réinitialiser le formulaire
-        this.form = {
-          lastName: '',
-          firstName: '',
-          email: '',
-          role: 'user',
-          password: '',
-          confirmPassword: '',
+        if (errorMessage) {
+          alert('The email already corresponds to a user')
+        } else {
+          alert('User registered successfully!')
+          this.resetForm()
         }
-      } catch (error) {
-        console.error('Error creating user:', error)
-        alert('Failed to create user: ' + error.message)
+      }
+    },
+    resetForm() {
+      this.form = {
+        lastName: '',
+        firstName: '',
+        email: '',
+        role: 'user',
+        password: '',
+        confirmPassword: '',
+      }
+      this.errors = {
+        lastName: '',
+        firstName: '',
+        email: '',
+        role: '',
+        password: '',
+        confirmPassword: '',
       }
     },
   },
