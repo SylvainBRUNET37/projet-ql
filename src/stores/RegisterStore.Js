@@ -4,13 +4,13 @@ import { auth, db } from '../firebase'
 import { signInWithEmailAndPassword, signOut } from 'firebase/auth'
 import { doc, getDoc } from 'firebase/firestore'
 
-export const AuthStore = defineStore('auth', () => {
+export const RegisterStore = defineStore('auth', () => {
   const user = ref(null)
   const userData = ref(null)
   const errorMessage = ref('')
 
   // Connexion de l'utilisateur
-  const login = async (email, password) => {
+  const register = async (lastName, firstName, role, email, password) => {
     try {
       // Connexion via Firebase Authentication
       const userCredential = await signInWithEmailAndPassword(auth, email, password)

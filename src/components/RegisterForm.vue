@@ -40,14 +40,10 @@
 
       <div class="form-group">
         <label for="role">Role <span class="required">*</span></label>
-        <input
-          type="text"
-          id="role"
-          class="form-input"
-          v-model="form.role"
-          placeholder="Enter role"
-          required
-        />
+        <select id="role" class="form-input" v-model="form.role" required>
+          <option value="user">User</option>
+          <option value="admin">Admin</option>
+        </select>
       </div>
 
       <div class="form-group">
@@ -90,7 +86,7 @@ export default {
         lastName: '',
         firstName: '',
         email: '',
-        role: '',
+        role: 'user',
         password: '',
         confirmPassword: '',
       },
