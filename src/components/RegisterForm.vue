@@ -76,6 +76,9 @@
 </template>
 
 <script>
+import { createUserWithEmailAndPassword } from 'firebase/auth'
+import { doc, setDoc } from 'firebase/firestore'
+import { auth, db } from '../firebase'
 import '../assets/styles/authForm.css'
 
 export default {
@@ -93,13 +96,44 @@ export default {
     }
   },
   methods: {
-    handleSubmit() {
+    async handleSubmit() {
       if (this.form.password !== this.form.confirmPassword) {
         alert('Passwords do not match!')
         return
       }
-      console.log('Form submitted:', this.form)
-      alert('User added successfully!')
+
+      try {
+        // Enregistrement de l'utilisateur dans Firebase Authentication
+        const userCredential = await createUserWithEmailAndPassword(
+          auth,
+          this.form.email,
+          this.form.password,
+        )
+        const uid = userCredential.user.uid
+
+        // Sauvegarde des données supplémentaires dans Firestore
+        await setDoc(doc(db, 'users', uid), {
+          lastName: this.form.lastName,
+          firstName: this.form.firstName,
+          email: this.form.email,
+          role: this.form.role,
+          createdAt: new Date().toISOString(),
+        })
+
+        alert('User added successfully!')
+        // Réinitialiser le formulaire
+        this.form = {
+          lastName: '',
+          firstName: '',
+          email: '',
+          role: 'user',
+          password: '',
+          confirmPassword: '',
+        }
+      } catch (error) {
+        console.error('Error creating user:', error)
+        alert('Failed to create user: ' + error.message)
+      }
     },
   },
 }
