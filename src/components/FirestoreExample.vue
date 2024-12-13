@@ -153,6 +153,8 @@ import {db} from "@/firebase";
 import { useRouter } from 'vue-router';
 import {  collection, getDocs , doc, updateDoc , Timestamp } from "firebase/firestore";
 
+import '../assets/styles/research.css' // Importation du fichier CSS
+
 export default {
   name: "Research",
   setup() {
