@@ -141,9 +141,7 @@
             </div>
           </div>
         </div>
-
       </div>
-
     </div>
   </section>
 </template>
@@ -224,7 +222,6 @@ export default {
     }
 
   },
-
 
   data() {
     return {
