@@ -1,6 +1,4 @@
-<!-- src/components/FirestoreExample.vue -->
-
-
+<!-- src/components/Research.vue -->
 <template>
   <section class="section" style="background-color: #cccccc;  width: 100%; height: 100vh;"  >
     <div class="container">
@@ -155,10 +153,8 @@ import {db} from "@/firebase";
 import { useRouter } from 'vue-router';
 import {  collection, getDocs , doc, updateDoc , Timestamp } from "firebase/firestore";
 
-
 export default {
-
-  name: "MyButton",
+  name: "Research",
   setup() {
     const router = useRouter();
     return { router };
@@ -284,50 +280,3 @@ export default {
 
 };
 </script>
-
-<style scoped>
-.menu {
-  background-color: white;
-  padding: 1rem;
-  border-radius: 5px;
-}
-.box {
-  display: flex;
-  flex-direction: column; /* Organisation verticale des contenus */
-  gap: 10px; /* Espacement entre les éléments */
-}
-
-button {
-  padding: 10px 20px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  top: 10px;
-  right: 10px;
-}
-.modal {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-}
-
-.modal-content {
-  background: white;
-  padding: 20px;
-  border-radius: 8px;
-  max-width: 600px;
-  max-height: 90%;
-  overflow-y: auto;
-}
-
-
-
-</style>
