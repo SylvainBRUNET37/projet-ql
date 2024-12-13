@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Auth from '../views/Auth.vue'
 import Register from '../views/Register.vue'
 import Research from '../components/Research.vue'
-import UserProfile from '../components/HelloWorld.vue'
+import UserProfile from '../components/UserProfil.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),

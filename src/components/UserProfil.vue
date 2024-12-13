@@ -61,7 +61,7 @@
 import { getAuth } from "firebase/auth";
 import { getFirestore, collection, query, where, getDocs } from "firebase/firestore";
 
-import '../assets/userProfil.css' // Import CSS
+import '../assets/styles/userProfil.css' // Import CSS
 
 export default {
   name: "UserProfile",
