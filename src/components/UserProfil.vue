@@ -61,6 +61,8 @@
 import { getAuth } from "firebase/auth";
 import { getFirestore, collection, query, where, getDocs } from "firebase/firestore";
 
+import '../assets/userProfil.css' // Import CSS
+
 export default {
   name: "UserProfile",
   data() {
@@ -152,14 +154,3 @@ export default {
 
 };
 </script>
-
-<style scoped>
-.section {
-  background-color: #f5f5f5; /* Fond gris clair */
-  padding: 2rem;
-  border-radius: 8px;
-}
-</style>
-
-
-
