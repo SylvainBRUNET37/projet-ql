@@ -7,7 +7,7 @@
 import { defineStore } from 'pinia'
 import { ref, type Ref } from 'vue'
 import { auth, db } from '../firebase'
-import { signInWithEmailAndPassword, signOut, type User } from 'firebase/auth'
+import { signInWithEmailAndPassword, signOut, type AuthError, type User } from 'firebase/auth'
 import { doc, getDoc, type DocumentData } from 'firebase/firestore'
 
 /**
@@ -54,9 +54,15 @@ export const AuthStore = defineStore('auth', () => {
         // Modifie le message d'erreur si les données utilisateur ne sont pas trouvées
         errorMessage.value = 'Incorrect password or email'
       }
-    } catch {
-      // Modifie le message d'erreur si une erreur interne se produit
-      errorMessage.value = 'Internal error, please try again later'
+    } catch (error: AuthError | unknown) {
+      // Modifie le message d'erreur en fonction du type d'erreur
+      if ((error as AuthError).code === 'auth/network-request-failed') {
+        errorMessage.value = 'Service temporarily unavailable, please try again later'
+      } else if ((error as AuthError).code === 'auth/timeout') {
+        errorMessage.value = 'No connection, please check your network'
+      } else {
+        errorMessage.value = 'Internal error, please try again later'
+      }
     }
   }
 
@@ -73,9 +79,15 @@ export const AuthStore = defineStore('auth', () => {
       // Réinitialise l'état utilisateur et les données associées
       user.value = null
       userData.value = null
-    } catch {
-      // Modifie le message d'erreur pour indiquer une erreur interne
-      errorMessage.value = 'Internal error, please try again later'
+    } catch (error: AuthError | unknown) {
+      // Modifie le message d'erreur en fonction du type d'erreur
+      if ((error as AuthError).code === 'auth/network-request-failed') {
+        errorMessage.value = 'Service temporarily unavailable, please try again later'
+      } else if ((error as AuthError).code === 'auth/timeout') {
+        errorMessage.value = 'No connection, please check your network'
+      } else {
+        errorMessage.value = 'Internal error, please try again later'
+      }
     }
   }
 
