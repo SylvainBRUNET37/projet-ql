@@ -4,14 +4,14 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import RegisterForm from '../components/RegisterForm.vue'
 
 // CSS
 import '../assets/styles/authForm.css'
 
 export default {
-  name: 'Register',
+  name: 'RegisterView',
   components: {
     RegisterForm,
   },

@@ -2,7 +2,7 @@ import { initializeApp } from 'firebase/app'
 import { getAuth } from 'firebase/auth'
 import { getFirestore } from 'firebase/firestore'
 
-// Firebase configuration
+// Configuration Firebase
 const firebaseConfig = {
   apiKey: 'AIzaSyDVDvx3Ee4YXINQC0a-XwsUmLpIt7Wmcxo',
   authDomain: 'my-project-4f301.firebaseapp.com',
@@ -13,7 +13,7 @@ const firebaseConfig = {
   measurementId: 'G-JBJYWTHF0C',
 }
 
-// Initialize Firebase
+// Initialisation de Firebase
 const app = initializeApp(firebaseConfig)
 const db = getFirestore(app)
 const auth = getAuth(app)
