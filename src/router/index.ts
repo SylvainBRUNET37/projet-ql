@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import AuthView from '../views/AuthView.vue'
 import RegisterView from '../views/RegisterView.vue'
-import Research from '../components/research/Research.vue'
+import EquipmentResearchView from '../views/EquipmentResearchView.vue'
 import UserProfileView from '../views/UserProfileView.vue'
 
 const router = createRouter({
@@ -18,9 +18,9 @@ const router = createRouter({
       component: RegisterView,
     },
     {
-      path: '/research',
-      name: 'research',
-      component: Research,
+      path: '/equipment-research',
+      name: 'equipment-research',
+      component: EquipmentResearchView,
     },
     {
       path: '/user-profile',

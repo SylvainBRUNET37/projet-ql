@@ -64,9 +64,9 @@ export default defineComponent({
       }
     })
 
-    // Redirige l'utilisateur vers la page de recherche
+    // Redirige l'utilisateur vers la page de recherche de matériel
     const goBack = () => {
-      window.location.href = '/research'
+      window.location.href = '/equipment-research'
     }
 
     return {
