@@ -9,7 +9,13 @@
           id="firstName"
           class="form-input"
           v-model="form.firstName"
-          @input="validateFirstName"
+          @blur="
+            validateField({
+              name: 'firstName',
+              validate: validateName,
+              errorMsg: 'Invalid firstname',
+            })
+          "
           placeholder="Enter first name"
           required
         />
@@ -23,7 +29,13 @@
           id="lastName"
           class="form-input"
           v-model="form.lastName"
-          @input="validateLastName"
+          @blur="
+            validateField({
+              name: 'lastName',
+              validate: validateName,
+              errorMsg: 'Invalid name',
+            })
+          "
           placeholder="Enter last name"
           required
         />
@@ -37,7 +49,13 @@
           id="email"
           class="form-input"
           v-model="form.email"
-          @input="validateEmail"
+          @blur="
+            validateField({
+              name: 'email',
+              validate: validateEmail,
+              errorMsg: 'Invalid email',
+            })
+          "
           placeholder="Enter email address"
           required
         />
@@ -46,7 +64,19 @@
 
       <div class="form-group">
         <label for="role">Role <span class="required">*</span></label>
-        <select id="role" class="form-input" v-model="form.role" @change="validateRole" required>
+        <select
+          id="role"
+          class="form-input"
+          v-model="form.role"
+          @change="
+            validateField({
+              name: 'role',
+              validate: validateRole,
+              errorMsg: 'Invalid role',
+            })
+          "
+          required
+        >
           <option value="user">User</option>
           <option value="admin">Admin</option>
         </select>
@@ -60,7 +90,13 @@
           id="password"
           class="form-input"
           v-model="form.password"
-          @input="validatePassword"
+          @blur="
+            validateField({
+              name: 'password',
+              validate: validatePassword,
+              errorMsg: 'Password length must be between 6 and 20 characters',
+            })
+          "
           placeholder="Enter password"
           required
         />
@@ -74,7 +110,13 @@
           id="confirmPassword"
           class="form-input"
           v-model="form.confirmPassword"
-          @input="validateConfirmPassword"
+          @blur="
+            validateField({
+              name: 'confirmPassword',
+              validate: (value) => value === form.password,
+              errorMsg: 'Passwords do not match',
+            })
+          "
           placeholder="Confirm password"
           required
         />
@@ -83,12 +125,41 @@
 
       <button type="submit" class="submit-button" :disabled="!isFormValid">Add</button>
     </form>
+
+    <p v-if="successMessage" class="success-message">{{ successMessage }}</p>
   </div>
 </template>
 
 <script lang="ts">
 import { validateEmail, validatePassword, validateName, validateRole } from '../utils/validator'
 import { RegisterStore } from '../stores/RegisterStore.ts'
+
+// Define interfaces for form data
+interface FormData {
+  firstName: string
+  lastName: string
+  email: string
+  role: string
+  password: string
+  confirmPassword: string
+}
+
+// Define interfaces for error messages
+interface ErrorMessages {
+  firstName: string
+  lastName: string
+  email: string
+  role: string
+  password: string
+  confirmPassword: string
+}
+
+// Define the structure of the field validation
+interface ValidationField {
+  name: keyof FormData
+  validate: (value: string, otherValue?: string) => boolean
+  errorMsg: string
+}
 
 export default {
   name: 'UserForm',
@@ -101,7 +172,7 @@ export default {
         role: 'user',
         password: '',
         confirmPassword: '',
-      },
+      } as FormData,
       errors: {
         lastName: '',
         firstName: '',
@@ -109,7 +180,8 @@ export default {
         role: '',
         password: '',
         confirmPassword: '',
-      },
+      } as ErrorMessages,
+      successMessage: '',
       fields: [
         { name: 'firstName', validate: validateName, errorMsg: 'Invalid firstname' },
         { name: 'lastName', validate: validateName, errorMsg: 'Invalid name' },
@@ -122,33 +194,48 @@ export default {
         },
         {
           name: 'confirmPassword',
-          validate: (value) => value === this.form.password,
+          validate: (value: string, otherValue?: string) => value === otherValue,
           errorMsg: 'Passwords do not match',
         },
-      ],
+      ] as ValidationField[],
     }
   },
   computed: {
-    isFormValid() {
+    isFormValid(): boolean {
       return this.fields.every((field) => !this.errors[field.name] && this.form[field.name])
     },
   },
   methods: {
-    validateField(field) {
-      if (field.name === 'confirmPassword') {
-        const valid = field.validate(this.form.confirmPassword, this.form.password) // Passe les deux valeurs à la validation
-        this.errors[field.name] = valid ? '' : field.errorMsg
-      } else {
-        const valid = field.validate(this.form[field.name])
-        this.errors[field.name] = valid ? '' : field.errorMsg
-      }
+    // Declare the validation methods explicitly
+    validateEmail(value: string): boolean {
+      return validateEmail(value)
     },
-    handleSubmit() {
+    validatePassword(value: string): boolean {
+      return validatePassword(value)
+    },
+    validateName(value: string): boolean {
+      return validateName(value)
+    },
+    validateRole(value: string): boolean {
+      return validateRole(value)
+    },
+
+    validateField(field: ValidationField): void {
+      const valid =
+        field.name === 'confirmPassword'
+          ? field.validate(this.form.confirmPassword, this.form.password)
+          : field.validate(this.form[field.name])
+
+      this.errors[field.name] = valid ? '' : field.errorMsg
+    },
+    handleSubmit(): void {
+      // Validate all fields before submitting
       this.fields.forEach((field) => this.validateField(field))
 
       if (this.isFormValid) {
         const { register, errorMessage } = RegisterStore()
 
+        // Call the register method
         register(
           this.form.lastName,
           this.form.firstName,
@@ -158,14 +245,14 @@ export default {
         )
 
         if (errorMessage) {
-          alert('The email already corresponds to a user')
+          this.errors.email = 'The email already corresponds to a user'
         } else {
-          alert('User registered successfully!')
+          this.successMessage = 'User registered successfully!'
           this.resetForm()
         }
       }
     },
-    resetForm() {
+    resetForm(): void {
       this.form = {
         lastName: '',
         firstName: '',
@@ -173,7 +260,7 @@ export default {
         role: 'user',
         password: '',
         confirmPassword: '',
-      }
+      } as FormData
       this.errors = {
         lastName: '',
         firstName: '',
@@ -181,7 +268,7 @@ export default {
         role: '',
         password: '',
         confirmPassword: '',
-      }
+      } as ErrorMessages
     },
   },
 }

@@ -3,6 +3,7 @@ import AuthView from '../views/AuthView.vue'
 import RegisterView from '../views/RegisterView.vue'
 import Research from '../components/Research.vue'
 import UserProfile from '../components/UserProfil.vue'
+import UserForm from '@/components/UserForm.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -26,6 +27,11 @@ const router = createRouter({
       path: '/HelloWorld',
       name: 'HelloWorld',
       component: UserProfile,
+    },
+    {
+      path: '/userform',
+      name: 'userform',
+      component: UserForm,
     },
   ],
 })
