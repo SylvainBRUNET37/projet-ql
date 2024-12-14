@@ -1,3 +1,5 @@
+<!-- UserProfile.vue -->
+
 <template>
   <div class="section">
     <div class="container">
@@ -24,7 +26,7 @@
         <UserInfo :userInfo="userInfo" />
       </div>
       <div v-if="activeTab === 'equipment'">
-        <BorrowedEquipments />
+        <UserEquipment />
       </div>
     </div>
   </div>
@@ -33,16 +35,17 @@
 <script lang="ts">
 import { defineComponent, ref, onMounted, type Ref } from 'vue'
 import UserInfo from './UserInfo.vue'
-import BorrowedEquipments from './BorrowedEquipments.vue'
+import UserEquipment from './UserEquipment.vue'
 import { UserStore } from '@/stores/UserStore.ts'
 
 export default defineComponent({
   name: 'UserProfile',
-  components: { UserInfo, BorrowedEquipments },
+  components: { UserInfo, UserEquipment },
   setup() {
     const activeTab = ref('personalInfo')
     const userStore = UserStore()
 
+    // Informations de l'utilisateur
     const userInfo: Ref<{
       lastName: string
       firstName: string
@@ -50,6 +53,7 @@ export default defineComponent({
       role: string
     } | null> = ref(null)
 
+    // Récupère les informations de l'utilisateur
     onMounted(async () => {
       await userStore.getUserData()
       userInfo.value = userStore.userData as {
@@ -58,10 +62,9 @@ export default defineComponent({
         email: string
         role: string
       }
-
-      console.log('userInfo dans UserProfile :', userInfo.value)
     })
 
+    // Redirige l'utilisateur vers la page de recherche
     const goBack = () => {
       window.location.href = '/research'
     }

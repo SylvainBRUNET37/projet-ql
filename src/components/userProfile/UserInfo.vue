@@ -1,6 +1,10 @@
+<!-- UserInfo.vue -->
+
 <template>
   <div class="content">
     <p class="mb-4">Need to change something? Ask an administrator!</p>
+
+    <!-- Informations de l'utilisateur -->
     <p><strong>Last name:</strong> {{ userInfo?.lastName || 'Not available' }}</p>
     <p><strong>First name:</strong> {{ userInfo?.firstName || 'Not available' }}</p>
     <p><strong>Mail:</strong> {{ userInfo?.email || 'Not available' }}</p>
@@ -14,6 +18,7 @@ import { defineComponent, type PropType } from 'vue'
 export default defineComponent({
   name: 'UserInfo',
   props: {
+    // Informations de l'utilisateur
     userInfo: {
       type: Object as PropType<{
         lastName: string
