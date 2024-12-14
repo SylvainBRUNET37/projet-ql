@@ -1,13 +1,18 @@
 <!-- src/components/Research.vue -->
 <template>
-  <section class="section" style="background-color: #cccccc;  width: 100%; height: 100vh;"  >
+  <section class="section" style="background-color: #cccccc; width: 100%; height: 100vh">
     <div class="container">
       <h1 class="title has-text-centered">Welcome to LocaMat</h1>
 
       <!-- Barre de recherche -->
       <div class="field has-addons">
         <div class="control is-expanded">
-          <input class="input" type="text" placeholder="Search for equipment to borrow..." v-model="search"/>
+          <input
+            class="input"
+            type="text"
+            placeholder="Search for equipment to borrow..."
+            v-model="search"
+          />
         </div>
         <div class="control">
           <button class="button is-info">
@@ -106,15 +111,19 @@
               <!-- Contenu de la carte -->
               <div class="card-content">
                 <p class="title is-6">{{ item.name }}</p>
-                <p class="subtitle is-7" :class="{'has-text-success': item.status === 'Not borrowed', 'has-text-danger': item.status === 'Borrowed'}">
+                <p
+                  class="subtitle is-7"
+                  :class="{
+                    'has-text-success': item.status === 'Not borrowed',
+                    'has-text-danger': item.status === 'Borrowed',
+                  }"
+                >
                   {{ item.status }}
                 </p>
-
               </div>
             </div>
           </div>
         </div>
-
 
         <!-- Modal pour afficher les détails du téléphone -->
         <div v-if="isModalVisible" class="modal is-active">
@@ -128,11 +137,16 @@
               <figure class="image is-4by3">
                 <img :src="selectedPhone.image" alt="Phone Image" />
               </figure>
-              <p><strong>Ref : </strong> {{ selectedPhone.ref || "No description available." }}</p>
-              <p><strong>Phone : </strong>  01 23 45 67 89 </p>
+              <p><strong>Ref : </strong> {{ selectedPhone.ref || 'No description available.' }}</p>
+              <p><strong>Phone : </strong> 01 23 45 67 89</p>
               <label class="label"> Period :</label>
               <div class="control">
-                <input class="input" type="number" placeholder="Enter a number..." v-model="inputNumber" />
+                <input
+                  class="input"
+                  type="number"
+                  placeholder="Enter a number..."
+                  v-model="inputNumber"
+                />
               </div>
 
               <button class="button is-link" @click="toggleBorrowStatus(selectedPhone)">
@@ -146,87 +160,85 @@
   </section>
 </template>
 
-<script>
-import {db} from "@/firebase";
-import { useRouter } from 'vue-router';
-import {  collection, getDocs , doc, updateDoc , Timestamp } from "firebase/firestore";
+<script lang="ts">
+import { db } from '@/firebase'
+import { useRouter } from 'vue-router'
+import { collection, getDocs, doc, updateDoc, Timestamp } from 'firebase/firestore'
 
 import '../assets/styles/research.css' // Importation du fichier CSS
 
 export default {
-  name: "Research",
+  name: 'Research',
   setup() {
-    const router = useRouter();
-    return { router };
-  } ,
+    const router = useRouter()
+    return { router }
+  },
   methods: {
     handleClick() {
-      this.router.push('/HelloWorld');
+      this.router.push('/HelloWorld')
     },
     openModal(phone) {
-      this.selectedPhone = phone;
-      this.isModalVisible = true;
+      this.selectedPhone = phone
+      this.isModalVisible = true
     },
     closeModal() {
-      this.isModalVisible = false;
-      this.selectedPhone = {};
-      this.inputNumber = null;
+      this.isModalVisible = false
+      this.selectedPhone = {}
+      this.inputNumber = null
     },
     async toggleBorrowStatus(item) {
       // Afficher la valeur et le type de l'entrée
-      console.log("User input:", this.inputNumber); // Affiche la valeur brute
-      console.log("Type of input:", typeof this.inputNumber); // Affiche le type de la valeur
+      console.log('User input:', this.inputNumber) // Affiche la valeur brute
+      console.log('Type of input:', typeof this.inputNumber) // Affiche le type de la valeur
 
       // Convertir l'entrée en nombre
-      const number = Number(this.inputNumber);
-      console.log("Converted number:", number); // Affiche le nombre converti
+      const number = Number(this.inputNumber)
+      console.log('Converted number:', number) // Affiche le nombre converti
 
       // Vérification si la conversion est valide
       if (isNaN(number)) {
-        console.log("Input is not a valid number.");
-        alert("Please enter a valid positive--- number.");
-        return;
+        console.log('Input is not a valid number.')
+        alert('Please enter a valid positive--- number.')
+        return
       }
 
       // Vérification si le nombre est positif
       if (number <= 0) {
-        console.log("Input is not a positive number.");
-        alert("Please enter a valid positive number..");
-        return;
+        console.log('Input is not a positive number.')
+        alert('Please enter a valid positive number..')
+        return
       }
 
       // Calculer l'heure actuelle pour Time (heure de début)
-      const currentTimestamp = new Date();  // Heure actuelle
+      const currentTimestamp = new Date() // Heure actuelle
       // Créer un Timestamp Firebase pour Time
-      const firebaseTimestamp = Timestamp.fromDate(currentTimestamp);
+      const firebaseTimestamp = Timestamp.fromDate(currentTimestamp)
 
       // Calculer l'heure de fin (TimeEnd) en ajoutant la durée de l'emprunt
-      const endTimestamp = new Date(currentTimestamp); // Cloner la date actuelle
-      endTimestamp.setHours(endTimestamp.getHours() + this.inputNumber); // Ajouter les heures de durée d'emprunt
+      const endTimestamp = new Date(currentTimestamp) // Cloner la date actuelle
+      endTimestamp.setHours(endTimestamp.getHours() + this.inputNumber) // Ajouter les heures de durée d'emprunt
 
       // Créer un Timestamp Firebase pour TimeEnd
-      const firebaseEndTimestamp = Timestamp.fromDate(endTimestamp);
+      const firebaseEndTimestamp = Timestamp.fromDate(endTimestamp)
 
-      const itemRef = doc(db, "Phones", item.id); // Accéder au document de l'équipement
+      const itemRef = doc(db, 'Phones', item.id) // Accéder au document de l'équipement
 
       await updateDoc(itemRef, {
-        Status: true , // Mettre à jour le statut
+        Status: true, // Mettre à jour le statut
         BorrowerId: item.id,
         Time: firebaseTimestamp, // Enregistrer l'heure de début
         TimeEnd: firebaseEndTimestamp, // Enregistrer l'heure de fin
-      });
-
+      })
 
       // Mettre à jour le statut localement
-      item.status = item.status === 'Borrowed' ? 'Not borrowed' : 'Borrowed';
-    }
-
+      item.status = item.status === 'Borrowed' ? 'Not borrowed' : 'Borrowed'
+    },
   },
 
   data() {
     return {
       equipment: [],
-      search: "",
+      search: '',
       filters: {
         type: [],
         brand: [],
@@ -234,25 +246,25 @@ export default {
       },
       isModalVisible: false, // Etat du modal
       selectedPhone: {}, // Informations du téléphone sélectionnépas
-      inputNumber: "",
-    };
+      inputNumber: '',
+    }
   },
 
   async created() {
     try {
-      const querySnapshot = await getDocs(collection(db, "Phones"));
+      const querySnapshot = await getDocs(collection(db, 'Phones'))
       this.equipment = querySnapshot.docs.map((doc) => ({
         id: doc.id,
         brand: doc.data().Brand,
         name: doc.data().Name,
-        status: doc.data().Status ? "Borrowed" : "Not borrowed",
+        status: doc.data().Status ? 'Borrowed' : 'Not borrowed',
         type: doc.data().Type,
         image: `/images/${doc.data().image}`,
-        ref : doc.data().ref ,
-        Time : doc.data().Time,
-      }));
+        ref: doc.data().ref,
+        Time: doc.data().Time,
+      }))
     } catch (error) {
-      console.error("Erreur lors de la récupération des données Firebase :", error);
+      console.error('Erreur lors de la récupération des données Firebase :', error)
     }
   },
 
@@ -260,22 +272,15 @@ export default {
     filteredEquipment() {
       return this.equipment.filter((item) => {
         const matchesSearch =
-            this.search === "" ||
-            item.name.toLowerCase().includes(this.search.toLowerCase());
-        const matchesType =
-            this.filters.type.length === 0 ||
-            this.filters.type.includes(item.type);
+          this.search === '' || item.name.toLowerCase().includes(this.search.toLowerCase())
+        const matchesType = this.filters.type.length === 0 || this.filters.type.includes(item.type)
         const matchesBrand =
-            this.filters.brand.length === 0 ||
-            this.filters.brand.includes(item.brand);
+          this.filters.brand.length === 0 || this.filters.brand.includes(item.brand)
         const matchesStatus =
-            this.filters.status.length === 0 ||
-            this.filters.status.includes(item.status);
-        return matchesSearch && matchesType && matchesBrand && matchesStatus;
-      });
+          this.filters.status.length === 0 || this.filters.status.includes(item.status)
+        return matchesSearch && matchesType && matchesBrand && matchesStatus
+      })
     },
   },
-
-
-};
+}
 </script>

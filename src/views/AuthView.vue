@@ -11,7 +11,7 @@ import AuthForm from '../components/AuthForm.vue'
 import '../assets/styles/authForm.css'
 
 export default {
-  name: 'Auth',
+  name: 'AuthView',
   components: {
     AuthForm,
   },

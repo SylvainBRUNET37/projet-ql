@@ -86,12 +86,12 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { validateEmail, validatePassword, validateName, validateRole } from '../utils/validator'
 import { RegisterStore } from '../stores/RegisterStore'
 
 export default {
-  name: 'RegisterForm',
+  name: 'UserForm',
   data() {
     return {
       form: {
