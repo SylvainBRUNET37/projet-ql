@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import AuthView from '../views/AuthView.vue'
 import RegisterView from '../views/RegisterView.vue'
-import Research from '../components/Research.vue'
+import Research from '../components/research/Research.vue'
 import UserProfileView from '../views/UserProfileView.vue'
 
 const router = createRouter({
