@@ -36,11 +36,23 @@ export const EquipmentStore = defineStore('equipment', () => {
 
       errorMessage.value = ''
     } catch (error: FirebaseError | unknown) {
-      // Gestion des erreurs Firebase
+      // Modifie le message d'erreur en fonction du type d'erreur
       if (error instanceof FirebaseError) {
-        errorMessage.value = 'An error occurred while fetching equipment.'
-        console.error(error)
+        switch (error.code) {
+          case 'auth/network-request-failed':
+            errorMessage.value = 'Service temporarily unavailable, please try again later.'
+            break
+          case 'auth/timeout':
+            errorMessage.value = 'No connection, please check your network.'
+            break
+          case 'auth/invalid-credential':
+            errorMessage.value = 'Incorrect email or password.'
+            break
+          default:
+            errorMessage.value = 'Internal error, please try again later.'
+        }
       } else {
+        // Gestion d'autres types d'erreurs
         errorMessage.value = 'Internal error, please try again later.'
         console.error(error)
       }
