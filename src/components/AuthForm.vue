@@ -2,99 +2,149 @@
   <div class="auth-form">
     <h1 class="auth-form-title">Login</h1>
     <form @submit.prevent="handleLogin">
-      <div class="form-group">
-        <label for="email">Email</label>
-        <input
-          type="email"
-          id="email"
-          v-model="email"
-          required
-          placeholder="Enter your email"
-          class="form-input"
-        />
-      </div>
+      <GenericForm
+        v-for="field in fields"
+        :key="field.name"
+        :field="field"
+        v-model="form[field.name]"
+        :errors="errors"
+        @blur="handleFieldBlur"
+      />
 
-      <div class="form-group">
-        <label for="password">Password</label>
-        <input
-          type="password"
-          id="password"
-          v-model="password"
-          required
-          placeholder="Enter your password"
-          class="form-input"
-        />
-      </div>
-
-      <!-- Error message for form validation -->
+      <!-- Messages d'erreur ou de succès -->
       <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
-
-      <!-- Success message -->
       <p v-if="successMessage" class="success-message">{{ successMessage }}</p>
 
-      <div class="form-group">
-        <button type="submit" class="submit-button" :disabled="!isFormValid">Login</button>
-      </div>
+      <!-- Bouton de soumission -->
+      <button type="submit" class="submit-button" :disabled="!isFormValid">Login</button>
     </form>
   </div>
 </template>
 
 <script lang="ts">
-import { ref, computed } from 'vue'
-import { useRouter } from 'vue-router'
+import GenericForm from './GenericForm.vue'
+import { validateEmail, validatePassword } from '../utils/validator.ts'
 import { AuthStore } from '../stores/AuthStore.ts'
-import { validateEmail, validatePassword } from '../utils/validator'
+
+// Définition des types pour les messages d'erreur
+type ErrorMessages = {
+  [key: string]: string
+}
+
+type ValidationField = {
+  name: string
+  label: string
+  type: string
+  placeholder: string
+  validate: (value: string) => boolean
+  errorMsg: string
+  required?: boolean
+}
 
 export default {
   name: 'AuthForm',
-  setup() {
-    const email = ref('')
-    const password = ref('')
-    const errorMessage = ref('')
-    const successMessage = ref('')
-    const userTriedSubmit = ref(false)
-    const router = useRouter()
+  components: {
+    GenericForm,
+  },
+  data() {
+    return {
+      // Formulaire
+      form: {
+        email: '',
+        password: '',
+      } as { [key: string]: string },
+      // Erreurs de validation
+      errors: {} as ErrorMessages,
+      // Messages
+      errorMessage: '',
+      successMessage: '',
+      // Champs de formulaire
+      fields: [
+        {
+          name: 'email',
+          label: 'Email',
+          type: 'email',
+          placeholder: 'Enter your email',
+          validate: validateEmail,
+          errorMsg: 'Invalid email',
+          required: true,
+        },
+        {
+          name: 'password',
+          label: 'Password',
+          type: 'password',
+          placeholder: 'Enter your password',
+          validate: validatePassword,
+          errorMsg: 'Invalid password',
+          required: true,
+        },
+      ] as ValidationField[],
+    }
+  },
+  computed: {
+    /**
+     * Vérifie si le formulaire est valide.
+     *
+     * @returns {boolean} - Retourne true si le formulaire est valide.
+     */
+    isFormValid(): boolean {
+      return this.fields.every(
+        (field) => !this.errors[field.name] && this.form[field.name as keyof typeof this.form],
+      )
+    },
+  },
+  methods: {
+    /**
+     * Gère la soumission du formulaire.
+     */
+    async handleLogin() {
+      this.errorMessage = ''
+      this.successMessage = ''
 
-    const authStore = AuthStore()
+      // Valider tous les champs avant soumission
+      this.fields.forEach((field) => this.validateField(field))
 
-    const handleLogin = async () => {
-      errorMessage.value = ''
-      successMessage.value = ''
-
-      // Validate form before submitting
-      if (!isFormValid.value) {
-        errorMessage.value = 'Please enter a valid email and password.'
-        userTriedSubmit.value = true
+      // Vérifier si le formulaire est valide
+      if (!this.isFormValid) {
+        this.errorMessage = 'Please fill out the form correctly.'
         return
       }
 
-      // Proceed with the login process
-      await authStore.login(email.value, password.value)
+      try {
+        // Effectue la connexion
+        const authStore = AuthStore()
+        await authStore.login(this.form.email, this.form.password)
 
-      if (authStore.errorMessage) {
-        errorMessage.value = authStore.errorMessage
-      } else {
-        successMessage.value = 'Login successful! Welcome back.'
-        router.push('/register')
+        // Affiche un message de succès ou d'erreur
+        if (authStore.errorMessage) {
+          alert(this.errorMessage)
+          this.errorMessage = authStore.errorMessage
+        } else {
+          this.$router.push('/register')
+        }
+      } catch {
+        this.errorMessage = 'An error occurred during login. Please try again.'
       }
-    }
+    },
 
-    // Computed properties to check form validity
-    const isEmailValid = computed(() => validateEmail(email.value))
-    const isPasswordValid = computed(() => validatePassword(password.value))
+    /**
+     * Gère la validation d'un champ lorsque l'utilisateur quitte le champ.
+     *
+     * @param {ValidationField} field - Le champ à valider.
+     */
+    handleFieldBlur(field: ValidationField) {
+      this.validateField(field)
+    },
 
-    // Button should be disabled if email or password is invalid
-    const isFormValid = computed(() => isEmailValid.value && isPasswordValid.value)
-
-    return {
-      email,
-      password,
-      handleLogin,
-      errorMessage,
-      successMessage,
-      isFormValid,
-      userTriedSubmit,
-    }
+    /**
+     * Valide un champ donné.
+     *
+     * @param {ValidationField} field - Le champ à valider.
+     */
+    validateField(field: ValidationField): void {
+      const isValid = field.validate(this.form[field.name as keyof typeof this.form])
+      this.errors[field.name] = isValid ? '' : field.errorMsg
+    },
   },
 }
 </script>
