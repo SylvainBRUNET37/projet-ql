@@ -1,4 +1,5 @@
 <!-- RegisterForm.vue -->
+<!-- Formulaire de création de compte -->
 
 <template>
   <div class="auth-form">

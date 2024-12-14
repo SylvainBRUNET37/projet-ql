@@ -1,3 +1,6 @@
+<!-- AuthForm.vue -->
+<!-- Formulaire d'authentification -->
+
 <template>
   <div class="auth-form">
     <h1 class="auth-form-title">Login</h1>
@@ -31,6 +34,7 @@ type ErrorMessages = {
   [key: string]: string
 }
 
+// Définition des types pour les champs de formulaire
 type ValidationField = {
   name: string
   label: string
@@ -85,7 +89,7 @@ export default {
     /**
      * Vérifie si le formulaire est valide.
      *
-     * @returns {boolean} - Retourne true si le formulaire est valide.
+     * @returns {boolean} - Retourne true si le formulaire est valide, false sinon.
      */
     isFormValid(): boolean {
       return this.fields.every(
@@ -101,10 +105,10 @@ export default {
       this.errorMessage = ''
       this.successMessage = ''
 
-      // Valider tous les champs avant soumission
+      // Valide tous les champs avant soumission
       this.fields.forEach((field) => this.validateField(field))
 
-      // Vérifier si le formulaire est valide
+      // Vérifie si le formulaire est valide
       if (!this.isFormValid) {
         this.errorMessage = 'Please fill out the form correctly.'
         return

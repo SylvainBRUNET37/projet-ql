@@ -1,4 +1,6 @@
 <!-- GenericForm.vue -->
+<!-- Ce composant générique est utilisé pour afficher un champ de formulaire. Il peut être utilisé pour afficher des champs de texte, des champs de sélection, etc. -->
+
 <template>
   <div class="form-group">
     <!-- Rend le champ required si il l'est -->
