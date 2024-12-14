@@ -124,7 +124,7 @@ export default {
           alert(this.errorMessage)
           this.errorMessage = authStore.errorMessage
         } else {
-          this.$router.push('/register')
+          this.$router.push('/user-profile') // Redirection (TO DO: gérer la route en fonction du role)
         }
       } catch {
         this.errorMessage = 'An error occurred during login. Please try again.'

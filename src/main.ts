@@ -3,8 +3,6 @@ import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './router'
 
-import 'bulma/css/bulma.css'
-
 import { db, auth } from './firebase.ts'
 
 const app = createApp(App)

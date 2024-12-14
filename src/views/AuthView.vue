@@ -7,8 +7,7 @@
 <script lang="ts">
 import AuthForm from '../components/AuthForm.vue'
 
-// CSS
-import '../assets/styles/authForm.css'
+import '../assets/styles/form.css' // Import du CSS
 
 export default {
   name: 'AuthView',

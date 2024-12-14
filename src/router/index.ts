@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import AuthView from '../views/AuthView.vue'
 import RegisterView from '../views/RegisterView.vue'
 import Research from '../components/Research.vue'
-import UserProfile from '../components/UserProfil.vue'
+import UserProfileView from '../views/UserProfileView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -23,9 +23,9 @@ const router = createRouter({
       component: Research,
     },
     {
-      path: '/HelloWorld',
-      name: 'HelloWorld',
-      component: UserProfile,
+      path: '/user-profile',
+      name: 'user-profile',
+      component: UserProfileView,
     },
   ],
 })

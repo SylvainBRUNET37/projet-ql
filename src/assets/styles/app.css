@@ -1,124 +1,21 @@
+/* app.css */
 /* Style général de l'application */
-#app {
-  font-family: 'Arial', sans-serif; /* Police simple et lisible */
-  color: #333; /* Couleur de texte principale */
-  background-color: #f4f4f9; /* Fond léger et neutre */
 
-  /* Mise en page */
+#app {
+  font-family: 'Arial', sans-serif;
+  color: #333;
+  background-color: #f4f4f9;
   margin: 0;
   padding: 0;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh; /* Hauteur de la fenêtre */
+  height: 100vh;
 }
 
-/* Container général de l'application */
 #app > * {
   width: 100%;
-  max-width: 1200px; /* Limite de largeur pour éviter un trop grand étirement */
+  max-width: 1200px;
   padding: 20px;
-  box-sizing: border-box; /* Inclut la bordure et le padding dans les dimensions */
-}
-
-/* Affichage du contenu dans le router-view */
-router-view {
-  display: block;
-  text-align: center; /* Centrer le contenu */
-  width: 100%;
-}
-
-/* Style global pour l'authentification */
-.auth-form {
-  width: 100%;
-  max-width: 400px; /* Limite de largeur du formulaire */
-  margin: 50px auto; /* Centrer le formulaire avec un espace en haut */
-  padding: 30px;
-  background-color: #ffffff;
-  border-radius: 8px; /* Coins arrondis */
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Ombre légère */
-}
-
-.auth-form-title {
-  text-align: center;
-  font-size: 24px;
-  color: #333;
-  margin-bottom: 30px;
-}
-
-.form-group {
-  margin-bottom: 20px;
-}
-
-.form-group label {
-  display: block;
-  font-size: 14px;
-  color: #333;
-  margin-bottom: 8px;
-}
-
-.form-input {
-  width: 100%;
-  padding: 12px;
-  font-size: 14px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  box-sizing: border-box; /* Inclure la bordure dans la taille de l'élément */
-}
-
-/* Style des éléments focus */
-.form-input:focus {
-  border-color: #007bff; /* Couleur du bord lors de la sélection */
-  outline: none; /* Retirer le contour par défaut */
-}
-
-/* Style du bouton de soumission */
-.submit-button {
-  width: 100%;
-  padding: 12px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  font-size: 16px;
-  font-weight: bold;
-  cursor: pointer;
-  transition:
-    background-color 0.3s,
-    opacity 0.3s; /* Transitions douces */
-}
-
-/* Effet au survol du bouton */
-.submit-button:hover {
-  background-color: #0056b3;
-}
-
-/* Style du bouton désactivé */
-.submit-button:disabled {
-  background-color: #b0c4de; /* Gris clair */
-  cursor: not-allowed; /* Curseur "interdit" */
-  opacity: 0.6; /* Réduire l'opacité */
-}
-
-/* Style des messages d'erreur */
-.error-message {
-  color: red;
-  text-align: center;
-  font-size: 0.9rem;
-  margin-top: 10px;
-  font-weight: bold;
-  background-color: #ffcccc; /* Fond rouge clair */
-  padding: 10px;
-  border-radius: 5px; /* Coins arrondis */
-  border: 1px solid #ff0000; /* Bordure rouge */
-  display: block;
-  width: 100%;
-}
-
-/* Style des messages de succès */
-.success-message {
-  color: green;
-  text-align: center;
-  font-size: 0.9rem;
-  margin-top: 10px;
+  box-sizing: border-box;
 }
