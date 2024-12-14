@@ -173,7 +173,7 @@ export default {
   },
   methods: {
     handleClick() {
-      this.router.push('/HelloWorld')
+      this.router.push('/user-profile')
     },
     openModal(phone) {
       this.selectedPhone = phone
