@@ -42,7 +42,7 @@
 <script lang="ts">
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
-import { AuthStore } from '../stores/AuthStore.Js'
+import { AuthStore } from '../stores/AuthStore.ts'
 import { validateEmail, validatePassword } from '../utils/validator'
 
 export default {

@@ -88,7 +88,7 @@
 
 <script lang="ts">
 import { validateEmail, validatePassword, validateName, validateRole } from '../utils/validator'
-import { RegisterStore } from '../stores/RegisterStore'
+import { RegisterStore } from '../stores/RegisterStore.ts'
 
 export default {
   name: 'UserForm',

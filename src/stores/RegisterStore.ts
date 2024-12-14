@@ -1,34 +1,45 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { ref, type Ref } from 'vue'
 import { auth, db } from '../firebase'
-import { createUserWithEmailAndPassword, fetchSignInMethodsForEmail } from 'firebase/auth'
+import {
+  createUserWithEmailAndPassword,
+  fetchSignInMethodsForEmail,
+  type User,
+} from 'firebase/auth'
 import { doc, setDoc } from 'firebase/firestore'
 
-export const RegisterStore = defineStore('register', () => {
-  const user = ref(null)
-  const userData = ref(null)
-  const errorMessage = ref('')
+interface UserData {
+  lastName: string
+  firstName: string
+  role: string
+  email: string
+}
 
-  // Enregistrement de l'utilisateur
-  const register = async (lastName, firstName, role, email, password) => {
+export const RegisterStore = defineStore('register', () => {
+  const user: Ref<User | null> = ref(null)
+  const userData: Ref<UserData | null> = ref(null)
+  const errorMessage: Ref<string> = ref('')
+
+  const register = async (
+    lastName: string,
+    firstName: string,
+    role: string,
+    email: string,
+    password: string,
+  ): Promise<void> => {
     try {
-      // Vérifier si l'email est déjà utilisé
       const signInMethods = await fetchSignInMethodsForEmail(auth, email)
 
       if (signInMethods.length > 0) {
-        // L'email est déjà utilisé, retourner une erreur
         errorMessage.value = 'Email is already in use.'
         return
       }
 
-      // Créer un utilisateur via Firebase Authentication
       const userCredential = await createUserWithEmailAndPassword(auth, email, password)
       user.value = userCredential.user
 
-      // Récupérer l'UID de l'utilisateur
       const uid = userCredential.user.uid
 
-      // Ajouter des informations supplémentaires dans Firestore
       const userDocRef = doc(db, 'users', uid)
       await setDoc(userDocRef, {
         lastName,
@@ -39,11 +50,14 @@ export const RegisterStore = defineStore('register', () => {
         status: 'active',
       })
 
-      // Mettre à jour les données locales
       userData.value = { lastName, firstName, role, email }
-      errorMessage.value = '' // Clear any previous errors
-    } catch (error) {
-      errorMessage.value = error.message || 'Registration failed'
+      errorMessage.value = ''
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        errorMessage.value = error.message || 'Registration failed'
+      } else {
+        errorMessage.value = 'Registration failed'
+      }
     }
   }
 

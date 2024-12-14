@@ -161,7 +161,7 @@
 </template>
 
 <script lang="ts">
-import { db } from '@/firebase'
+import { db } from '../firebase.ts'
 import { useRouter } from 'vue-router'
 import { collection, getDocs, doc, updateDoc, Timestamp } from 'firebase/firestore'
 
