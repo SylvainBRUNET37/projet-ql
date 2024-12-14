@@ -1,3 +1,5 @@
+<!-- RegisterView.vue -->
+
 <template>
   <div>
     <RegisterForm />

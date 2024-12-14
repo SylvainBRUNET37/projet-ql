@@ -1,3 +1,5 @@
+<!-- UserProfileView.vue -->
+
 <template>
   <div>
     <UserProfile />

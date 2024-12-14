@@ -1,3 +1,5 @@
+<!-- AuthView.vue -->
+
 <template>
   <div>
     <AuthForm />
