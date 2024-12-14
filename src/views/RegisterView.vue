@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts">
-import RegisterForm from '../components/RegisterForm.vue'
+import RegisterForm from '../components/form/RegisterForm.vue'
 
 import '../assets/styles/form.css' // Import du CSS
 

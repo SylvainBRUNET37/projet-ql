@@ -29,8 +29,13 @@
 
 <script lang="ts">
 import GenericForm from './GenericForm.vue'
-import { validateEmail, validatePassword, validateName, validateRole } from '../utils/validator.ts'
-import { RegisterStore } from '../stores/RegisterStore.ts'
+import {
+  validateEmail,
+  validatePassword,
+  validateName,
+  validateRole,
+} from '../../utils/validator.ts'
+import { RegisterStore } from '../../stores/RegisterStore.ts'
 
 // Définition des types pour les messages d'erreur
 type ErrorMessages = {
