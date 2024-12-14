@@ -91,6 +91,6 @@ export const AuthStore = defineStore('auth', () => {
     }
   }
 
-  // Retourne les données utilisateur et les fonctions pour l'utilisation dans les composants Vue
+  // Retourne les données utilisateur et les fonctions d'authentification
   return { user, userData, errorMessage, login, logout }
 })
