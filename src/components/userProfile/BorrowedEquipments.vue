@@ -27,17 +27,17 @@
 <script lang="ts">
 import { defineComponent, computed } from 'vue'
 import { EquipmentStore } from '@/stores/EquipmentStore'
-import { UserInfoStore } from '@/stores/UserStore'
+import { UserStore } from '@/stores/UserStore'
 
 export default defineComponent({
   name: 'EquipmentTab',
   setup() {
     const equipmentStore = EquipmentStore()
-    const userInfoStore = UserInfoStore()
+    const userInfoStore = UserStore()
 
     // Filtrer les équipements empruntés par l'utilisateur
     const borrowedEquipment = computed(() =>
-      equipmentStore.getUserEquipments(userInfoStore.userInfo?.id || ''),
+      equipmentStore.getUserEquipments(userInfoStore.userData?.id || ''),
     )
 
     return {

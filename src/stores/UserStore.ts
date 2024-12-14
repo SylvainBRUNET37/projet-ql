@@ -41,6 +41,7 @@ export const UserStore = defineStore('user', () => {
       // Stocke les données utilisateur dans userData
       if (userDoc.exists()) {
         userData.value = userDoc.data()
+        console.log(userData.value)
         errorMessage.value = ''
       } else {
         errorMessage.value = 'User not found.'
