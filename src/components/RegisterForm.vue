@@ -174,7 +174,6 @@ export default {
      * @returns {void}
      */
     validateField(field: ValidationField): void {
-      console.log(this.form[field.name as keyof typeof this.form])
       const valid =
         field.name === 'confirmPassword'
           ? field.validate(this.form[field.name], this.form.password) // Validation pour le champ confirmPassword
@@ -210,6 +209,8 @@ export default {
           // Si l'inscription est réussie, afficher un message de succès et réinitialiser le formulaire
           this.successMessage = 'User registered successfully!'
           this.resetForm()
+
+          // TO DO : Rediriger l'utilisateur vers la page de consultation des utilisateurs
         }
       }
     },
