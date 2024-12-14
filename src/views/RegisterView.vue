@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts">
-import UserForm from '../components/UserForm.vue'
+import RegisterForm from '../components/RegisterForm.vue'
 
 // CSS
 import '../assets/styles/authForm.css'
@@ -13,7 +13,7 @@ import '../assets/styles/authForm.css'
 export default {
   name: 'RegisterView',
   components: {
-    UserForm,
+    RegisterForm,
   },
 }
 </script>

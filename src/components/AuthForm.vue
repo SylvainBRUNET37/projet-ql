@@ -75,7 +75,7 @@ export default {
         errorMessage.value = authStore.errorMessage
       } else {
         successMessage.value = 'Login successful! Welcome back.'
-        router.push('/userform')
+        router.push('/register')
       }
     }
 
