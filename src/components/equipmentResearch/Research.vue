@@ -6,7 +6,7 @@
       <!-- En-tête -->
       <div class="header">
         <h1 class="title has-text-centered welcome-title">Welcome to LocaMat</h1>
-        <button class="profile-button">Your Profile</button>
+        <button @click="handleClick" class="profile-button">Your Profile</button>
       </div>
 
       <!-- Barre de recherche -->
@@ -233,3 +233,122 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+/* Conteneur principal */
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  margin: 0 auto;
+  max-width: 1200px; /* Centrer la page */
+}
+
+/* En-tête */
+.header {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.search-bar {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.search-input {
+  width: 50%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 30px 0 0 30px;
+  outline: none;
+}
+
+.search-button {
+  width: 40px;
+  background-color: #000;
+  border: none;
+  border-radius: 0 30px 30px 0;
+  cursor: pointer;
+}
+
+/* Conteneur des filtres */
+.filter-container {
+  width: 250px;
+  background-color: #f3f3f3;
+  padding: 15px;
+  border-radius: 10px;
+  position: relative;
+  left: -30px; /* Ajuster pour éloigner légèrement le filtre */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.filter-header {
+  display: flex;
+  justify-content: space-between;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.filter-title {
+  font-weight: bold;
+  margin: 10px 0 5px;
+}
+
+.filter-section ul {
+  list-style: none;
+  padding: 0;
+}
+
+.filter-section li {
+  margin: 5px 0;
+}
+
+/* Grille des cartes */
+.equipment-container {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.equipment-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* Trois cartes par ligne */
+  gap: 30px; /* Espacement entre les cartes */
+  margin-left: 50px; /* Décalage pour éloigner les cartes du filtre */
+}
+
+.card {
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  padding: 15px;
+  width: 200px;
+}
+
+.card-image img {
+  width: 100px;
+  height: auto;
+}
+
+.card-title {
+  font-size: 1rem;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+.card-status {
+  font-size: 0.9rem;
+  color: green;
+}
+
+.card-status.borrowed {
+  color: red;
+}
+</style>
