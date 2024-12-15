@@ -9,7 +9,7 @@
 <script lang="ts">
 import EquipmentResearch from '@/components/equipmentResearch/Research.vue'
 
-import '../assets/styles/form.css' // Import du CSS
+//import '../assets/styles/research.css' // Import du CSS
 
 export default {
   name: 'EquipmentResearchView',

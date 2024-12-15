@@ -1,50 +1,77 @@
+<!-- Research.vue -->
+
 <template>
-  <div>
-    <input v-model="search" placeholder="Search equipment" />
-    <div>
-      <label>
-        Type:
-        <select v-model="filters.type">
-          <option value="">All</option>
-          <option value="type1">Type 1</option>
-          <option value="type2">Type 2</option>
-        </select>
-      </label>
-      <label>
-        Brand:
-        <select v-model="filters.brand">
-          <option value="">All</option>
-          <option value="brand1">Brand 1</option>
-          <option value="brand2">Brand 2</option>
-        </select>
-      </label>
-      <label>
-        Status:
-        <select v-model="filters.status">
-          <option value="">All</option>
-          <option value="Borrowed">Borrowed</option>
-          <option value="Not borrowed">Not borrowed</option>
-        </select>
-      </label>
-    </div>
-    <ul>
-      <li v-for="item in filteredEquipment" :key="item.id">
-        <img :src="item.image" alt="Equipment Image" />
-        <p>{{ item.name }}</p>
-        <p>{{ item.brand }}</p>
-        <p>{{ item.status }}</p>
-        <button @click="openModal(item)">Borrow</button>
-      </li>
-    </ul>
-    <div v-if="isModalVisible">
-      <div class="modal">
-        <h2>Borrow {{ selectedPhone.name }}</h2>
-        <input v-model="inputNumber" placeholder="Enter number of hours" />
-        <button @click="toggleBorrowStatus(selectedPhone)">Confirm</button>
-        <button @click="closeModal">Cancel</button>
+  <section class="section" style="background-color: #d9d9d9; width: 100%; height: 100vh">
+    <div class="container">
+      <!-- En-tête -->
+      <div class="header">
+        <h1 class="title has-text-centered welcome-title">Welcome to LocaMat</h1>
+        <button class="profile-button">Your Profile</button>
+      </div>
+
+      <!-- Barre de recherche -->
+      <div class="search-bar">
+        <input
+          class="search-input"
+          type="text"
+          placeholder="Search for equipment to borrow..."
+          v-model="search"
+        />
+        <button class="search-button"></button>
+      </div>
+
+      <div class="columns">
+        <!-- Menu des filtres -->
+        <div class="column is-one-fifth filter-container">
+          <div class="filter-header">
+            <p>Filter</p>
+            <button class="close-button" @click="clearFilters">✕</button>
+          </div>
+          <div class="filter-section">
+            <p class="filter-title">Type of equipment</p>
+            <ul>
+              <li><input type="checkbox" /> Phone</li>
+              <li><input type="checkbox" /> Computer</li>
+              <li><input type="checkbox" /> Tablet</li>
+            </ul>
+          </div>
+          <div class="filter-section">
+            <p class="filter-title">Brand</p>
+            <ul>
+              <li><input type="checkbox" /> Apple</li>
+              <li><input type="checkbox" /> Samsung</li>
+              <li><input type="checkbox" /> Asus</li>
+              <li><input type="checkbox" /> Other brands</li>
+            </ul>
+          </div>
+          <div class="filter-section">
+            <p class="filter-title">Status</p>
+            <ul>
+              <li><input type="checkbox" /> Borrowed</li>
+              <li><input type="checkbox" /> Not borrowed</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Liste des équipements -->
+        <div class="column is-four-fifths equipment-container">
+          <div class="equipment-grid">
+            <div class="card" v-for="item in equipment" :key="item.id">
+              <div class="card-image">
+                <img :src="item.image" :alt="item.name" />
+              </div>
+              <div class="card-content">
+                <p class="card-title">{{ item.name }}</p>
+                <p class="card-status" :class="{ borrowed: item.status === 'Borrowed' }">
+                  {{ item.status }}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
+  </section>
 </template>
 
 <script lang="ts">
@@ -120,6 +147,12 @@ export default {
       }
       this.inputNumber = ''
     },
+    clearFilters() {
+      this.filters.type = []
+      this.filters.brand = []
+      this.filters.status = []
+    },
+
     async toggleBorrowStatus(item: Equipment) {
       // Afficher la valeur et le type de l'entrée
       console.log('User input:', this.inputNumber) // Affiche la valeur brute

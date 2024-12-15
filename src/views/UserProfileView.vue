@@ -9,7 +9,7 @@
 <script lang="ts">
 import UserProfile from '../components/userProfile/UserProfile.vue'
 
-import '../assets/styles/userProfile.css' // Import du CSS
+//import '../assets/styles/userProfile.css' // Import du CSS
 
 export default {
   name: 'UserProfileView',
