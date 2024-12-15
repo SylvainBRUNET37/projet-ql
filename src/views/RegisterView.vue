@@ -9,7 +9,7 @@
 <script lang="ts">
 import RegisterForm from '../components/form/RegisterForm.vue'
 
-//import '../assets/styles/form.css' // Import du CSS
+import '../assets/styles/form.css' // Import du CSS
 
 export default {
   name: 'RegisterView',

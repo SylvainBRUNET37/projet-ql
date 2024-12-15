@@ -1,6 +1,6 @@
 /* Style global pour les formulaires */
 
-#app {
+#form-container {
   font-family: 'Arial', sans-serif;
   color: #333;
   background-color: #f4f4f9;
@@ -12,14 +12,14 @@
   height: 100vh;
 }
 
-#app > * {
+#form-container > * {
   width: 100%;
-  max-width: 1200px;
+  max-width: 500px;
   padding: 20px;
   box-sizing: border-box;
 }
 
-.auth-form {
+.form {
   width: 100%;
   max-width: 400px;
   margin: 50px auto;
@@ -29,18 +29,19 @@
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-.auth-form-title {
+.form-title {
   text-align: center;
   font-size: 24px;
   color: #333;
   margin-bottom: 30px;
 }
 
-.form-group {
+.form-field {
   margin-bottom: 20px;
+  margin-right: 20px;
 }
 
-.form-group label {
+.form-field label {
   display: block;
   font-size: 14px;
   color: #333;
@@ -49,11 +50,10 @@
 
 .form-input {
   width: 100%;
-  padding: 12px;
+  padding: 10px;
   font-size: 14px;
-  border: 1px solid #ccc;
   border-radius: 5px;
-  box-sizing: border-box;
+  border: 1px solid #ccc;
 }
 
 .form-input:focus {
@@ -61,7 +61,23 @@
   outline: none;
 }
 
-.submit-button {
+.form-required {
+  color: red;
+}
+
+.form-error-message {
+  color: red;
+  text-align: left;
+  font-size: 0.9rem;
+  margin-top: 10px;
+  font-weight: bold;
+  background-color: #ffcccc;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ff0000;
+}
+
+.form-submit-button {
   width: 100%;
   padding: 12px;
   background-color: #007bff;
@@ -76,33 +92,12 @@
     opacity 0.3s;
 }
 
-.submit-button:hover {
+.form-submit-button:hover {
   background-color: #0056b3;
 }
 
-.submit-button:disabled {
+.form-submit-button:disabled {
   background-color: #b0c4de;
   cursor: not-allowed;
   opacity: 0.6;
-}
-
-.error-message {
-  color: red;
-  text-align: center;
-  font-size: 0.9rem;
-  margin-top: 10px;
-  font-weight: bold;
-  background-color: #ffcccc;
-  padding: 10px;
-  border-radius: 5px;
-  border: 1px solid #ff0000;
-  display: block;
-  width: 100%;
-}
-
-.success-message {
-  color: green;
-  text-align: center;
-  font-size: 0.9rem;
-  margin-top: 10px;
 }

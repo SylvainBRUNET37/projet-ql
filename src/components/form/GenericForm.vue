@@ -2,10 +2,10 @@
 <!-- Ce composant générique est utilisé pour afficher un champ de formulaire. Il peut être utilisé pour afficher des champs de texte, des champs de sélection, etc. -->
 
 <template>
-  <div class="form-group">
+  <div class="form-field">
     <!-- Rend le champ required si il l'est -->
     <label :for="field.name">
-      {{ field.label }} <span v-if="field.required" class="required">*</span>
+      {{ field.label }} <span v-if="field.required" class="form-required">*</span>
     </label>
 
     <!-- Utilise un input ou un select en fonction du type du champ -->
@@ -27,7 +27,7 @@
     </component>
 
     <!-- Affiche un message d'erreur si le champ est invalide -->
-    <p v-if="errors[field.name]" class="error-message">{{ errors[field.name] }}</p>
+    <p v-if="errors[field.name]" class="form-error-message">{{ errors[field.name] }}</p>
   </div>
 </template>
 

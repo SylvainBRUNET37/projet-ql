@@ -2,25 +2,23 @@
 <!-- Formulaire d'authentification -->
 
 <template>
-  <div class="auth-form">
-    <h1 class="auth-form-title">Login</h1>
-    <form @submit.prevent="handleLogin">
-      <GenericForm
-        v-for="field in fields"
-        :key="field.name"
-        :field="field"
-        v-model="form[field.name]"
-        :errors="errors"
-        @blur="handleFieldBlur"
-      />
+  <div id="form-container">
+    <div class="form">
+      <h1 class="form-title">Login</h1>
+      <form @submit.prevent="handleLogin">
+        <GenericForm
+          v-for="field in fields"
+          :key="field.name"
+          :field="field"
+          v-model="form[field.name]"
+          :errors="errors"
+          @blur="handleFieldBlur"
+        />
 
-      <!-- Messages d'erreur ou de succès -->
-      <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
-      <p v-if="successMessage" class="success-message">{{ successMessage }}</p>
-
-      <!-- Bouton de soumission -->
-      <button type="submit" class="submit-button" :disabled="!isFormValid">Login</button>
-    </form>
+        <!-- Bouton de soumission -->
+        <button type="submit" class="form-submit-button" :disabled="!isFormValid">Login</button>
+      </form>
+    </div>
   </div>
 </template>
 

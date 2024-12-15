@@ -2,28 +2,27 @@
 <!-- Formulaire de création de compte -->
 
 <template>
-  <div class="auth-form">
-    <!-- Titre du formulaire de création de compte -->
-    <h2 class="auth-form-title">Create Account</h2>
+  <div id="form-container">
+    <div class="form">
+      <!-- Titre du formulaire de création de compte -->
+      <h2 class="form-title">Create Account</h2>
 
-    <!-- Formulaire avec gestion de l'événement submit -->
-    <form @submit.prevent="handleSubmit">
-      <!-- Pour chaque champ du formulaire, créer un composant GenericForm pour l'affichage et la validation -->
-      <GenericForm
-        v-for="field in fields"
-        :key="field.name"
-        :field="field"
-        v-model="form[field.name]"
-        :errors="errors"
-        @blur="handleFieldBlur"
-      />
+      <!-- Formulaire avec gestion de l'événement submit -->
+      <form @submit.prevent="handleSubmit">
+        <!-- Pour chaque champ du formulaire, créer un composant GenericForm pour l'affichage et la validation -->
+        <GenericForm
+          v-for="field in fields"
+          :key="field.name"
+          :field="field"
+          v-model="form[field.name]"
+          :errors="errors"
+          @blur="handleFieldBlur"
+        />
 
-      <!-- Bouton de soumission, désactivé si le formulaire n'est pas valide -->
-      <button type="submit" class="submit-button" :disabled="!isFormValid">Add</button>
-    </form>
-
-    <!-- Affichage d'un message de succès si l'inscription réussit -->
-    <p v-if="successMessage" class="success-message">{{ successMessage }}</p>
+        <!-- Bouton de soumission, désactivé si le formulaire n'est pas valide -->
+        <button type="submit" class="form-submit-button" :disabled="!isFormValid">Add</button>
+      </form>
+    </div>
   </div>
 </template>
 
@@ -64,8 +63,6 @@ export default {
       form: {} as Record<string, string>,
       // Objet pour stocker les erreurs de validation des champs
       errors: {} as ErrorMessages,
-      // Message de succès une fois l'inscription réussie
-      successMessage: '',
       // Liste des champs de formulaire avec leurs validations et messages d'erreur
       fields: [
         {
@@ -212,8 +209,7 @@ export default {
         if (errorMessage) {
           this.errors.email = 'The email already corresponds to a user'
         } else {
-          // Si l'inscription est réussie, afficher un message de succès et réinitialiser le formulaire
-          this.successMessage = 'User registered successfully!'
+          // Si l'inscription est réussie, afficher un message de succès et réinitialise le formulaire
           this.resetForm()
 
           // TO DO : Rediriger l'utilisateur vers la page de consultation des utilisateurs
