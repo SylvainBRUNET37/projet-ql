@@ -4,7 +4,8 @@ import App from './App.vue'
 import router from './router'
 
 //import 'bulma/css/bulma.css'
-
+import '@coreui/coreui/dist/css/coreui.min.css';
+import '@coreui/icons/css/free.min.css';
 import { db, auth } from './firebase.ts'
 
 const app = createApp(App)

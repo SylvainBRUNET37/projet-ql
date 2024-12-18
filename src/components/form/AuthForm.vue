@@ -125,7 +125,7 @@ export default {
           if (authStore.userData && authStore.userData.role === 'admin') {
             this.$router.push('/register')
           } else {
-            this.$router.push('/equipment-research')
+            this.$router.push('/home')
           }
         }
       } catch {

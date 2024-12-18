@@ -3,6 +3,9 @@ import AuthView from '../views/AuthView.vue'
 import RegisterView from '../views/RegisterView.vue'
 import EquipmentResearchView from '../views/EquipmentResearchView.vue'
 import UserProfileView from '../views/UserProfileView.vue'
+import Layout from '@/components/mainLayOut/layout.vue'
+
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -16,6 +19,11 @@ const router = createRouter({
       path: '/register',
       name: 'register',
       component: RegisterView,
+    },
+    {
+      path: '/home',
+      name: 'home',
+      component: Layout,
     },
     {
       path: '/equipment-research',
