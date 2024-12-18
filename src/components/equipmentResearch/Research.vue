@@ -75,7 +75,7 @@
 </template>
 
 <script lang="ts">
-import { db } from '../../firebase.ts'
+import { db } from '../../firebase'
 import { collection, getDocs, doc, updateDoc, Timestamp } from 'firebase/firestore'
 
 export interface Equipment {
