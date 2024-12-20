@@ -1,44 +1,29 @@
 <template>
     <CSidebar>
         <CSidebarHeader class="border-bottom">
-        <CSidebarBrand>CoreUI</CSidebarBrand>
+        <CSidebarBrand>LocaMat</CSidebarBrand>
         </CSidebarHeader>
         <CSidebarNav>
-        <CNavTitle>Nav Title</CNavTitle>
-        <CNavItem href="#">
-            <CIcon  customClassName="nav-icon" icon="cil-speedometer"/> Nav item
-        </CNavItem>
-        <CNavItem href="#">
-            <CIcon  customClassName="nav-icon" icon="cil-speedometer"/> With badge
-            <CBadge class="ms-auto" color="primary">NEW</CBadge>
+        <CNavTitle>Welcome, user</CNavTitle>
+        <CNavItem href="#" @click="$emit('switchContent', 'EquipmentResearchView')">
+            <CIcon customClassName="nav-icon" icon="cil-speedometer"/>Home page
         </CNavItem>
         <CNavGroup>
             <template #togglerContent>
-            <CIcon  customClassName="nav-icon" icon="cil-puzzle"/> Nav dropdown
+            <CIcon customClassName="nav-icon" icon="cil-puzzle"/> Equipement
             </template>
-            <CNavItem href="#">
-            <span class="nav-icon"><span class="nav-icon-bullet"></span></span> Nav dropdown item
+            <CNavItem  href="#"> <!--@click="$emit('switchContent', 'myEquipement')"-->
+            <span class="nav-icon"><span class="nav-icon-bullet"></span></span> My equipement
             </CNavItem>
             <CNavItem href="#">
-            <span class="nav-icon"><span class="nav-icon-bullet"></span></span> Nav dropdown item
+            <span @click="$emit('switchContent', 'UserEquipment')" class="nav-icon"><span class="nav-icon-bullet" ></span></span> Equipement management
             </CNavItem>
         </CNavGroup>
-        <CNavGroup>
-            <template #togglerContent>
-            <CIcon  customClassName="nav-icon" icon="cil-puzzle"/> Nav dropdown2
-            </template>
-            <CNavItem href="#">
-            <span class="nav-icon"><span class="nav-icon-bullet"></span></span> Nav dropdown item
-            </CNavItem>
-            <CNavItem href="#">
-            <span class="nav-icon"><span class="nav-icon-bullet"></span></span> Nav dropdown item
-            </CNavItem>
-        </CNavGroup>
-        <CNavItem href="https://coreui.io">
-            <CIcon customClassName="nav-icon" icon="cil-cloud-download" /> Download CoreUI
+        <CNavItem href="#"> <!--@click="$emit('switchContent', 'userManagement')"-->
+            <CIcon customClassName="nav-icon" icon="cil-speedometer"/> User management
         </CNavItem>
-        <CNavItem href="https://coreui.io/pro/">
-            <CIcon customClassName="nav-icon" icon="cil-layers" /> Try CoreUI PRO
+        <CNavItem href="#" @click="$emit('switchContent', 'UserProfileView')">
+            <CIcon customClassName="nav-icon" icon="cil-speedometer" /> Profile
         </CNavItem>
         </CSidebarNav>
         <CSidebarFooter class="border-top">
@@ -84,7 +69,7 @@ export default {
       cilCloudDownload,
       cilLayers
     };
-  }
-};
+  },
+}
 </script>
     

@@ -6,7 +6,6 @@
       <!-- En-tête -->
       <div class="header">
         <h1 class="title has-text-centered welcome-title">Welcome to LocaMat</h1>
-        <button @click="handleClick" class="profile-button">Your Profile</button>
       </div>
 
       <!-- Barre de recherche -->
@@ -126,9 +125,6 @@ export default {
     }
   },
   methods: {
-    handleClick() {
-      this.$router.push('/user-profile')
-    },
     openModal(phone: Phone) {
       this.selectedPhone = phone
       this.isModalVisible = true

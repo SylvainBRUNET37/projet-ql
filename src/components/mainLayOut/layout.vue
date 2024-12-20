@@ -1,10 +1,9 @@
 
 <template>
     <div class="layout">
-        <Sidebar />
+        <Sidebar @switchContent="switchContent"/>
         <div class="content">
-            <EquipmentResearchView/>
-            <router-view/>
+           <component :is="currentContent" />
         </div>
     </div>
 </template>
@@ -13,12 +12,31 @@
 
 import EquipmentResearchView from "@/views/EquipmentResearchView.vue";
 import Sidebar from "../sideBar/sidebar.vue";
+import UserProfileView from "@/views/UserProfileView.vue";
+import UserEquipment from "../userProfile/UserEquipment.vue";
+import UserInfo from "../userProfile/UserInfo.vue";
 export default {
     name: "Layout",
     components: {
     Sidebar,
-    EquipmentResearchView
+    EquipmentResearchView,
+    UserProfileView,
+    UserEquipment,
+    UserInfo,
+
+    // mettre les vue correspondantes en + 
+
   },
+  data(){
+    return {
+        currentContent :"EquipmentResearchView"
+    }
+  },
+  methods: {
+    switchContent(content){
+        this.currentContent = content;
+    }
+  }
 };
 </script>
 

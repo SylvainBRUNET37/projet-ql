@@ -3,7 +3,6 @@
 <template>
   <div class="section">
     <div class="container">
-      <button class="mb-4" @click="goBack">Back to search</button>
       <h1>Your profile</h1>
 
       <!-- Onglets -->
@@ -64,15 +63,11 @@ export default defineComponent({
       }
     })
 
-    // Redirige l'utilisateur vers la page de recherche de matériel
-    const goBack = () => {
-      window.location.href = '/equipment-research'
-    }
+   
 
     return {
       activeTab,
       userInfo,
-      goBack,
     }
   },
 })
