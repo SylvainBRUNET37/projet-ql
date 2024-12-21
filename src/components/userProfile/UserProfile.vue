@@ -84,10 +84,15 @@ body {
 .section {
   padding: 2rem;
   background-color: #f9f9f9;
+  height: 100%;
 }
 
 .container {
-  max-width: 1200px;
+  max-width: 100%px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  
   margin: 0 auto;
   background: white;
   border-radius: 8px;

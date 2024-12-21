@@ -15,6 +15,8 @@ import Sidebar from "../sideBar/sidebar.vue";
 import UserProfileView from "@/views/UserProfileView.vue";
 import UserEquipment from "../userProfile/UserEquipment.vue";
 import UserInfo from "../userProfile/UserInfo.vue";
+import UserManagment from "../management/UserManagment.vue";
+import EquipmentManagement from "../management/EquipmentManagement.vue";
 export default {
     name: "Layout",
     components: {
@@ -23,9 +25,8 @@ export default {
     UserProfileView,
     UserEquipment,
     UserInfo,
-
-    // mettre les vue correspondantes en + 
-
+    UserManagment,
+    EquipmentManagement,
   },
   data(){
     return {
@@ -47,5 +48,13 @@ export default {
     grid-template-rows: 1fr;
     grid-column-gap: 0px;
     grid-row-gap: 0px;
+    
+}
+
+.content{
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
 }
 </style>

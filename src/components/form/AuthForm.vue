@@ -26,6 +26,7 @@
 import GenericForm from './GenericForm.vue'
 import { validateEmail, validatePassword } from '../../utils/validator.ts'
 import { AuthStore } from '../../stores/AuthStore.ts'
+import { onAuthStateChanged, getAuth } from 'firebase/auth'
 
 // Définition des types pour les messages d'erreur
 type ErrorMessages = {
@@ -122,6 +123,10 @@ export default {
           alert(this.errorMessage)
           this.errorMessage = authStore.errorMessage
         } else {
+          if(authStore.userData){
+            const userName = sessionStorage.setItem("userName",JSON.stringify(authStore.userData.name));
+          }
+    
           if (authStore.userData && authStore.userData.role === 'admin') {
             this.$router.push('/register')
           } else {

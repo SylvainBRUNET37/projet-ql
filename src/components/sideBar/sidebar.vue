@@ -4,7 +4,7 @@
         <CSidebarBrand>LocaMat</CSidebarBrand>
         </CSidebarHeader>
         <CSidebarNav>
-        <CNavTitle>Welcome, user</CNavTitle>
+        <CNavTitle>Welcome, {{ name }} </CNavTitle>
         <CNavItem href="#" @click="$emit('switchContent', 'EquipmentResearchView')">
             <CIcon customClassName="nav-icon" icon="cil-speedometer"/>Home page
         </CNavItem>
@@ -12,14 +12,14 @@
             <template #togglerContent>
             <CIcon customClassName="nav-icon" icon="cil-puzzle"/> Equipement
             </template>
-            <CNavItem  href="#"> <!--@click="$emit('switchContent', 'myEquipement')"-->
+            <CNavItem  href="#" @click="$emit('switchContent', 'UserEquipment')"> 
             <span class="nav-icon"><span class="nav-icon-bullet"></span></span> My equipement
             </CNavItem>
-            <CNavItem href="#">
-            <span @click="$emit('switchContent', 'UserEquipment')" class="nav-icon"><span class="nav-icon-bullet" ></span></span> Equipement management
+            <CNavItem href="#" @click="$emit('switchContent', 'EquipmentManagement')">
+            <span class="nav-icon"><span class="nav-icon-bullet" ></span></span> Equipement management
             </CNavItem>
         </CNavGroup>
-        <CNavItem href="#"> <!--@click="$emit('switchContent', 'userManagement')"-->
+        <CNavItem href="#" @click="$emit('switchContent', 'UserManagment')">
             <CIcon customClassName="nav-icon" icon="cil-speedometer"/> User management
         </CNavItem>
         <CNavItem href="#" @click="$emit('switchContent', 'UserProfileView')">
@@ -27,7 +27,7 @@
         </CNavItem>
         </CSidebarNav>
         <CSidebarFooter class="border-top">
-        <CSidebarToggler/>
+        <CSidebarToggler @click="logOut"/>
         </CSidebarFooter>
     </CSidebar>
 </template>
@@ -43,11 +43,13 @@ import {
   CNavItem,
   CNavTitle,
   CNavGroup,
-  CBadge
+  CBadge,
+  CNav
 } from '@coreui/vue';
 
 import { cilSpeedometer, cilPuzzle, cilCloudDownload, cilLayers } from '@coreui/icons';
-
+import { getAuth, signOut } from 'firebase/auth';
+ 
 export default {
   name: 'Sidebar',
   components: {
@@ -67,9 +69,40 @@ export default {
       cilSpeedometer,
       cilPuzzle,
       cilCloudDownload,
-      cilLayers
+      cilLayers,
+   };
+  },
+  data(){
+    return {
+      name: "User",
     };
   },
-}
+  created() {
+    this.setUserName(); 
+  },
+
+ methods: {
+    setUserName() {
+      const userName = sessionStorage.getItem('userName');  // Corrected to get the value from sessionStorage
+      if (userName) {
+        this.name = userName;
+      } else {
+        this.name = "User";
+      }
+    },
+    logOut() {
+      console.log("dans la méthode logOut");
+      sessionStorage.clear();
+      const authInstance = getAuth();
+      signOut(authInstance)
+        .then(() => {
+          this.$router.push('/Auth');
+        })
+        .catch((error) => {
+          console.error("Erreur lors de la déconnexion", error);
+        });
+    },
+  },
+};
 </script>
     

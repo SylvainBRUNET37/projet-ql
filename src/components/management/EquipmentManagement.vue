@@ -1,13 +1,11 @@
-<!-- UserEquipment.vue -->
-
 <template>
-  <p>USER EQUIPEMENT ICI </p>
+    <p>EQUIPEMENT MANAGEMENT ICI</p>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
 
 export default defineComponent({
-  name: 'UserEquipment',
+  name: 'EquipmentManagment',
 })
 </script>
