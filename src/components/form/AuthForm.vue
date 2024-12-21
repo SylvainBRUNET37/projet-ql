@@ -124,11 +124,14 @@ export default {
           this.errorMessage = authStore.errorMessage
         } else {
           if(authStore.userData){
-            const userName = sessionStorage.setItem("userName",JSON.stringify(authStore.userData.name));
+            const user = {
+              userName: authStore.userData.firstName,
+              role: authStore.userData.role,
+            }
+            sessionStorage.setItem('user', JSON.stringify(user));
           }
-    
           if (authStore.userData && authStore.userData.role === 'admin') {
-            this.$router.push('/register')
+            this.$router.push('/home')
           } else {
             this.$router.push('/home')
           }

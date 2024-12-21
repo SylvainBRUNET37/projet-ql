@@ -15,11 +15,11 @@
             <CNavItem  href="#" @click="$emit('switchContent', 'UserEquipment')"> 
             <span class="nav-icon"><span class="nav-icon-bullet"></span></span> My equipement
             </CNavItem>
-            <CNavItem href="#" @click="$emit('switchContent', 'EquipmentManagement')">
+            <CNavItem href="#" v-if="admin" @click="$emit('switchContent', 'EquipmentManagement')">
             <span class="nav-icon"><span class="nav-icon-bullet" ></span></span> Equipement management
             </CNavItem>
         </CNavGroup>
-        <CNavItem href="#" @click="$emit('switchContent', 'UserManagment')">
+        <CNavItem href="#" v-if="admin" @click="$emit('switchContent', 'UserManagment')">
             <CIcon customClassName="nav-icon" icon="cil-speedometer"/> User management
         </CNavItem>
         <CNavItem href="#" @click="$emit('switchContent', 'UserProfileView')">
@@ -49,6 +49,7 @@ import {
 
 import { cilSpeedometer, cilPuzzle, cilCloudDownload, cilLayers } from '@coreui/icons';
 import { getAuth, signOut } from 'firebase/auth';
+import { auth } from '@/firebase';
  
 export default {
   name: 'Sidebar',
@@ -75,17 +76,21 @@ export default {
   data(){
     return {
       name: "User",
+      admin: false,
     };
   },
   created() {
-    this.setUserName(); 
+    //avant le rendu de la page
+    this.setUserName();
+    this.isShown(); 
   },
 
  methods: {
     setUserName() {
-      const userName = sessionStorage.getItem('userName');  // Corrected to get the value from sessionStorage
-      if (userName) {
-        this.name = userName;
+      const user = JSON.parse(sessionStorage.getItem('user')); 
+      console.log(user);
+      if (user && user.userName) {
+        this.name = user.userName;
       } else {
         this.name = "User";
       }
@@ -93,8 +98,8 @@ export default {
     logOut() {
       console.log("dans la méthode logOut");
       sessionStorage.clear();
-      const authInstance = getAuth();
-      signOut(authInstance)
+      const auth = getAuth();
+      signOut(auth)
         .then(() => {
           this.$router.push('/Auth');
         })
@@ -102,6 +107,12 @@ export default {
           console.error("Erreur lors de la déconnexion", error);
         });
     },
+    isShown(){
+      const user = JSON.parse(sessionStorage.getItem('user'));
+       if(user && user.role === 'admin') {
+        this.admin = true;
+      }
+    }
   },
 };
 </script>
