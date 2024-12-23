@@ -89,21 +89,15 @@ export default defineComponent({
     };  
   },
   created(){
-    this.setEquipment();
+    this.getEquipments();
   },
   methods: {
-    //récupère le nv equipement et le push dans la liste allEquipments
-    addEquipement(){},
     //supprime un equipement dans la bdd
     delEquipement(){},
-    ////récupère le nv equipement et le push dans la liste allEquipments
-    editEquipement(){},
     //renvoie vers la vue de visualisation
     viewEquipement(){},
-    //récupère tous les équipements de la bdd
+    //récupère tous les équipements de la bdd et les met dans le tableau equipments
     getEquipments(){},
-    //met à jour le tableau dans data pour afficher dynamiquement
-    setEquipment(){},
     //change la pagination
     switchPagination(id: number){},
  },
