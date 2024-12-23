@@ -10,7 +10,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr v-for="(equipment, index) in allEquipments" :key="equipment.ref">
+      <tr v-for="(equipment, index) in getEquipmentsByPage" :key="equipment.ref">
         <td> {{ equipment.ref }}</td>
         <td> {{ equipment.status }}</td>
         <td> {{ equipment.description }}</td>
@@ -21,24 +21,17 @@
     </tbody>
   </table>
   <nav class="pagination" role="navigation" aria-label="pagination">
-  <a class="pagination-previous is-disabled" title="This is the first page"
-    >Previous</a
-  >
-  <a href="#" class="pagination-next">Next page</a>
+  <a v-bind:class="getClassPaginationPrevious()" @click="goToPreviousPage">Previous</a>
+  
+  <a href="#" v-bind:class="getClassPaginationNext()" @click="goToNexrPage">Next page</a>
   <ul class="pagination-list">
     <li>
       <a
         class="pagination-link is-current"
         aria-label="Page 1"
         aria-current="page"
-        >1</a
+        >Page {{ currentPage }} of {{ numberPages }}</a
       >
-    </li>
-    <li>
-      <a href="#" class="pagination-link" aria-label="Goto page 2">2</a>
-    </li>
-    <li>
-      <a href="#" class="pagination-link" aria-label="Goto page 3">3</a>
     </li>
   </ul>
 </nav>
@@ -52,44 +45,48 @@ export default defineComponent({
 
   data(){
     return{  
+      currentPage : 1,
+      nbEquipmentsByPage: 15,
+      numberPages: 0,
       allEquipments: [
-        { ref: 'EQ123', description: 'Laptop', status: 'Active'  },
-        { ref: 'EQ124', description: 'Printer', status: 'Inactive' },
-        { ref: 'EQ123', description: 'Laptop', status: 'Active'  },
-        { ref: 'EQ124', description: 'Printer', status: 'Inactive' },
-        { ref: 'EQ123', description: 'Laptop', status: 'Active'  },
-        { ref: 'EQ124', description: 'Printer', status: 'Inactive' },
-        { ref: 'EQ123', description: 'Laptop', status: 'Active'  },
-        { ref: 'EQ124', description: 'Printer', status: 'Inactive' },
-        { ref: 'EQ123', description: 'Laptop', status: 'Active'  },
-        { ref: 'EQ124', description: 'Printer', status: 'Inactive' },
-        { ref: 'EQ123', description: 'Laptop', status: 'Active'  },
-        { ref: 'EQ124', description: 'Printer', status: 'Inactive' },
-        { ref: 'EQ123', description: 'Laptop', status: 'Active'  },
-        { ref: 'EQ124', description: 'Printer', status: 'Inactive' },
-        { ref: 'EQ123', description: 'Laptop', status: 'Active'  },
-        { ref: 'EQ124', description: 'Printer', status: 'Inactive' },
-        { ref: 'EQ123', description: 'Laptop', status: 'Active'  },
-        { ref: 'EQ124', description: 'Printer', status: 'Inactive' },
-        { ref: 'EQ123', description: 'Laptop', status: 'Active'  },
-        { ref: 'EQ124', description: 'Printer', status: 'Inactive' },
-        { ref: 'EQ123', description: 'Laptop', status: 'Active'  },
-        { ref: 'EQ124', description: 'Printer', status: 'Inactive' },
-        { ref: 'EQ123', description: 'Laptop', status: 'Active'  },
-        { ref: 'EQ124', description: 'Printer', status: 'Inactive' },
-        { ref: 'EQ123', description: 'Laptop', status: 'Active'  },
-        { ref: 'EQ124', description: 'Printer', status: 'Inactive' },
-        { ref: 'EQ123', description: 'Laptop', status: 'Active'  },
-        { ref: 'EQ124', description: 'Printer', status: 'Inactive' },
-        { ref: 'EQ123', description: 'Laptop', status: 'Active'  },
-        { ref: 'EQ124', description: 'Printer', status: 'Inactive' },
-        { ref: 'EQ123', description: 'Laptop', status: 'Active'  },
-        { ref: 'EQ124', description: 'Printer', status: 'Inactive' },
+        { ref: 'EQ001', description: 'Monitor', status: 'Active' },
+        { ref: 'EQ002', description: 'Keyboard', status: 'Inactive' },
+        { ref: 'EQ003', description: 'Mouse', status: 'Active' },
+        { ref: 'EQ004', description: 'Desk Chair', status: 'Inactive' },
+        { ref: 'EQ005', description: 'Smartphone', status: 'Active' },
+        { ref: 'EQ006', description: 'Tablet', status: 'Inactive' },
+        { ref: 'EQ007', description: 'Projector', status: 'Active' },
+        { ref: 'EQ008', description: 'Whiteboard', status: 'Inactive' },
+        { ref: 'EQ009', description: 'Camera', status: 'Active' },
+        { ref: 'EQ010', description: 'Tripod', status: 'Inactive' },
+        { ref: 'EQ011', description: 'Microphone', status: 'Active' },
+        { ref: 'EQ012', description: 'Speaker', status: 'Inactive' },
+        { ref: 'EQ013', description: 'Hard Drive', status: 'Active' },
+        { ref: 'EQ014', description: 'Router', status: 'Inactive' },
+        { ref: 'EQ015', description: 'Switch', status: 'Active' },
+        { ref: 'EQ016', description: 'Access Point', status: 'Inactive' },
+        { ref: 'EQ017', description: 'Graphics Card', status: 'Active' },
+        { ref: 'EQ018', description: 'Processor', status: 'Inactive' },
+        { ref: 'EQ019', description: 'Motherboard', status: 'Active' },
+        { ref: 'EQ020', description: 'RAM Module', status: 'Inactive' },
+        { ref: 'EQ021', description: 'Power Supply', status: 'Active' },
+        { ref: 'EQ022', description: 'UPS', status: 'Inactive' },
+        { ref: 'EQ023', description: 'Cooling Fan', status: 'Active' },
+        { ref: 'EQ024', description: 'VR Headset', status: 'Inactive' },
+        { ref: 'EQ025', description: 'Gaming Console', status: 'Active' },
+        { ref: 'EQ026', description: 'Joystick', status: 'Inactive' },
+        { ref: 'EQ027', description: 'Headset', status: 'Active' },
+        { ref: 'EQ028', description: 'Docking Station', status: 'Inactive' },
+        { ref: 'EQ029', description: 'Network Cable', status: 'Active' },
+        { ref: 'EQ030', description: 'Flash Drive', status: 'Inactive' },
+        { ref: 'EQ031', description: 'External SSD', status: 'Active' },
+        { ref: 'EQ032', description: 'Backup Server', status: 'Inactive' },
       ]
     };  
   },
   created(){
     this.getEquipments();
+    this.getNumberPages();
   },
   methods: {
     //supprime un equipement dans la bdd
@@ -98,10 +95,44 @@ export default defineComponent({
     viewEquipement(){},
     //récupère tous les équipements de la bdd et les met dans le tableau equipments
     getEquipments(){},
-    //change la pagination
-    switchPagination(id: number){},
- },
 
+    //pour désactiver le boutton next ou non
+    getClassPaginationNext(){
+      return{
+        'pagination-next is-disabled': this.currentPage === this.numberPages,
+        'pagination-next': !(this.currentPage === this.numberPages),
+      }
+    },
+    goToPreviousPage(){
+      if(this.currentPage > 1){
+        this.currentPage--;
+      }
+    }, 
+    goToNexrPage(){
+      if((this.currentPage < this.numberPages)){
+        this.currentPage ++;
+      }
+    },
+    getNumberPages(){
+      this.numberPages = Math.floor(this.allEquipments.length /this.nbEquipmentsByPage) +1;
+      console.log(this.numberPages);
+    },
+    getClassPaginationPrevious(){
+      return{
+        'pagination-previous is-disabled': this.currentPage === 1,
+        'pagination-previous': !(this.currentPage === 1),
+      }
+    },
+
+ },
+ computed: {
+  getEquipmentsByPage(){
+    //position du premier user à la current page
+    const first = (this.currentPage -1) * this.nbEquipmentsByPage;
+    const end = first + this.nbEquipmentsByPage;
+    return this.allEquipments.slice(first, end);
+  },
+ }
 })
 </script>
 

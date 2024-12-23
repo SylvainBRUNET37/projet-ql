@@ -21,8 +21,7 @@
     </tbody>
   </table>
   <nav class="pagination" role="navigation" aria-label="pagination">
-  <a v-bind:class="getClassPaginationPrevious()" @click="goToPreviousPage">Previous</a
-  >
+  <a v-bind:class="getClassPaginationPrevious()" @click="goToPreviousPage">Previous</a>
   <a href="#" v-bind:class="getClassPaginationNext()" @click="goToNexrPage">Next page</a>
   <ul class="pagination-list">
     <li>
@@ -77,7 +76,11 @@ export default defineComponent({
         { id: '25', firstName: 'james', name: 'doe' },
         { id: '26', firstName: 'james', name: 'doe' },
         { id: '27', firstName: 'james', name: 'doe' },
-
+        { id: '28', firstName: 'james', name: 'doe' },
+        { id: '29', firstName: 'james', name: 'doe' },
+        { id: '30', firstName: 'james', name: 'doe' },
+        { id: '31', firstName: 'james', name: 'doe' },
+        { id: '32', firstName: 'james', name: 'doe' },
       ]
     };  
   },
@@ -92,9 +95,7 @@ export default defineComponent({
     viewUser(){},
     //récupère tous les équipements de la bdd et les met dans le tableau equipments
     getUsers(){},
-    //change la pagination
-    switchPagination(id: number){},
-    
+  
     //pour désactiver le boutton previous ou non
     getClassPaginationPrevious(){
       return{
@@ -103,15 +104,7 @@ export default defineComponent({
       }
     },
         
-    isNextPageDisable(){
-      if(this.currentPage === this.numberPages) return true;
-      else return false;
-    },
-
-    isPreviousPageDisable(){
-      if(this.currentPage === 1)  return true;
-      else  return false;
-    },
+   
     //pour désactiver le boutton next ou non
     getClassPaginationNext(){
       return{
@@ -122,13 +115,11 @@ export default defineComponent({
     goToPreviousPage(){
       if(this.currentPage > 1){
         this.currentPage--;
-        this.getNumberPages();
       }
     }, 
     goToNexrPage(){
       if((this.currentPage < this.numberPages)){
         this.currentPage ++;
-        this.getNumberPages();
       }
     },
     getNumberPages(){
