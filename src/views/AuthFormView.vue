@@ -26,7 +26,7 @@
 
 <script lang="ts">
 import GenericForm from '../components/form/GenericForm.vue'
-import { validateEmail, validatePassword } from '../utils/validator.ts'
+import { validateEmail, validatePassword } from '../utils/Validator.ts'
 import { AuthStore } from '../stores/AuthStore.ts'
 
 import '../assets/styles/form.css' // Import du style CSS pour le formulaire
@@ -133,9 +133,7 @@ export default {
             }
             sessionStorage.setItem('user', JSON.stringify(user))
           }
-          if (authStore.userData && authStore.userData.role === 'admin') {
-            this.$router.push('/home')
-          } else {
+          if (authStore.userData) {
             this.$router.push('/home')
           }
         }
