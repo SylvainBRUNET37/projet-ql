@@ -1,10 +1,12 @@
-<!-- AuthForm.vue -->
+<!-- AuthFormView.vue -->
 <!-- Formulaire d'authentification -->
 
 <template>
   <div id="form-container">
     <div class="form">
       <h1 class="form-title">Login</h1>
+
+      <!-- Champs du formulaire -->
       <form @submit.prevent="handleLogin">
         <GenericForm
           v-for="field in fields"
@@ -23,10 +25,11 @@
 </template>
 
 <script lang="ts">
-import GenericForm from './GenericForm.vue'
-import { validateEmail, validatePassword } from '../../utils/validator.ts'
-import { AuthStore } from '../../stores/AuthStore.ts'
-import { onAuthStateChanged, getAuth } from 'firebase/auth'
+import GenericForm from '../components/form/GenericForm.vue'
+import { validateEmail, validatePassword } from '../utils/validator.ts'
+import { AuthStore } from '../stores/AuthStore.ts'
+
+import '../assets/styles/form.css' // Import du style CSS pour le formulaire
 
 // Définition des types pour les messages d'erreur
 type ErrorMessages = {
@@ -45,7 +48,7 @@ type ValidationField = {
 }
 
 export default {
-  name: 'AuthForm',
+  name: 'AuthFormView',
   components: {
     GenericForm,
   },
@@ -123,12 +126,12 @@ export default {
           alert(this.errorMessage)
           this.errorMessage = authStore.errorMessage
         } else {
-          if(authStore.userData){
+          if (authStore.userData) {
             const user = {
               userName: authStore.userData.firstName,
               role: authStore.userData.role,
             }
-            sessionStorage.setItem('user', JSON.stringify(user));
+            sessionStorage.setItem('user', JSON.stringify(user))
           }
           if (authStore.userData && authStore.userData.role === 'admin') {
             this.$router.push('/home')
