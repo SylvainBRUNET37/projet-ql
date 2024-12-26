@@ -7,7 +7,7 @@
 import { defineStore } from 'pinia'
 import { ref, type Ref } from 'vue'
 import { db } from '../firebase'
-import { collection, getDocs, deleteDoc, doc, type DocumentData } from 'firebase/firestore'
+import { collection, getDocs, deleteDoc, doc, type DocumentData, addDoc } from 'firebase/firestore'
 import { FirebaseError } from 'firebase/app'
 
 /**
@@ -97,6 +97,31 @@ export const EquipmentStore = defineStore('equipment', () => {
     }
   }
 
+  /**
+   * Ajoute un nouvel équipement dans Firestore.
+   *
+   * @param {object} newEquipment - Détails du nouvel équipement.
+   * @returns {Promise<void>} - Promesse résolue une fois l'équipement ajouté.
+   */
+  const addEquipment = async (newEquipment: DocumentData): Promise<void> => {
+    try {
+      alert(newEquipment)
+      const equipmentRef = collection(db, 'equipments')
+      await addDoc(equipmentRef, newEquipment)
+      // Mettre à jour la liste locale après ajout
+      await getAllEquipment()
+    } catch (error) {
+      console.error("Erreur lors de l'ajout de l'équipement :", error)
+    }
+  }
+
   // Retourne les équipements, les erreurs et les fonctions
-  return { equipment, errorMessage, getAllEquipment, getUserEquipments, deleteEquipment }
+  return {
+    equipment,
+    errorMessage,
+    getAllEquipment,
+    getUserEquipments,
+    deleteEquipment,
+    addEquipment,
+  }
 })

@@ -4,6 +4,7 @@ import RegisterFormView from '../views/RegisterFormView.vue'
 import EquipmentResearchView from '../views/EquipmentResearchView.vue'
 import UserProfileView from '../views/UserProfileView.vue'
 import Layout from '@/components/mainLayOut/layout.vue'
+import AddMaterialView from '../views/AddMaterialView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -36,6 +37,11 @@ const router = createRouter({
       path: '/user-profile',
       name: 'user-profile',
       component: UserProfileView,
+    },
+    {
+      path: '/add-material',
+      name: 'add-material',
+      component: AddMaterialView,
     },
   ],
 })
