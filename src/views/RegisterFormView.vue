@@ -1,4 +1,4 @@
-<!-- RegisterForm.vue -->
+<!-- RegisterFormView.vue -->
 <!-- Formulaire de création de compte -->
 
 <template>
@@ -28,7 +28,7 @@
 
 <script lang="ts">
 import GenericForm from '../components/form/GenericForm.vue'
-import { validateEmail, validatePassword, validateName, validateRole } from '../utils/validator.ts'
+import { validateEmail, validatePassword, validateName, validateRole } from '../utils/Validator.ts'
 import { RegisterStore } from '../stores/RegisterStore.ts'
 
 import '../assets/styles/form.css' // Import du style CSS pour le formulaire
