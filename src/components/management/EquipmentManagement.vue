@@ -2,16 +2,18 @@
   <table class="table is-hoverable">
     <thead>
       <tr>
-        <th>Ref</th>
-        <th>status</th>
-        <th>Desc</th>
+        <th>Reference</th>
+        <th>Status</th>
+        <th>Type</th>
+        <th>Description</th>
         <th>Details</th>
         <th>Delete</th>
       </tr>
     </thead>
     <tbody>
-      <tr v-for="(equipment, index) in equipmentStore.equipment" :key="equipment.id">
+      <tr v-for="equipment in equipmentStore.equipment" :key="equipment.id">
         <td>{{ equipment.ref }}</td>
+        <td>{{ equipment.type }}</td>
         <td>{{ equipment.status }}</td>
         <td>{{ equipment.description }}</td>
         <td>
@@ -52,7 +54,7 @@ export default defineComponent({
   setup() {
     const equipmentStore = EquipmentStore()
 
-    // Charger les équipements au montage
+    // Charge les équipements
     equipmentStore.getAllEquipment()
 
     const deleteEquipment = async (equipmentId: string) => {
