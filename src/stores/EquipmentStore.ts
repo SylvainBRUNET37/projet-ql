@@ -14,6 +14,7 @@ import {
   doc,
   type DocumentData,
   addDoc,
+  updateDoc,
   query,
   where,
 } from 'firebase/firestore'
@@ -76,6 +77,43 @@ export const EquipmentStore = defineStore('equipment', () => {
    */
   const getUserEquipments = (userId: string): DocumentData[] => {
     return equipment.value.filter((item) => item.BorrowedId === userId)
+  }
+
+  /**
+   * Met à jour le statut d'un équipement à "unavailable".
+   *
+   * @param {string} equipmentId - ID de l'équipement à mettre à jour.
+   * @returns {Promise<void>} - Promesse qui se résout une fois le statut mis à jour ou en cas d'erreur.
+   */
+  const disableEquipment = async (equipmentId: string): Promise<void> => {
+    try {
+      // Référence au document de l'équipement dans Firestore
+      const equipmentDocRef = doc(db, 'equipments', equipmentId)
+
+      // Mise à jour du champ "status" à "unavailable"
+      await updateDoc(equipmentDocRef, {
+        status: 'unavailable',
+      })
+
+      // Met à jour la liste locale après modification du statut
+      equipment.value = equipment.value.map((item) =>
+        item.id === equipmentId ? { ...item, status: 'unavailable' } : item,
+      )
+      errorMessage.value = ''
+    } catch (error: FirebaseError | unknown) {
+      if (error instanceof FirebaseError) {
+        switch (error.code) {
+          case 'not-found':
+            errorMessage.value = 'Equipment not found.'
+            break
+          default:
+            errorMessage.value = 'Failed to update equipment status. Please try again later.'
+        }
+      } else {
+        errorMessage.value = 'Failed to update equipment status. Please try again later.'
+        console.error(error)
+      }
+    }
   }
 
   /**
@@ -156,5 +194,6 @@ export const EquipmentStore = defineStore('equipment', () => {
     getUserEquipments,
     deleteEquipment,
     addEquipment,
+    disableEquipment,
   }
 })

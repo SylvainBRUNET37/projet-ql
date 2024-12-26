@@ -7,6 +7,7 @@
         <th>Type</th>
         <th>Description</th>
         <th>Details</th>
+        <th>Disable</th>
         <th>Delete</th>
       </tr>
     </thead>
@@ -18,11 +19,14 @@
         <td>{{ equipment.description }}</td>
         <td>
           <button class="button is-link" style="background-color: hsl(223, 100%, 63%)">
-            details
+            Details
           </button>
         </td>
         <td>
-          <button class="button is-link" @click="deleteEquipment(equipment.id)">delete</button>
+          <button class="button is-link" @click="disableEquipment(equipment.id)">Disable</button>
+        </td>
+        <td>
+          <button class="button is-link" @click="deleteEquipment(equipment.id)">Delete</button>
         </td>
       </tr>
     </tbody>
@@ -57,11 +61,15 @@ export default defineComponent({
     // Charge les équipements
     equipmentStore.getAllEquipment()
 
+    const disableEquipment = async (equipmentId: string) => {
+      await equipmentStore.disableEquipment(equipmentId)
+    }
+
     const deleteEquipment = async (equipmentId: string) => {
       await equipmentStore.deleteEquipment(equipmentId)
     }
 
-    return { equipmentStore, deleteEquipment }
+    return { equipmentStore, deleteEquipment, disableEquipment }
   },
 })
 </script>
