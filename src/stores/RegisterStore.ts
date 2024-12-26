@@ -83,7 +83,6 @@ export const RegisterStore = defineStore('register', () => {
         firstName,
         role,
         email,
-        createdAt: new Date().toISOString(),
         status: 'active',
       })
 

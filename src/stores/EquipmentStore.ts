@@ -7,7 +7,7 @@
 import { defineStore } from 'pinia'
 import { ref, type Ref } from 'vue'
 import { db } from '../firebase'
-import { collection, getDocs, type DocumentData } from 'firebase/firestore'
+import { collection, getDocs, deleteDoc, doc, type DocumentData } from 'firebase/firestore'
 import { FirebaseError } from 'firebase/app'
 
 /**
@@ -69,6 +69,34 @@ export const EquipmentStore = defineStore('equipment', () => {
     return equipment.value.filter((item) => item.BorrowedId === userId)
   }
 
+  /**
+   * Supprime un équipement à partir de son ID.
+   *
+   * @param {string} equipmentId - ID de l'équipement à supprimer.
+   * @returns {Promise<void>} - Promesse qui se résout une fois l'équipement supprimé ou en cas d'erreur.
+   */
+  const deleteEquipment = async (equipmentId: string): Promise<void> => {
+    try {
+      await deleteDoc(doc(db, 'equipments', equipmentId))
+      // Met à jour la liste locale après suppression
+      equipment.value = equipment.value.filter((item) => item.id !== equipmentId)
+      errorMessage.value = ''
+    } catch (error: FirebaseError | unknown) {
+      if (error instanceof FirebaseError) {
+        switch (error.code) {
+          case 'not-found':
+            errorMessage.value = 'Equipment not found.'
+            break
+          default:
+            errorMessage.value = 'Failed to delete equipment. Please try again later.'
+        }
+      } else {
+        errorMessage.value = 'Failed to delete equipment. Please try again later.'
+        console.error(error)
+      }
+    }
+  }
+
   // Retourne les équipements, les erreurs et les fonctions
-  return { equipment, errorMessage, getAllEquipment, getUserEquipments }
+  return { equipment, errorMessage, getAllEquipment, getUserEquipments, deleteEquipment }
 })
