@@ -164,6 +164,24 @@ export const EquipmentStore = defineStore('equipment', () => {
       // Met à jour l'equipement avec la nouvelle ref
       newEquipment.ref = uniqueRef
 
+      // Ajouter le lien de l'image en fonction du type
+      switch (newEquipment.type) {
+        case 'phone':
+          newEquipment.image = 'phone.png'
+          break
+        case 'laptop':
+          newEquipment.image = 'laptop.jpg'
+          break
+        case 'mouse ':
+          newEquipment.image = 'mouse.jpg'
+          break
+        case 'computer':
+          newEquipment.image = 'computer.jpg'
+          break
+        default:
+          newEquipment.image = 'unknown.png'
+      }
+
       const equipmentRef = collection(db, 'equipments')
       await addDoc(equipmentRef, newEquipment)
       // Mettre à jour la liste locale après ajout

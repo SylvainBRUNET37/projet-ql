@@ -106,15 +106,6 @@ export default {
           errorMsg: 'Description is required',
           required: true,
         },
-        {
-          name: 'image',
-          label: 'Image URL',
-          type: 'text',
-          placeholder: 'Enter image URL',
-          validate: validateNotEmpty,
-          errorMsg: 'Image URL is required',
-          required: true,
-        },
       ] as ValidationField[],
     }
   },
