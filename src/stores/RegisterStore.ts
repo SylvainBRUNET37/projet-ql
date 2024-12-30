@@ -13,7 +13,7 @@ import {
   fetchSignInMethodsForEmail,
   type User,
 } from 'firebase/auth'
-import { doc, setDoc, getDoc, type DocumentData } from 'firebase/firestore'
+import { doc, setDoc, getDoc, updateDoc, type DocumentData } from 'firebase/firestore'
 
 /**
  * Gère l'état d'enregistrement d'un utilisateur et l'ajout des données dans Firestore.
@@ -59,14 +59,15 @@ export const RegisterStore = defineStore('register', () => {
 
         // Modifie le message d'erreur si l'utilisateur est inactif
         if (userDoc.exists() && userDoc.data()?.status === 'inactive') {
-          errorMessage.value =
-            'Your account has been desactivated. Contact support to reactivate it'
+          await updateDoc(existingUserDocRef, { status: 'active' })
+
+          errorMessage.value = 'The account has been reactivated.'
+          return
+        } else {
+          // Modifie le message d'erreur si l'email est déjà utilisé
+          errorMessage.value = 'Email is already in use.'
           return
         }
-
-        // Modifie le message d'erreur si l'email est déjà utilisé
-        errorMessage.value = 'Email is already in use.'
-        return
       }
 
       // Crée un nouvel utilisateur avec email et mot de passe
