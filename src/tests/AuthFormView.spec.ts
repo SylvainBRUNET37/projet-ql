@@ -47,7 +47,7 @@ describe('AuthFormView.vue', () => {
         await passwordInput.trigger('blur');
 
         //on regarde si le bouton est bien désactivé
-        expect(submitButton.attributes('disabled')).toBeDefined;
+        expect(submitButton.attributes('disabled')).toBeDefined();
     });
 
     it('Le mail n\'est pas valide.', async () => {
@@ -60,7 +60,7 @@ describe('AuthFormView.vue', () => {
         
         //on regarde si le message d'erreur est bien mis et au bon endroit puis si le bouton est désactivé
         expect(wrapper.vm.errors.email).toBe('Invalid email');
-        expect(submitButton.attributes('disabled')).toBeDefined;
+        expect(submitButton.attributes('disabled')).toBeDefined();
     });
 
     it('Le mot de passe n\'est pas valide.', async () => {
@@ -72,7 +72,7 @@ describe('AuthFormView.vue', () => {
         await passwordInput.trigger('blur');
         
         expect(wrapper.vm.errors.password).toBe('Invalid password');
-        expect(submitButton.attributes('disabled')).toBeDefined;
+        expect(submitButton.attributes('disabled')).toBeDefined();
     });
 
     it('Le bouton s\'active quand les champs sont remplis correctement.', async () => {
