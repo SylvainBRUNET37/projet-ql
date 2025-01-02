@@ -1,28 +1,29 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import AuthView from '../views/AuthView.vue'
-import RegisterView from '../views/RegisterView.vue'
+import AuthFormView from '../views/AuthFormView.vue'
+import RegisterFormView from '../views/RegisterFormView.vue'
 import EquipmentResearchView from '../views/EquipmentResearchView.vue'
 import UserProfileView from '../views/UserProfileView.vue'
 import Layout from '@/components/mainLayOut/layout.vue'
-
-
+import AddMaterialView from '../views/AddMaterialView.vue'
+import EquipmentDetails from '@/views/admin/EquipmentDetails.vue';
+import EquipmentManagement from '@/components/management/EquipmentManagement.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
-      redirect: '/auth'
+      redirect: '/auth',
     },
     {
       path: '/auth',
-      name: 'login',
-      component: AuthView,
+      name: 'auth',
+      component: AuthFormView,
     },
     {
       path: '/register',
       name: 'register',
-      component: RegisterView,
+      component: RegisterFormView,
     },
     {
       path: '/home',
@@ -38,6 +39,21 @@ const router = createRouter({
       path: '/user-profile',
       name: 'user-profile',
       component: UserProfileView,
+    },
+    {
+      path: '/add-material',
+      name: 'add-material',
+      component: AddMaterialView,
+    },
+    {
+      path: '/components/management',
+      name: 'EquipmentManagement',
+      component: EquipmentManagement,
+    },
+    {
+      path: '/admin/equipment/:id', // Route avec un paramètre d'ID
+      name: 'EquipmentDetails',
+      component: EquipmentDetails,
     },
   ],
 })

@@ -49,6 +49,13 @@ export const AuthStore = defineStore('auth', () => {
       if (userDocSnap.exists()) {
         userData.value = userDocSnap.data()
 
+        // Modifie le message d'erreur si l'utilisateur est inactif, et arrête la connexion
+        if (userDocSnap.data()?.status === 'inactive') {
+          errorMessage.value =
+            'Your account has been desactivated. Contact support to reactivate it'
+          return
+        }
+
         // Réinitialise le message d'erreur en cas de succès
         errorMessage.value = ''
       } else {

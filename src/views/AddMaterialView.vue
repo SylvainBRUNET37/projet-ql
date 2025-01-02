@@ -1,11 +1,10 @@
-<!-- AuthForm.vue -->
-<!-- Formulaire d'authentification -->
-
 <template>
   <div id="form-container">
     <div class="form">
-      <h1 class="form-title">Login</h1>
-      <form @submit.prevent="handleLogin">
+      <h1 class="form-title">Add Equipment</h1>
+
+      <!-- Champs du formulaire -->
+      <form @submit.prevent="handleAddEquipment">
         <GenericForm
           v-for="field in fields"
           :key="field.name"
@@ -16,24 +15,24 @@
         />
 
         <!-- Bouton de soumission -->
-        <button type="submit" class="form-submit-button" :disabled="!isFormValid">Login</button>
+        <button type="submit" class="form-submit-button" :disabled="!isFormValid">
+          Add Equipment
+        </button>
       </form>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import GenericForm from './GenericForm.vue'
-import { validateEmail, validatePassword } from '../../utils/validator.ts'
-import { AuthStore } from '../../stores/AuthStore.ts'
-import { onAuthStateChanged, getAuth } from 'firebase/auth'
+import GenericForm from '../components/form/GenericForm.vue'
+import { EquipmentStore } from '@/stores/EquipmentStore'
 
-// Définition des types pour les messages d'erreur
+import '../assets/styles/form.css' // Import du style CSS pour le formulaire
+
 type ErrorMessages = {
   [key: string]: string
 }
 
-// Définition des types pour les champs de formulaire
 type ValidationField = {
   name: string
   label: string
@@ -44,8 +43,10 @@ type ValidationField = {
   required?: boolean
 }
 
+const validateNotEmpty = (value: string) => value.trim().length > 0
+
 export default {
-  name: 'AuthForm',
+  name: 'AddEquipmentView',
   components: {
     GenericForm,
   },
@@ -53,32 +54,56 @@ export default {
     return {
       // Formulaire
       form: {
-        email: '',
-        password: '',
+        name: '',
+        ref: '',
+        type: '',
+        status: 'available',
+        description: '',
+        image: '',
       } as { [key: string]: string },
       // Erreurs de validation
       errors: {} as ErrorMessages,
-      // Messages
-      errorMessage: '',
-      successMessage: '',
       // Champs de formulaire
       fields: [
         {
-          name: 'email',
-          label: 'Email',
-          type: 'email',
-          placeholder: 'Enter your email',
-          validate: validateEmail,
-          errorMsg: 'Invalid email',
+          name: 'name',
+          label: 'Name',
+          type: 'text',
+          placeholder: 'Enter equipment name',
+          validate: validateNotEmpty,
+          errorMsg: 'Name is required',
           required: true,
         },
         {
-          name: 'password',
-          label: 'Password',
-          type: 'password',
-          placeholder: 'Enter your password',
-          validate: validatePassword,
-          errorMsg: 'Invalid password',
+          name: 'ref',
+          label: 'Reference',
+          type: 'select',
+          placeholder: '',
+          validate: validateNotEmpty,
+          errorMsg: 'Invalid reference',
+          required: true,
+          options: [
+            { value: 'AP', label: 'IOS' },
+            { value: 'AN', label: 'Android' },
+            { value: 'XX', label: 'Other' },
+          ],
+        },
+        {
+          name: 'type',
+          label: 'Type',
+          type: 'text',
+          placeholder: 'Enter equipment type',
+          validate: validateNotEmpty,
+          errorMsg: 'Type is required',
+          required: true,
+        },
+        {
+          name: 'description',
+          label: 'Description',
+          type: 'text',
+          placeholder: 'Enter description',
+          validate: validateNotEmpty,
+          errorMsg: 'Description is required',
           required: true,
         },
       ] as ValidationField[],
@@ -100,44 +125,25 @@ export default {
     /**
      * Gère la soumission du formulaire.
      */
-    async handleLogin() {
-      this.errorMessage = ''
-      this.successMessage = ''
+    async handleAddEquipment() {
+      this.errors = {}
 
       // Valide tous les champs avant soumission
       this.fields.forEach((field) => this.validateField(field))
 
-      // Vérifie si le formulaire est valide
       if (!this.isFormValid) {
-        this.errorMessage = 'Please fill out the form correctly.'
         return
       }
 
       try {
-        // Effectue la connexion
-        const authStore = AuthStore()
-        await authStore.login(this.form.email, this.form.password)
+        const equipmentStore = EquipmentStore()
+        await equipmentStore.addEquipment(this.form)
 
-        // Affiche un message de succès ou d'erreur
-        if (authStore.errorMessage) {
-          alert(this.errorMessage)
-          this.errorMessage = authStore.errorMessage
-        } else {
-          if(authStore.userData){
-            const user = {
-              userName: authStore.userData.firstName,
-              role: authStore.userData.role,
-            }
-            sessionStorage.setItem('user', JSON.stringify(user));
-          }
-          if (authStore.userData && authStore.userData.role === 'admin') {
-            this.$router.push('/home')
-          } else {
-            this.$router.push('/home')
-          }
-        }
+        // Réinitialiser le formulaire après ajout
+        Object.keys(this.form).forEach((key) => (this.form[key] = ''))
+        alert('Equipment added successfully!')
       } catch {
-        this.errorMessage = 'An error occurred during login. Please try again.'
+        alert('An error occurred while adding the equipment.')
       }
     },
 
@@ -162,3 +168,13 @@ export default {
   },
 }
 </script>
+
+
+
+
+
+
+
+
+
+
