@@ -73,80 +73,73 @@
             </ul>
           </aside>
         </div>
-        </div>
-
-
-      
+      </div>
 
     <!-- Contenu principal -->
     <div class="content-container">
       <!-- Barre de recherche -->
       <div class="search-bar">
-        <input
-          class="search-input"
-          type="text"
-          placeholder="Search for equipment to borrow..."
-          v-model="search"
-        />
-        <button class="search-button"></button>
+        <input class="search-input" type="text" placeholder="Search for equipment to borrow..." v-model="search"/>
+        <button class="search-button" @click="searchEquipments">
+        </button>
       </div>
-
       <!-- Liste des équipements -->
       <div class="equipment-grid">
-        <div class="card" v-for="item in equipment" :key="item.id">
-          <div class="card-image">
-            <img :src="item.image" :alt="item.name" />
-          </div>
-          <div class="card-content">
-            <p class="card-title">{{ item.name }}</p>
-            <p class="card-status" :class="{ borrowed: item.status === 'Borrowed' }">
-              {{ item.status }}
-            </p>
+        <div class="equipment-content" v-for="equipment in filteredEquipments" :key="equipment.id">
+        <div class="card" @click="$router.push(`/equipment/${equipment.id}`)">
+        <div class="card-image">
+          <img :src="`/images/${equipment.image}`"/>
+        </div>
+        <div class="card-content">
+          <p class="card-title">{{ equipment.name }}</p>
+          <p class="card-status" :class="{ borrowed: equipment.status === 'unavailable' }">
+            {{ equipment.status }}
+          </p>
           </div>
         </div>
       </div>
+    </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { db } from '../../firebase';
-import { collection, getDocs, doc, updateDoc, Timestamp } from 'firebase/firestore';
-
-export interface Equipment {
-  id: string;
-  name: string;
-  brand: string;
-  status: string;
-  type: string;
-  image: string;
-  ref: string;
-  Time: Timestamp;
-}
+import { EquipmentStore } from '@/stores/EquipmentStore';
+import { computed, onMounted, ref } from 'vue';
 
 export default {
   name: 'EquipmentResearch',
-  data() {
-    return {
-      search: '',
-      equipment: [] as Equipment[],
+  setup(){
+    const equipmentStore = EquipmentStore();
+    const allEquipments = computed(() => {
+      console.log(equipmentStore.equipment)
+      return equipmentStore.equipment;
+    })
+
+    onMounted(() => {
+      equipmentStore.getAllEquipment()
+    })
+
+    const search = ref('');
+    console.log("SEARCH VALUE = ", search.value)
+    const filteredEquipments = ref(allEquipments.value);
+    console.log("SEARCH EQUIPMENTS = ", filteredEquipments)
+
+    function searchEquipments(){
+      console.log("test");
+      if (search.value.trim() === '') {
+        filteredEquipments.value = allEquipments.value;
+      } else {
+        filteredEquipments.value = allEquipments.value.filter(equipment =>
+        equipment.name.toLowerCase().includes(search.value.toLowerCase()));
+        console.log(filteredEquipments.value);
+      }
     };
-  },
-  async created() {
-    try {
-      const querySnapshot = await getDocs(collection(db, 'Phones'));
-      this.equipment = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        brand: doc.data().Brand,
-        name: doc.data().Name,
-        status: doc.data().Status ? 'Borrowed' : 'Not borrowed',
-        type: doc.data().Type,
-        image: `/images/${doc.data().image}`,
-        ref: doc.data().ref,
-        Time: doc.data().Time,
-      }));
-    } catch (error) {
-      console.error('Erreur lors de la récupération des données Firebase :', error);
+    return {
+      allEquipments,
+      search,
+      searchEquipments,
+      filteredEquipments,
     }
   },
 };
@@ -191,7 +184,7 @@ export default {
 
 .search-button {
   width: 40px;
-  background-color: #000;
+  background-color: #8d8d8d;
   border: none;
   border-radius: 0 30px 30px 0;
   cursor: pointer;
@@ -200,7 +193,9 @@ export default {
 .equipment-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(1, 200px);
   gap: 30px;
+  grid-auto-flow: row;
 }
 
 .card {
@@ -208,8 +203,10 @@ export default {
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   text-align: center;
-  padding: 15px;
-  width: 200px;
+  padding: 10px;
+  margin: 15px;
+  width: 70%;
+
 }
 
 .card-image img {

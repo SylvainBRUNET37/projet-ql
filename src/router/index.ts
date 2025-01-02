@@ -7,6 +7,7 @@ import Layout from '@/components/mainLayOut/layout.vue'
 import AddMaterialView from '../views/AddMaterialView.vue'
 import EquipmentDetails from '@/views/admin/EquipmentDetails.vue';
 import EquipmentManagement from '@/components/management/EquipmentManagement.vue';
+import EquipmentDetailsOnly from '@/views/EquipmentDetailsOnly.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -54,6 +55,12 @@ const router = createRouter({
       path: '/admin/equipment/:id', // Route avec un paramètre d'ID
       name: 'EquipmentDetails',
       component: EquipmentDetails,
+    },
+
+    {
+      path: '/equipment/:id', // Route avec un paramètre d'ID
+      name: 'EquipmentDetailsOnly',
+      component: EquipmentDetailsOnly,
     },
   ],
 })
