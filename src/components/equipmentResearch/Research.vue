@@ -84,19 +84,24 @@
         </button>
       </div>
       <!-- Liste des équipements -->
-      <div class="equipment-grid">
+      <div class="fixed-grid has-auto-count">
+        <div class="grid">
         <div class="equipment-content" v-for="equipment in filteredEquipments" :key="equipment.id">
         <div class="card" @click="$router.push(`/equipment/${equipment.id}`)">
         <div class="card-image">
+          
           <img :src="`/images/${equipment.image}`"/>
         </div>
         <div class="card-content">
           <p class="card-title">{{ equipment.name }}</p>
-          <p class="card-status" :class="{ borrowed: equipment.status === 'unavailable' }">
+          <div class="card-footer">
+            <p class="card-status" :class="{ borrowed: equipment.status === 'unavailable' }">
             {{ equipment.status }}
-          </p>
+            </p>
+          </div>
           </div>
         </div>
+      </div>
       </div>
     </div>
     </div>
@@ -192,23 +197,31 @@ export default {
   cursor: pointer;
 }
 
-.equipment-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: repeat(1, 200px);
+.grid {
+  display: flex;
+  flex-wrap: wrap;
   gap: 30px;
   grid-auto-flow: row;
 }
 
+.column{
+  display: flex;
+}
 .card {
+  flex: 1 1 200px; 
+  max-height: 288px; 
+  max-width: 204px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   background-color: #fff;
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   text-align: center;
   padding: 10px;
   margin: 15px;
-  width: 70%;
-
+  height: 100%;
+  width: 100%;
 }
 
 .card-image img {
@@ -222,12 +235,18 @@ export default {
   margin-top: 10px;
 }
 
+.card-footer{
+  text-align: center;
+}
+
 .card-status {
   font-size: 0.9rem;
   color: green;
+  text-align: center;
 }
 
 .card-status.borrowed {
   color: red;
+  text-align: center;
 }
 </style>

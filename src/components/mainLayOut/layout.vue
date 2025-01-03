@@ -48,7 +48,8 @@ export default {
     grid-template-rows: 1fr;
     grid-column-gap: 0px;
     grid-row-gap: 0px;
-    
+    height: 100vh;
+    min-height: 100vh
 }
 
 .content{
