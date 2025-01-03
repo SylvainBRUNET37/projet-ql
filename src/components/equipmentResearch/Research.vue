@@ -86,7 +86,7 @@
       <!-- Liste des équipements -->
       <div class="fixed-grid has-auto-count">
         <div class="grid">
-        <div class="equipment-content" v-for="equipment in filteredEquipments" :key="equipment.id">
+        <div class="equipment-content" v-for="equipment in equipmentToDisplay" :key="equipment.id">
         <div class="card" @click="$router.push(`/equipment/${equipment.id}`)">
         <div class="card-image">
           
@@ -117,7 +117,6 @@ export default {
   setup(){
     const equipmentStore = EquipmentStore();
     const allEquipments = computed(() => {
-      console.log(equipmentStore.equipment)
       return equipmentStore.equipment;
     })
 
@@ -126,27 +125,32 @@ export default {
     })
 
     const search = ref('');
-    console.log("SEARCH VALUE = ", search.value)
     const filteredEquipments = ref(allEquipments.value);
-    console.log("SEARCH EQUIPMENTS = ", filteredEquipments)
 
     function searchEquipments(){
       if (search.value.trim() === '') {
         filteredEquipments.value = allEquipments.value;
-        alert('no  matches');
+        alert('no  match');
       } else {
         filteredEquipments.value = allEquipments.value.filter(equipment =>
         equipment.name.toLowerCase().includes(search.value.toLowerCase()));
         if(filteredEquipments.value.length === 0){
-          alert('no  matches');
+          alert('no  match');
         }
       }
     };
+
+    // si pas d'equipements cherchés on met tous les equipements à afficher
+    //on boucle sur equipmentToDisplay qui dépende de filteredEquipments qui est mis à jour automatiquement 
+    const equipmentToDisplay = computed(() => 
+      filteredEquipments.value.length > 0 ? filteredEquipments.value : allEquipments.value
+    );
     return {
       allEquipments,
       search,
       searchEquipments,
       filteredEquipments,
+      equipmentToDisplay
     }
   },
 };
