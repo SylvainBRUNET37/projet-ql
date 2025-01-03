@@ -79,8 +79,8 @@
     <div class="content-container">
       <!-- Barre de recherche -->
       <div class="search-bar">
-        <input class="search-input" type="text" placeholder="Search for equipment to borrow..." v-model="search"/>
-        <button class="search-button" @click="searchEquipments">
+        <input class="search-input" type="text" placeholder="Search for equipment to borrow..." v-model="search" v-on:keyup.enter="searchEquipments"/>
+        <button class="search-button" @click="searchEquipments" >
         </button>
       </div>
       <!-- Liste des équipements -->
@@ -126,13 +126,15 @@ export default {
     console.log("SEARCH EQUIPMENTS = ", filteredEquipments)
 
     function searchEquipments(){
-      console.log("test");
       if (search.value.trim() === '') {
         filteredEquipments.value = allEquipments.value;
+        alert('no  matches');
       } else {
         filteredEquipments.value = allEquipments.value.filter(equipment =>
         equipment.name.toLowerCase().includes(search.value.toLowerCase()));
-        console.log(filteredEquipments.value);
+        if(filteredEquipments.value.length === 0){
+          alert('no  matches');
+        }
       }
     };
     return {
