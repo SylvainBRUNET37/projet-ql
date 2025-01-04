@@ -17,8 +17,11 @@
     <div class="content-container">
       <!-- Barre de recherche -->
       <div class="search-bar">
-        <input class="search-input" type="text" placeholder="Search for equipment to borrow..." v-model="search" v-on:keyup.enter="searchEquipments"/>
-        <button class="search-button" @click="searchEquipments" >
+        <input class="input" type="text" placeholder="Search for equipment to borrow..." v-model="search" v-on:keyup.enter="searchEquipments"/>
+        <button class="button" @click="searchEquipments">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M21 21L17.5001 17.5M20 11.5C20 16.1944 16.1944 20 11.5 20C6.80558 20 3 16.1944 3 11.5C3 6.80558 6.80558 3 11.5 3C16.1944 3 20 6.80558 20 11.5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
         </button>
       </div>
       <!-- Liste des équipements -->
@@ -49,8 +52,6 @@
 <script lang="ts">
 import { EquipmentStore } from '@/stores/EquipmentStore';
 import { computed, onMounted, ref } from 'vue';
-import func from 'vue-editor-bridge';
-
 export default {
   name: 'EquipmentResearch',
   setup(){
@@ -136,7 +137,7 @@ export default {
 }
 
 .filter-container {
-  background-color: #cccccc;
+  background-color: #ebebeb;
   color: white;
   text-align: left;
   padding: 5px;
@@ -151,9 +152,14 @@ export default {
 
 .search-bar {
   display: flex;
-  justify-content: center;
+  gap: 8px;
   margin-bottom: 20px;
+  width: 50%;
+  justify-content: center;
+  margin-left: 14px;
 }
+
+
 
 .search-input {
   width: 50%;
@@ -165,7 +171,7 @@ export default {
 
 .search-button {
   width: 40px;
-  background-color: #8d8d8d;
+  background-color: #d3d3d3;
   border: none;
   border-radius: 0 30px 30px 0;
   cursor: pointer;
@@ -176,6 +182,7 @@ export default {
   flex-wrap: wrap;
   gap: 30px;
   grid-auto-flow: row;
+ 
 }
 
 .column{
