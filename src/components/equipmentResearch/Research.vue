@@ -1,79 +1,17 @@
 <template>
   <div class="SecondLayout">
-    <!-- Colonne des filtres -->
+   
     <div class="filter-container">
-      <h3>Filtres</h3>
-      <!-- Ajouter ici vos options de filtre -->
-      <div class="column is-one-quarter">
-          <aside class="menu">
-            <p class="menu-label">Type of equipment</p>
-            <ul class="menu-list">
-              <li>
-                <label>
-                  <input type="checkbox" value="Phone" />
-                  Phone
-                </label>
-              </li>
-              <li>
-                <label>
-                  <input type="checkbox"  value="Computer" />
-                  Computer
-                </label>
-              </li>
-              <li>
-                <label>
-                  <input type="checkbox"  value="Tablet" />
-                  Tablet
-                </label>
-              </li>
-            </ul>
-
-            <p class="menu-label">Brand</p>
-            <ul class="menu-list">
-              <li>
-                <label>
-                  <input type="checkbox"  value="Apple" />
-                  Apple
-                </label>
-              </li>
-              <li>
-                <label>
-                  <input type="checkbox"  value="Samsung" />
-                  Samsung
-                </label>
-              </li>
-              <li>
-                <label>
-                  <input type="checkbox" value="Asus" />
-                  Asus
-                </label>
-              </li>
-              <li>
-                <label>
-                  <input type="checkbox" value="Other brand " />
-                  Other brand
-                </label>
-              </li>
-            </ul>
-
-            <p class="menu-label">Status</p>
-            <ul class="menu-list">
-              <li>
-                <label>
-                  <input type="checkbox"  value="Borrowed" />
-                  Borrowed
-                </label>
-              </li>
-              <li>
-                <label>
-                  <input type="checkbox" value="Not borrowed" />
-                  Not borrowed
-                </label>
-              </li>
-            </ul>
-          </aside>
-        </div>
+      <div class="content">
+        <h3>Filters</h3>
+        <button class="button" @click="resetFilters">Reset</button>
       </div>
+      <div class="tags">
+        <div class="container" v-for="type in allTypes" :key="type">
+          <span class="tag is-info is-light is-hoverable" @click="filterEquipements(type)">{{ type }} </span>
+        </div>
+      </div> 
+    </div>
 
     <!-- Contenu principal -->
     <div class="content-container">
@@ -111,6 +49,7 @@
 <script lang="ts">
 import { EquipmentStore } from '@/stores/EquipmentStore';
 import { computed, onMounted, ref } from 'vue';
+import func from 'vue-editor-bridge';
 
 export default {
   name: 'EquipmentResearch',
@@ -122,6 +61,18 @@ export default {
 
     onMounted(() => {
       equipmentStore.getAllEquipment()
+    })
+
+    const allTypes = computed(() => {
+      //récuperer tous les types différents  
+      //tableau de string
+      const types: string[] = [];
+      allEquipments.value.forEach(equipment => {
+        if(equipment.type && !(types.includes(equipment.type))){
+          types.push(equipment.type);
+        }
+      });
+      return types;
     })
 
     const search = ref('');
@@ -140,6 +91,22 @@ export default {
       }
     };
 
+    /**
+     * met à jour les éléments de filtered equipmens lors qu'on clique sur un tag
+     * @param type le type qui est la valeur du tag
+     */
+    function filterEquipements(type: string){
+      filteredEquipments.value = allEquipments.value.filter(equipment =>
+      equipment.type.toLowerCase() === (type.toLowerCase()));
+    }
+
+    /**
+     * remet à jour filteredEquipments avec allEquipments
+     */
+    function resetFilters(){
+      filteredEquipments.value = allEquipments.value;
+    }
+
     // si pas d'equipements cherchés on met tous les equipements à afficher
     //on boucle sur equipmentToDisplay qui dépende de filteredEquipments qui est mis à jour automatiquement 
     const equipmentToDisplay = computed(() => 
@@ -150,7 +117,10 @@ export default {
       search,
       searchEquipments,
       filteredEquipments,
-      equipmentToDisplay
+      equipmentToDisplay,
+      allTypes,
+      filterEquipements,
+      resetFilters,
     }
   },
 };
@@ -166,10 +136,10 @@ export default {
 }
 
 .filter-container {
-  background-color: blue;
+  background-color: #cccccc;
   color: white;
-  padding: 15px;
-  border-radius: 10px;
+  text-align: left;
+  padding: 5px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
@@ -252,5 +222,9 @@ export default {
 .card-status.borrowed {
   color: red;
   text-align: center;
+}
+
+.container{
+
 }
 </style>
