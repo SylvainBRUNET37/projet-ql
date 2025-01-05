@@ -28,7 +28,7 @@
       <div class="fixed-grid has-auto-count">
         <div class="grid">
         <div class="equipment-content" v-for="equipment in equipmentToDisplay" :key="equipment.id">
-        <div class="card" @click="$router.push(`/equipment/${equipment.id}`)">
+        <div class="card" @click="handleClick(equipment.id)">
         <div class="card-image">
           
           <img :src="`/images/${equipment.image}`"/>
@@ -55,13 +55,14 @@ import { computed, onMounted, ref } from 'vue';
 export default {
   name: 'EquipmentResearch',
   setup(){
+   
     const equipmentStore = EquipmentStore();
     const allEquipments = computed(() => {
       return equipmentStore.equipment;
     })
 
     onMounted(() => {
-      equipmentStore.getAllEquipment()
+      equipmentStore.getAllEquipment();
     })
 
     const allTypes = computed(() => {
@@ -123,6 +124,13 @@ export default {
       filterEquipements,
       resetFilters,
     }
+  },
+  methods: {
+    handleClick(id: string) {
+    console.log("Événement switchContent émis avec id:", id);
+    this.$emit('switchContent', 'EquipmentDetailsOnly');
+    this.$emit('setId', id);
+  }
   },
 };
 </script>
@@ -192,6 +200,8 @@ export default {
   flex: 1 1 200px; 
   max-height: 288px; 
   max-width: 204px;
+  min-height: 288px; 
+  min-width: 204px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -217,7 +227,7 @@ export default {
 }
 
 .card-footer{
-  text-align: center;
+  justify-content: center;
 }
 
 .card-status {
@@ -231,7 +241,5 @@ export default {
   text-align: center;
 }
 
-.container{
 
-}
 </style>

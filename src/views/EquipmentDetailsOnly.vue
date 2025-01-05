@@ -1,58 +1,91 @@
 <template>
-     <div class="form-container">
-      <h1>Equipment Details</h1>
-      <form @submit.prevent="saveChanges" class="equipment-form">
-        <div class="form-group">
-          <label>Name:</label>
-          <input v-model="equipment.name" />
+  <div class="container mt-5">
+    <div class="box">
+      <h1 class="title has-text-centered">Equipment Details</h1>
+      <div class="columns">
+        <!-- Image de l'équipement -->
+        <div class="column is-one-third has-text-centered">
+          <figure class="image is-square">
+            <img :src="equipment.image ? `/images/${equipment.image}` : '/images/default.png'" alt="Equipment Image" />
+          </figure>
         </div>
-        <div class="form-group">
-          <label>Reference:</label>
-          <input v-model="equipment.ref" />
+        <div class="column">
+          <div class="content">
+            <div class="field">
+              <label class="label">Name:</label>
+              <p class="control is-size-5">{{ equipment.name }}</p>
+            </div>
+            <div class="field">
+              <label class="label">Reference:</label>
+              <p class="control is-size-5">{{ equipment.ref }}</p>
+            </div>
+            <div class="field">
+              <label class="label">Type:</label>
+              <p class="control is-size-5">{{ equipment.type }}</p>
+            </div>
+            <div class="field">
+              <label class="label">Status:</label>
+              <p class="control is-size-5">{{ equipment.status }}</p>
+            </div>
+          </div>
+
+          <div class="buttons is-right mt-5">
+            <button class="button is-success" @click="borrowEquipment">Borrow</button>
+            <button class="button is-danger" @click="goBack">Back</button>
+          </div>
         </div>
-        <div class="form-group">
-          <label>Type:</label>
-          <input v-model="equipment.type" />
-        </div>
-        <div class="form-group">
-          <label>Status:</label>
-          <input v-model="equipment.status" />
-        </div>
-        <div class="form-actions">
-          <button type="button" class="button cancel" @click="goBack">Back</button>
-        </div>
-      </form>
+      </div>
     </div>
+  </div>
 </template>
 
 <script>
-
-
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '@/firebase';
-  
-  export default {
-    data() {
-      return {
-        equipment: null,
-      };
-    },
-    async created() {
-      const equipmentId = this.$route.params.id;
-      const docRef = doc(db, 'equipments', equipmentId);
-      const docSnap = await getDoc(docRef);
-  
-      if (docSnap.exists()) {
-        this.equipment = { id: docSnap.id, ...docSnap.data() };
-      } else {
-        alert('Equipment not found!');
-        this.goBack();
-      }
-    },
-    methods: {
-        goBack() {
-        this.$router.push('/home');
-      },
+
+export default {
+  props: ['currentId'],
+  data() {
+    return {
+      equipment: null,
+      id: null,
+    };
+  },
+  async created() {
+    const equipmentId = this.currentId;
+    console.log("ENFANT", this.id);
+
+    const docRef = doc(db, 'equipments', equipmentId);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      this.equipment = { id: docSnap.id, ...docSnap.data() };
+    } else {
+      alert('Equipment not found!');
+      this.goBack();
     }
-}
+  },
+  methods: {
+    goBack() {
+      this.$router.push('/home');
+    },
+    borrowEquipment() {
+      alert(`You borrowed: ${this.equipment.name}`);
+      // Logique pour emprunter l'équipement
+    },
+  },
+};
 </script>
+
+<style scoped>
+/* Ajuste la taille et le positionnement de l'image */
+.image img {
+  max-height: 300px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+.field .label {
+  font-weight: bold;
+  color: #4a4a4a;
+}
+</style>

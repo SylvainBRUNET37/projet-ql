@@ -53,6 +53,7 @@ import { auth } from '@/firebase';
  
 export default {
   name: 'Sidebar',
+  
   components: {
     CSidebar,
     CSidebarHeader,
