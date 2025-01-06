@@ -5,8 +5,8 @@
         <div class="content">
           <component  :is="currentContent" 
                       :currentId="currentId"
-                      @switchContent="switchContent"
-                      @setId="setId">
+                      @switchContent="handleContent"
+                      @setId="handleId">
           </component>
         </div>
     </div>
@@ -61,7 +61,7 @@ export default {
 
 <style scoped>
 .layout{
-    display: grid;
+    display: flex;
     grid-template-columns: 1fr 4fr;
     grid-template-rows: 1fr;
     grid-column-gap: 0px;

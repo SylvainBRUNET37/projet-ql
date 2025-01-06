@@ -28,7 +28,7 @@
       <div class="fixed-grid has-auto-count">
         <div class="grid">
         <div class="equipment-content" v-for="equipment in equipmentToDisplay" :key="equipment.id">
-        <div class="card" @click="handleClick(equipment.id)">
+        <div class="card" @click="handleContent(), handleId(equipment.id)">
         <div class="card-image">
           
           <img :src="`/images/${equipment.image}`"/>
@@ -52,8 +52,10 @@
 <script lang="ts">
 import { EquipmentStore } from '@/stores/EquipmentStore';
 import { computed, onMounted, ref } from 'vue';
+
 export default {
   name: 'EquipmentResearch',
+  emits: ["switchContent", "setId"],
   setup(){
    
     const equipmentStore = EquipmentStore();
@@ -125,12 +127,19 @@ export default {
       resetFilters,
     }
   },
+
+  
   methods: {
-    handleClick(id: string) {
-    console.log("Événement switchContent émis avec id:", id);
-    this.$emit('switchContent', 'EquipmentDetailsOnly');
-    this.$emit('setId', id);
-  }
+    handleContent(){
+        this.$emit('switchContent', "EquipmentDetailsOnly");
+    },
+
+    handleId(id: string){
+    if(id !== null){
+        console.log(" id:", id);
+        this.$emit('setId', id);
+      }
+    }
   },
 };
 </script>
@@ -151,7 +160,7 @@ export default {
   padding: 5px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
-
+ 
 .content-container {
   display: flex;
   flex-direction: column;

@@ -51,8 +51,36 @@ export default {
       id: null,
     };
   },
-  async created() {
-    const equipmentId = this.currentId;
+  //écouter le changement de props avec watch
+  watch: {
+    //props async car la méthode de base est async 
+    async myProp(newValue, oldValue){
+      if (!newValue){
+        this.equipment == null;
+        this.id == null;
+        return;
+      }
+      try{
+        //récupère l'equipement depuis la bdd avec son id
+        const equipmentId = this.currentId;
+        console.log("PROPS CHANGEMENT ID ", this.id);
+
+        const docRef = doc(db, 'equipments', equipmentId);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+          this.equipment = { id: docSnap.id, ...docSnap.data() };
+        } else {
+          alert('Equipment not found!');
+          this.goBack();
+        }
+      } catch (error) {
+        console.error('Error fetching equipment:', error);
+      }
+    }
+  },
+/*  async created() {
+   /* const equipmentId = this.currentId;
     console.log("ENFANT", this.id);
 
     const docRef = doc(db, 'equipments', equipmentId);
@@ -64,7 +92,7 @@ export default {
       alert('Equipment not found!');
       this.goBack();
     }
-  },
+  },*/
   methods: {
     goBack() {
       this.$router.push('/home');
