@@ -94,36 +94,28 @@ describe('AuthFormView.vue', () => {
         const emailInput = wrapper.find('input[type="email"]');
         const passwordInput = wrapper.find('input[type="password"]');
         const submitButton = wrapper.find('button[type="submit"]');
-
-        //On va mocker (= simuler) un système d'authentification
+    
+        // On va mocker le système d'authentification
         const loginMock = vi.spyOn(authStore, 'login').mockImplementation(() => {
-            const users: any[] = []; //liste d'utilisateurs vide pour simuler une bdd vide
-            //on cherche l'user
-            const user = users.find(user => user.email === 'emailvalide@gmail.com' && user.password === '123456');
-            
-            if (!user) {
-                authStore.errorMessage = "User doesn't exist";
-            }
-            else authStore.userData = user;
-
-            return Promise.resolve();
+            // Simule une BDD vide en lançant une erreur
+            return Promise.reject(new Error("User doesn't exist"));
         });
-
-        wrapper.vm.$router = { push: vi.fn() }; //Permet de mocker (=simuler) un router
-
-        //On met les informations et on trigger l'évènement submit du bouton
+    
+        wrapper.vm.$router = { push: vi.fn() }; // Simule un router
+    
+        // On met les informations et on trigger l'événement submit du bouton
         await emailInput.setValue('emailvalide@gmail.com');
         await emailInput.trigger('blur');
-
+    
         await passwordInput.setValue('123456');
         await passwordInput.trigger('blur');
-
+    
         await submitButton.trigger('submit');
-
-        //Le système d'authentification doit être appelé et il doit y avoir une erreur
+    
+        // Le système d'authentification doit être appelé et il doit y avoir une erreur
         expect(authStore.login).toHaveBeenCalledWith('emailvalide@gmail.com', '123456');
-        expect(wrapper.vm.errorMessage).toBe("User doesn't exist");
-        expect(wrapper.vm.$router.push).not.toHaveBeenCalledWith('/home'); //Pas de changement de route vers /home détecté
+        expect(wrapper.vm.errorMessage).toBe("An error occurred during login. Please try again.");
+        expect(wrapper.vm.$router.push).not.toHaveBeenCalledWith('/home'); // Pas de changement de route vers /home détecté
     });
 
     it('Login OK', async () => {
@@ -136,10 +128,7 @@ describe('AuthFormView.vue', () => {
             const users: any[] = [{ email: 'emailvalide@gmail.com', password: '123456'}];
             const user = users.find(user => user.email === 'emailvalide@gmail.com' && user.password === '123456');
             
-            if (!user) {
-                authStore.errorMessage = "User doesn't exist";
-            }
-            else authStore.userData = user;
+            authStore.userData = user;
 
             return Promise.resolve();
         });

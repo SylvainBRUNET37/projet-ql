@@ -1,17 +1,17 @@
 import { mount } from '@vue/test-utils';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import RegisterFormView from '@/views/RegisterFormView.vue';
-import { AuthStore } from '@/stores/AuthStore';
+import { RegisterStore } from '@/stores/RegisterStore';
 import { createPinia, setActivePinia } from 'pinia';
 
 describe('RegisterFormView.vue', () => {
     let wrapper: any;
-    let authStore: any;
+    let registerStore: any;
     
     beforeEach(() => {
         setActivePinia(createPinia());
         wrapper = mount(RegisterFormView);
-        authStore = AuthStore();
+        registerStore = RegisterStore();
     });
 
     it('Le formulaire existe.', () => {       
@@ -150,4 +150,6 @@ describe('RegisterFormView.vue', () => {
 
         expect(submitButton.attributes('disabled')).toBeUndefined();
     });
+
+    
 });
