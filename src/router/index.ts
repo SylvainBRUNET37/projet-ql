@@ -62,7 +62,13 @@ const router = createRouter({
       name: 'UserDetails',
       component: UserDetails,
     },
-     
+    {
+      path: '/admin/equipment/:id',
+      name: 'EquipmentDetails',
+      component: EquipmentDetails,
+    },
+    
+  
   ],
 })
 
