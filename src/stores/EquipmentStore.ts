@@ -117,6 +117,45 @@ export const EquipmentStore = defineStore('equipment', () => {
   }
 
   /**
+   * Met à jour le statut d'un équipement à "available".
+   *
+   * @param {string} equipmentId - ID de l'équipement à mettre à jour.
+   * @returns {Promise<void>} - Promesse qui se résout une fois le statut mis à jour ou en cas d'erreur.
+   */
+  const enableEquipment = async (equipmentId: string): Promise<void> => {
+    try {
+      // Référence au document de l'équipement dans Firestore
+      const equipmentDocRef = doc(db, 'equipments', equipmentId);
+
+      // Mise à jour du champ "status" à "available"
+      await updateDoc(equipmentDocRef, {
+        status: 'available',
+      });
+
+      // Met à jour la liste locale après modification du statut
+      equipment.value = equipment.value.map((item) =>
+        item.id === equipmentId ? { ...item, status: 'available' } : item,
+      );
+      errorMessage.value = '';
+    } catch (error: FirebaseError | unknown) {
+      if (error instanceof FirebaseError) {
+        switch (error.code) {
+          case 'not-found':
+            errorMessage.value = 'Equipment not found.';
+            break;
+          default:
+            errorMessage.value =
+              'Failed to update equipment status. Please try again later.';
+        }
+      } else {
+        errorMessage.value =
+          'Failed to update equipment status. Please try again later.';
+        console.error(error);
+      }
+    }
+  }
+
+  /**
    * Supprime un équipement à partir de son ID.
    *
    * @param {string} equipmentId - ID de l'équipement à supprimer.
@@ -213,5 +252,6 @@ export const EquipmentStore = defineStore('equipment', () => {
     deleteEquipment,
     addEquipment,
     disableEquipment,
+    enableEquipment,
   }
 })

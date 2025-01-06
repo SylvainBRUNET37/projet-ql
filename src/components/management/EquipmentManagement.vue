@@ -19,10 +19,15 @@
           <td>{{ equipment.type }}</td>
           <td>{{ equipment.description }}</td>
           <td>
-            <button class="button is-link"  @click="$router.push(`/admin/equipment/${equipment.id}`)">Details</button>
+            <button class="button is-link" @click="$router.push(`/admin/equipment/${equipment.id}`)">Details</button>
           </td>
           <td>
-            <button class="button is-link" @click="handleDisable(equipment.id)">Disable</button>
+            <button
+              class="button is-link"
+              @click="handleToggleStatus(equipment.id, equipment.status)"
+            >
+              {{ equipment.status === 'available' ? 'Disable' : 'Enable' }}
+            </button>
           </td>
           <td>
             <button class="button is-link" @click="handleDelete(equipment.id)">Delete</button>
@@ -84,15 +89,26 @@ export default defineComponent({
       console.log('Details:', id)
     }
 
-    const handleDisable = async (id: string) => {
+    const handleToggleStatus = async (id: string, status: string) => {
       try {
-        await equipmentStore.disableEquipment(id)
+        if (status === 'available') {
+          await equipmentStore.disableEquipment(id);
+        } else {
+          await equipmentStore.enableEquipment(id);
+        }
+
+        await equipmentStore.getAllEquipment();
       } catch (error) {
-        console.error('Error disabling equipment:', error)
+        console.error('Error toggling equipment status:', error);
       }
     }
 
     const handleDelete = async (id: string) => {
+      const confirmed = window.confirm("Do you really want to delete this equipment ?");
+      if (!confirmed) {
+        return;
+      }
+
       try {
         await equipmentStore.deleteEquipment(id)
       } catch (error) {
@@ -124,7 +140,7 @@ export default defineComponent({
       isFirstPage,
       isLastPage,
       handleDetails,
-      handleDisable,
+      handleToggleStatus,
       handleDelete,
       handleAdd,
       goToPreviousPage,
