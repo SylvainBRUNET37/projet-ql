@@ -4,6 +4,7 @@
       <thead>
         <tr>
           <th>Reference</th>
+          <th>Name</th>
           <th>Status</th>
           <th>Type</th>
           <th>Description</th>
@@ -15,6 +16,7 @@
       <tbody>
         <tr v-for="equipment in paginatedEquipments" :key="equipment.id">
           <td>{{ equipment.ref }}</td>
+          <td>{{ equipment.name }}</td>
           <td>{{ equipment.status }}</td>
           <td>{{ equipment.type }}</td>
           <td>{{ equipment.description }}</td>

@@ -4,23 +4,31 @@
       <form @submit.prevent="saveChanges" class="user-form">
         <div class="form-group">
           <label>First Name:</label>
-          <input v-model="user.firstName" />
+          <input v-model="user.firstName" class="input-field" placeholder="Enter first name" />
         </div>
         <div class="form-group">
           <label>Last Name:</label>
-          <input v-model="user.lastName" />
+          <input v-model="user.lastName" class="input-field" placeholder="Enter last name" />
         </div>
         <div class="form-group">
           <label>Email:</label>
-          <input v-model="user.email" />
+          <input v-model="user.email" class="input-field" placeholder="Enter email" @blur="validateEmailField" />
+          <span v-if="emailError" class="error">{{ emailError }}</span>
         </div>
         <div class="form-group">
           <label>Role:</label>
-          <input v-model="user.role" />
+          <select v-model="user.role" class="dropdown">
+            <option value="user">User</option>
+            <option value="admin">Admin</option>
+          </select>
+          <span v-if="roleError" class="error">{{ roleError }}</span>
         </div>
         <div class="form-group">
           <label>Status:</label>
-          <input v-model="user.status" />
+          <select v-model="user.status" class="dropdown">
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+          </select>
         </div>
         <div class="form-actions">
           <button type="submit" class="button save">Save</button>
@@ -33,18 +41,18 @@
   <script>
   import { doc, getDoc, updateDoc } from 'firebase/firestore';
   import { db } from '@/firebase';
+  import { validateEmail, validateRole } from '@/utils/Validator';
   
   export default {
     data() {
       return {
         user: null, // Contient les informations de l'utilisateur
+        emailError: '', // Message d'erreur pour l'email
+        roleError: '', // Message d'erreur pour le rôle
       };
     },
     async created() {
-      // Récupération de l'ID depuis l'URL
       const userId = this.$route.params.id;
-  
-      // Chargement des données depuis Firestore
       const docRef = doc(db, 'users', userId);
       const docSnap = await getDoc(docRef);
   
@@ -56,10 +64,32 @@
       }
     },
     methods: {
+      validateEmailField() {
+        if (!validateEmail(this.user.email)) {
+          this.emailError = 'Invalid email format';
+        } else {
+          this.emailError = '';
+        }
+      },
+      validateRoleField() {
+        if (!validateRole(this.user.role)) {
+          this.roleError = 'Invalid role. Must be "user" or "admin".';
+        } else {
+          this.roleError = '';
+        }
+      },
       async saveChanges() {
+        this.validateEmailField();
+        this.validateRoleField();
+  
+        if (this.emailError || this.roleError) {
+          alert('Please fix the errors before saving.');
+          return;
+        }
+  
         try {
           const docRef = doc(db, 'users', this.user.id);
-          await updateDoc(docRef, this.user); // Sauvegarde des données dans Firestore
+          await updateDoc(docRef, this.user);
           alert('Changes saved successfully!');
           this.goBack();
         } catch (error) {
@@ -68,74 +98,82 @@
         }
       },
       goBack() {
-        this.$router.push('/home'); // Retourne à la page User Management
+        this.$router.push('/home');
       },
     },
   };
   </script>
   
   <style scoped>
-  /* Styles similaires à ceux du formulaire pour les équipements */
   .form-container {
     max-width: 600px;
     margin: 50px auto;
-    padding: 20px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    background-color: #f9f9f9;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    border-radius: 12px;
+    background: linear-gradient(to bottom right, #ffffff, #f2f2f2);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }
   
-  .form-container h1 {
+  h1 {
+    font-size: 28px;
+    color: #333;
     text-align: center;
     margin-bottom: 20px;
-    color: #333;
-    font-size: 24px;
   }
   
   .form-group {
-    margin-bottom: 15px;
+    margin-bottom: 20px;
   }
   
   .form-group label {
     display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
-    color: #555;
-  }
-  
-  .form-group input {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
     font-size: 14px;
-    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+    color: #555;
+    margin-bottom: 5px;
   }
   
-  .form-group input:focus {
+  .input-field,
+  .dropdown {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    background-color: #f9f9f9;
+    transition: border-color 0.2s ease-in-out;
+  }
+  
+  .input-field:focus,
+  .dropdown:focus {
     border-color: #007bff;
     outline: none;
     box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
   }
   
+  .error {
+    color: #f44336;
+    font-size: 12px;
+    margin-top: 5px;
+  }
+  
   .form-actions {
     display: flex;
     justify-content: space-between;
+    align-items: center;
   }
   
   .button {
     padding: 10px 20px;
     border: none;
-    border-radius: 4px;
+    border-radius: 6px;
     font-size: 14px;
     cursor: pointer;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s ease;
   }
   
   .button.save {
     background-color: #007bff;
-    color: white;
+    color: #fff;
   }
   
   .button.save:hover {
@@ -144,7 +182,7 @@
   
   .button.cancel {
     background-color: #f44336;
-    color: white;
+    color: #fff;
   }
   
   .button.cancel:hover {
