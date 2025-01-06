@@ -1,8 +1,8 @@
 /**
- * Validates an email address.
+ * Valide une adresse e-mail.
  *
- * @param {string} email - The email address to validate.
- * @returns {boolean} - Returns `true` if the email is valid, otherwise `false`.
+ * @param {string} email - L'adresse e-mail à valider.
+ * @returns {boolean} - Retourne `true` si l'e-mail est valide, sinon `false`.
  */
 export const validateEmail = (email: string): boolean => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -10,14 +10,14 @@ export const validateEmail = (email: string): boolean => {
 };
 
 /**
- * Validates a password.
+ * Valide un mot de passe.
  *
- * Password must:
- * - Be 6 to 20 characters long.
- * - Contain only alphanumeric characters and these special characters: !@#$%^&*()_+=-
+ * Le mot de passe doit :
+ * - Contenir entre 6 et 20 caractères.
+ * - Contenir uniquement des caractères alphanumériques et ces caractères spéciaux : !@#$%^&*()_+=-
  *
- * @param {string} password - The password to validate.
- * @returns {boolean} - Returns `true` if the password is valid, otherwise `false`.
+ * @param {string} password - Le mot de passe à valider.
+ * @returns {boolean} - Retourne `true` si le mot de passe est valide, sinon `false`.
  */
 export const validatePassword = (password: string): boolean => {
   const passwordRegex = /^[a-zA-Z0-9!@#$%^&*()_+=-]{6,20}$/;
@@ -25,14 +25,14 @@ export const validatePassword = (password: string): boolean => {
 };
 
 /**
- * Validates a name.
+ * Valide un nom.
  *
- * Name must:
- * - Be 1 to 30 characters long.
- * - Contain only alphanumeric characters.
+ * Le nom doit :
+ * - Contenir entre 1 et 30 caractères.
+ * - Contenir uniquement des caractères alphanumériques.
  *
- * @param {string} name - The name to validate.
- * @returns {boolean} - Returns `true` if the name is valid, otherwise `false`.
+ * @param {string} name - Le nom à valider.
+ * @returns {boolean} - Retourne `true` si le nom est valide, sinon `false`.
  */
 export const validateName = (name: string): boolean => {
   const nameRegex = /^(?:[a-zA-Z0-9]{1,30})$/;
@@ -40,12 +40,12 @@ export const validateName = (name: string): boolean => {
 };
 
 /**
- * Validates a user role.
+ * Valide un rôle utilisateur.
  *
- * Role must be either 'user' or 'admin'.
+ * Le rôle doit être soit 'user', soit 'admin'.
  *
- * @param {string} role - The role to validate.
- * @returns {boolean} - Returns `true` if the role is valid, otherwise `false`.
+ * @param {string} role - Le rôle à valider.
+ * @returns {boolean} - Retourne `true` si le rôle est valide, sinon `false`.
  */
 export const validateRole = (role: string): boolean => {
   return role === 'user' || role === 'admin';
