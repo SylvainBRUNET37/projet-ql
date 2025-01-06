@@ -93,6 +93,11 @@ export default defineComponent({
     }
 
     const handleDelete = async (id: string) => {
+      const confirmed = window.confirm("Do you really want to delete this equipment ?");
+      if (!confirmed) {
+        return;
+      }
+
       try {
         await equipmentStore.deleteEquipment(id)
       } catch (error) {
