@@ -80,7 +80,7 @@ export default {
           type: 'select',
           placeholder: '',
           validate: validateNotEmpty,
-          errorMsg: 'Invalid reference',
+          errorMsg: 'Reference is required',
           required: true,
           options: [
             { value: 'AP', label: 'IOS' },

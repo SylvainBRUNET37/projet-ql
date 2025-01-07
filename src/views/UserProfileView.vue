@@ -25,7 +25,7 @@
         <UserInfo :userInfo="userInfo" />
       </div>
       <div v-if="activeTab === 'equipment'">
-        <UserEquipment />
+        <UserEquipment :userId="userInfo.id" />
       </div>
     </div>
   </div>
@@ -46,6 +46,7 @@ export default defineComponent({
 
     // Informations de l'utilisateur
     const userInfo: Ref<{
+      id: string
       lastName: string
       firstName: string
       email: string
@@ -56,6 +57,7 @@ export default defineComponent({
     onMounted(async () => {
       await userStore.getUserData()
       userInfo.value = userStore.userData as {
+        id: string
         lastName: string
         firstName: string
         email: string

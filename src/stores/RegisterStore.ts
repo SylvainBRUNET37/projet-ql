@@ -80,6 +80,7 @@ export const RegisterStore = defineStore('register', () => {
       // Ajoute les données utilisateur dans Firestore
       const userDocRef = doc(db, 'users', uid)
       await setDoc(userDocRef, {
+        id: uid,
         lastName,
         firstName,
         role,
