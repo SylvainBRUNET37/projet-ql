@@ -150,12 +150,11 @@ export default {
   grid-template-columns: 1fr 5fr;
   grid-template-rows: 1fr;
   grid-column-gap: 10px;
-  height: 100vh;
+  height: 100%;
 }
 
 .filter-container {
   background-color: #ebebeb;
-  color: white;
   text-align: left;
   padding: 5px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -199,7 +198,6 @@ export default {
   flex-wrap: wrap;
   gap: 30px;
   grid-auto-flow: row;
- 
 }
 
 .column{
