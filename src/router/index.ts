@@ -1,14 +1,15 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import AuthFormView from '../views/AuthFormView.vue'
-import RegisterFormView from '../views/RegisterFormView.vue'
-import EquipmentResearchView from '../views/EquipmentResearchView.vue'
-import UserProfileView from '../views/UserProfileView.vue'
-import Layout from '@/components/mainLayOut/layout.vue'
-import AddMaterialView from '../views/AddMaterialView.vue'
+import { createRouter, createWebHistory } from 'vue-router';
+import AuthFormView from '../views/AuthFormView.vue';
+import RegisterFormView from '../views/RegisterFormView.vue';
+import EquipmentResearchView from '../views/EquipmentResearchView.vue';
+import UserProfileView from '../views/UserProfileView.vue';
+import Layout from '@/components/mainLayOut/layout.vue';
+import AddMaterialView from '../views/AddMaterialView.vue';
 import EquipmentDetails from '@/views/admin/EquipmentDetails.vue';
 import EquipmentManagement from '@/components/management/EquipmentManagement.vue';
 import UserDetails from '@/views/user/UserDetails.vue';
-import UserManagment from '@/components/management/UserManagment.vue'
+import UserManagment from '@/components/management/UserManagment.vue';
+import EquipmentDetailsOnly from '@/views/EquipmentDetailsOnly.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -62,7 +63,11 @@ const router = createRouter({
       name: 'UserDetails',
       component: UserDetails,
     },
-     
+    {
+      path: '/equipment/:id',
+      name: 'EquipmentDetailsOnly',
+      component: EquipmentDetailsOnly,
+    },
   ],
 })
 

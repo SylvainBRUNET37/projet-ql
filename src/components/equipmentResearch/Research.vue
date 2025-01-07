@@ -28,7 +28,7 @@
       <div class="fixed-grid has-auto-count">
         <div class="grid">
         <div class="equipment-content" v-for="equipment in equipmentToDisplay" :key="equipment.id">
-        <div class="card" @click="handleContent(), handleId(equipment.id)">
+        <div class="card" @click="handleContent(equipment.id)">
         <div class="card-image">
           
           <img :src="`/images/${equipment.image}`"/>
@@ -52,6 +52,7 @@
 <script lang="ts">
 import { EquipmentStore } from '@/stores/EquipmentStore';
 import { computed, onMounted, ref } from 'vue';
+import { threadId } from 'worker_threads';
 
 export default {
   name: 'EquipmentResearch',
@@ -130,8 +131,14 @@ export default {
 
   
   methods: {
-    handleContent(){
-        this.$emit('switchContent', "EquipmentDetailsOnly");
+    handleContent(id: string){
+      if(id){
+        this.$router.push(`/equipment/${id}`);
+        console.log("route : /equipment/:", id);
+      } else {
+        alert("no id");
+      }
+        
     },
 
     handleId(id: string){
