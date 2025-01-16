@@ -5,7 +5,8 @@
     <!-- Affichage des emprunts -->
     <ul v-if="userLoans.length">
       <li v-for="loan in userLoans" :key="loan.id">
-        <p><strong>Équipement ID:</strong> {{ loan.equipmentId }}</p>
+        <p><strong>Équipement:</strong> {{ loan.equipment.name }} ({{ loan.equipment.type }})</p>
+        <p><strong>Description:</strong> {{ loan.equipment.description }}</p>
         <p><strong>Date d'emprunt:</strong> {{ formatDate(loan.borrowDate) }}</p>
         <p><strong>Date de retour:</strong> {{ formatDate(loan.returnDate) }}</p>
       </li>
@@ -17,9 +18,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted } from 'vue';
-import { type DocumentData } from 'firebase/firestore';
-import { BorrowStore } from '../../stores/BorrowStore';
+import { defineComponent, ref, onMounted } from 'vue'
+import { type DocumentData } from 'firebase/firestore'
+import { BorrowStore } from '../../stores/BorrowStore'
 
 export default defineComponent({
   name: 'UserEquipment',
@@ -30,36 +31,41 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const borrowStore = BorrowStore();
-    const userLoans = ref<DocumentData[]>([]);
+    const borrowStore = BorrowStore()
+    const userLoans = ref<DocumentData[]>([])
 
-    // Charger les emprunts de l'utilisateur
+    // Charge les emprunts de l'utilisateur
     const loadUserLoans = async () => {
+      try {
+        userLoans.value = await borrowStore.getUserEquipments(props.userId)
+      } catch (error) {
+        console.error('Erreur lors de la récupération des emprunts :', error)
+      }
+    }
 
-    };
-
-    // Formater les dates pour affichage
-    const formatDate = (timestamp: { seconds: number }) => {
-      const date = new Date(timestamp.seconds * 1000);
+    // Formate les dates pour affichage
+    const formatDate = (timestamp: number | { seconds: number }) => {
+      const seconds = typeof timestamp === 'number' ? timestamp : timestamp.seconds
+      const date = new Date(seconds * 1000)
       return date.toLocaleDateString('fr-FR', {
         weekday: 'long',
         year: 'numeric',
         month: 'long',
         day: 'numeric',
-      });
-    };
+      })
+    }
 
-    // Charger les emprunts lorsque le composant est monté
+    // Charge les emprunts lorsque le composant est monté
     onMounted(async () => {
-      await loadUserLoans();
-    });
+      await loadUserLoans()
+    })
 
     return {
       userLoans,
       formatDate,
-    };
+    }
   },
-});
+})
 </script>
 
 <style scoped>

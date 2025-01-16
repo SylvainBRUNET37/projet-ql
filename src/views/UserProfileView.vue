@@ -25,7 +25,8 @@
         <UserInfo :userInfo="userInfo" />
       </div>
       <div v-if="activeTab === 'equipment'">
-        <UserEquipment :userId="userInfo.id" />
+        <UserEquipment v-if="userInfo?.id" :userId="userInfo?.id" />
+        <p v-else>Loading user equipment...</p>
       </div>
     </div>
   </div>

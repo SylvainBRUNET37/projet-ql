@@ -125,32 +125,30 @@ export const EquipmentStore = defineStore('equipment', () => {
   const enableEquipment = async (equipmentId: string): Promise<void> => {
     try {
       // Référence au document de l'équipement dans Firestore
-      const equipmentDocRef = doc(db, 'equipments', equipmentId);
+      const equipmentDocRef = doc(db, 'equipments', equipmentId)
 
       // Mise à jour du champ "status" à "available"
       await updateDoc(equipmentDocRef, {
         status: 'available',
-      });
+      })
 
       // Met à jour la liste locale après modification du statut
       equipment.value = equipment.value.map((item) =>
         item.id === equipmentId ? { ...item, status: 'available' } : item,
-      );
-      errorMessage.value = '';
+      )
+      errorMessage.value = ''
     } catch (error: FirebaseError | unknown) {
       if (error instanceof FirebaseError) {
         switch (error.code) {
           case 'not-found':
-            errorMessage.value = 'Equipment not found.';
-            break;
+            errorMessage.value = 'Equipment not found.'
+            break
           default:
-            errorMessage.value =
-              'Failed to update equipment status. Please try again later.';
+            errorMessage.value = 'Failed to update equipment status. Please try again later.'
         }
       } else {
-        errorMessage.value =
-          'Failed to update equipment status. Please try again later.';
-        console.error(error);
+        errorMessage.value = 'Failed to update equipment status. Please try again later.'
+        console.error(error)
       }
     }
   }
@@ -184,26 +182,14 @@ export const EquipmentStore = defineStore('equipment', () => {
   }
 
   /**
-   * Ajoute un nouvel équipement dans Firestore.
+   * Ajoute un nouvel équipement dans Firestore avec l'ID stocké comme champ dans le document.
    *
    * @param {object} newEquipment - Détails du nouvel équipement.
    * @returns {Promise<void>} - Promesse résolue une fois l'équipement ajouté.
    */
   const addEquipment = async (newEquipment: DocumentData): Promise<void> => {
     try {
-      let randomNumber: number
-      let uniqueRef: string
-
-      // Boucle pour générer une nouvelle référence tant qu'elle existe déjà dans Firestore
-      do {
-        randomNumber = Math.floor(Math.random() * 10000)
-        uniqueRef = `${newEquipment.ref}-${randomNumber}`
-      } while (await doesRefExist(uniqueRef))
-
-      // Met à jour l'equipement avec la nouvelle ref
-      newEquipment.ref = uniqueRef
-
-      // Ajouter le lien de l'image en fonction du type
+      // Ajoute le lien de l'image en fonction du type
       switch (newEquipment.type) {
         case 'phone':
           newEquipment.image = 'phone.png'
@@ -211,7 +197,7 @@ export const EquipmentStore = defineStore('equipment', () => {
         case 'laptop':
           newEquipment.image = 'laptop.jpg'
           break
-        case 'mouse ':
+        case 'mouse':
           newEquipment.image = 'mouse.jpg'
           break
         case 'computer':
@@ -221,10 +207,23 @@ export const EquipmentStore = defineStore('equipment', () => {
           newEquipment.image = 'unknown.png'
       }
 
-      const equipmentRef = collection(db, 'equipments')
-      await addDoc(equipmentRef, newEquipment)
-      // Mettre à jour la liste locale après ajout
-      await getAllEquipment()
+      // Génère une référence unique pour chaque équipement
+      let randomNumber: number
+      let uniqueRef: string
+
+      // Boucle pour générer une nouvelle référence tant qu'elle existe déjà dans Firestore
+      do {
+        randomNumber = Math.floor(Math.random() * 10000)
+        uniqueRef = `${newEquipment.ref}-${randomNumber}`
+      } while (await doesRefExist(uniqueRef))
+
+      // Met à jour l'équipement avec la nouvelle ref
+      newEquipment.ref = uniqueRef
+
+      // Ajoute le nouvel équipement dans Firestore
+      await addDoc(collection(db, 'equipments'), {
+        ...newEquipment,
+      })
     } catch (error) {
       console.error("Erreur lors de l'ajout de l'équipement :", error)
     }

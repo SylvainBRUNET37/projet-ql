@@ -21,7 +21,7 @@ export default defineComponent({
     // Informations de l'utilisateur
     userInfo: {
       type: Object as PropType<{
-        userId: string
+        id: string
         lastName: string
         firstName: string
         email: string
