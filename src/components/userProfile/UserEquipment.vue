@@ -4,7 +4,7 @@
 
     <!-- Affichage des emprunts -->
     <ul v-if="userLoans.length">
-      <li v-for="loan in userLoans" :key="loan.id">
+      <li v-for="loan in userLoans" :key="loan.id" style="list-style-type: none">
         <p><strong>Équipement:</strong> {{ loan.equipment.name }} ({{ loan.equipment.type }})</p>
         <p><strong>Description:</strong> {{ loan.equipment.description }}</p>
         <p><strong>Date d'emprunt:</strong> {{ formatDate(loan.borrowDate) }}</p>

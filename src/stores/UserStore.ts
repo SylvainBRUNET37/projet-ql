@@ -7,7 +7,7 @@
 import { defineStore } from 'pinia'
 import { ref, type Ref } from 'vue'
 import { auth, db } from '../firebase'
-import { getDoc, doc, type DocumentData } from 'firebase/firestore'
+import { getDoc, doc, deleteDoc, type DocumentData } from 'firebase/firestore'
 import { FirebaseError } from 'firebase/app'
 
 /**
@@ -70,6 +70,49 @@ export const UserStore = defineStore('user', () => {
     }
   }
 
+  /**
+   * Supprime un utilisateur de Firestore à partir de son ID.
+   *
+   * @param {string} userId - L'ID de l'utilisateur à supprimer.
+   * @returns {Promise<void>} - Promesse qui se résout une fois l'utilisateur supprimé ou en cas d'erreur.
+   */
+  const deleteUserById = async (userId: string): Promise<void> => {
+    try {
+      // Vérifie si l'ID est valide
+      if (!userId) {
+        errorMessage.value = 'User ID is required.'
+        return
+      }
+
+      // Vérifie si l'utilisateur existe dans Firestore
+      const userDocRef = doc(db, 'users', userId)
+      const userDoc = await getDoc(userDocRef)
+
+      if (!userDoc.exists()) {
+        errorMessage.value = 'User not found.'
+        return
+      }
+
+      // Supprime l'utilisateur de Firestore
+      await deleteDoc(userDocRef)
+      errorMessage.value = ''
+    } catch (error: FirebaseError | unknown) {
+      // Gestion des erreurs
+      if (error instanceof FirebaseError) {
+        switch (error.code) {
+          case 'auth/network-request-failed':
+            errorMessage.value = 'Service temporarily unavailable, please try again later.'
+            break
+          default:
+            errorMessage.value = 'Internal error, please try again later.'
+        }
+      } else {
+        errorMessage.value = 'Internal error, please try again later.'
+        console.error(error)
+      }
+    }
+  }
+
   // Retourne les données utilisateur, les erreurs et la fonction de récupération
-  return { userData, errorMessage, getUserData }
+  return { userData, errorMessage, getUserData, deleteUserById }
 })
