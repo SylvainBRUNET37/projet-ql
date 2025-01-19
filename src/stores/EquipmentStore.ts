@@ -14,6 +14,7 @@ import {
   doc,
   type DocumentData,
   addDoc,
+  setDoc,
   updateDoc,
   query,
   where,
@@ -221,9 +222,13 @@ export const EquipmentStore = defineStore('equipment', () => {
       newEquipment.ref = uniqueRef
 
       // Ajoute le nouvel équipement dans Firestore
-      await addDoc(collection(db, 'equipments'), {
+      const docRef = await addDoc(collection(db, 'equipments'), {
         ...newEquipment,
+        id: '',
       })
+
+      // Met à jour l'ID de l'équipement dans Firestore
+      await setDoc(docRef, { ...newEquipment, id: docRef.id })
     } catch (error) {
       console.error("Erreur lors de l'ajout de l'équipement :", error)
     }
