@@ -27,8 +27,7 @@ jobs:
 
       # Étape 3 : Installation des dépendances
       - name: Install dependencies
-        run: npm install 
-        run: npm i
+        run: npm install && npm i
 
       - name: Add `node_modules/.bin` to PATH
         run: |
