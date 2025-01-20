@@ -3,10 +3,10 @@ name: CI/CD Pipeline for Vue.js with Cypress
 on:
   push:
     branches:
-      - main
+      - dev #pr l'instant
   pull_request:
     branches:
-      - main
+      - dev # pr l'instant
   schedule:
     - cron: '0 0 * * *' # Planification pour exécuter tous les jours à minuit (UTC)
 
