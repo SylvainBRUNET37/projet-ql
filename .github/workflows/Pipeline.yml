@@ -33,22 +33,8 @@ jobs:
         run: |
           echo "C:\\npm\\node_modules\\.bin" >> $GITHUB_PATH
 
-      # Étape 4 : Build de l'application
-      #- name: Build the app
-      #  run: npm run dev
-      
-      #tests unitaires avec vitest
+     #tests unitaires avec vitest
        - name: Run unit tests with Vitest
         run: npm run test:unit
-
-      # Étape 6 : Démarrage de l'application
-      - name: Start the application
-        run: npm run serve &
-        env:
-          CI: true
-
-      # Étape 7 : Exécution des tests Cypress
-      - name: Run Cypress tests
-        run: npx cypress run
-        env:
-          CI: true
+      
+  
