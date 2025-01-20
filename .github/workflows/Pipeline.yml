@@ -27,11 +27,11 @@ jobs:
 
       # Étape 3 : Installation des dépendances
       - name: Install dependencies
-        run: npm install
+        run: npm install -g
 
       # Étape 4 : Build de l'application
       - name: Build the app
-        run: npm run build
+        run: npm run dev
 
       # Étape 5 : Installation de Cypress
       - name: Install Cypress
