@@ -7,8 +7,16 @@ on:
   pull_request:
     branches:
       - dev # pr l'instant
-  schedule:
-    - cron: '0 0 * * *' # Planification pour exécuter tous les jours à minuit (UTC)
+ trigger:
+  none
+
+schedules:
+- cron: '1 00 * * Mon,Tue,Wed,Thu,Fri'
+  displayName: Daily 0700 AM EDT Run
+  branches:
+    include:
+    - dev # pr l'instant 
+  always: true
 
 jobs:
   build-and-test:
