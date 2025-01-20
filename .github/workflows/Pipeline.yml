@@ -7,16 +7,13 @@ on:
   pull_request:
     branches:
       - dev # pr l'instant
-  trigger:
-  none
-
   schedules:
-  - cron: '1 00 * * Mon,Tue,Wed,Thu,Fri'
-    displayName: Daily 01:00 AM EDT Run
-    branches:
-      include:
-      - dev # pr l'instant 
-    always: true
+    - cron: '1 00 * * Mon,Tue,Wed,Thu,Fri'
+      displayName: Daily 01:00 AM EDT Run
+      branches:
+        include:
+          - dev # pr l'instant
+      always: true
 
 jobs:
   build-and-test:
