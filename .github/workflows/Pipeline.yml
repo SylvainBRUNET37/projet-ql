@@ -7,7 +7,7 @@ on:
   pull_request:
     branches:
       - dev # pr l'instant
- trigger:
+  trigger:
   none
 
 schedules:
