@@ -10,13 +10,13 @@ on:
   trigger:
   none
 
-schedules:
-- cron: '1 00 * * Mon,Tue,Wed,Thu,Fri'
-  displayName: Daily 0700 AM EDT Run
-  branches:
-    include:
-    - dev # pr l'instant 
-  always: true
+  schedules:
+  - cron: '1 00 * * Mon,Tue,Wed,Thu,Fri'
+    displayName: Daily 01:00 AM EDT Run
+    branches:
+      include:
+      - dev # pr l'instant 
+    always: true
 
 jobs:
   build-and-test:
