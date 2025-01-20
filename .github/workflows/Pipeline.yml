@@ -8,7 +8,7 @@ on:
     branches:
       - dev # pr l'instant
   schedule:
-    - cron: '0 1 * * 1,2,3,4,5,6,7' # Exécution à 01:00 AM EDT du lundi au vendredi
+    - cron: '0 1 * * 1-5'
       branches:
         - dev
       always: true
