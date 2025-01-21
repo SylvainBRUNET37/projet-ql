@@ -66,7 +66,8 @@ export default {
       }
     },
     goBack() {
-      this.$router.push('/admin/equipments'); // Assure-toi que cette route est correcte
+      this.$router.push('/home');
+      this.$emit('switchContent','EquipmentManagement');
     },
   },
 };
