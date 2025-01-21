@@ -4,25 +4,25 @@
     <form @submit.prevent="saveChanges" class="equipment-form">
       <div class="form-group">
         <label>Name:</label>
-        <input v-model="equipment.name" />
+        <input v-model="equipment.name" :readonly="!isAdmin" />
       </div>
       <div class="form-group">
         <label>Reference:</label>
-        <input v-model="equipment.ref" readonly />
+        <input v-model="equipment.ref" :readonly="!isAdmin" />
       </div>
       <div class="form-group">
         <label>Type:</label>
-        <input v-model="equipment.type" />
+        <input v-model="equipment.type" :readonly="!isAdmin"/>
       </div>
       <div class="form-group">
         <label>Status:</label>
-        <select v-model="equipment.status">
+        <select v-model="equipment.status" :disabled="!isAdmin">
           <option value="available">Available</option>
           <option value="unavailable">Unavailable</option>
         </select>
       </div>
       <div class="form-actions">
-        <button type="submit" class="button save">Save</button>
+        <button type="submit" class="button save" :disabled="!isAdmin">Save</button>
         <button type="button" class="button cancel" @click="goBack">Back</button>
       </div>
     </form>
@@ -39,6 +39,13 @@ export default {
       equipment: null,
     };
   },
+
+ computed: {
+    isAdmin(){
+     if(this.$route.path.startsWith("/admin/equipment/")) return true;
+     return false;
+    },
+ },
   async created() {
     const equipmentId = this.$route.params.id;
     const docRef = doc(db, 'equipments', equipmentId);
@@ -67,7 +74,6 @@ export default {
     },
     goBack() {
       this.$router.push('/home');
-      this.$emit('switchContent','EquipmentManagement');
     },
   },
 };

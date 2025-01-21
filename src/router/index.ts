@@ -9,7 +9,7 @@ import EquipmentDetails from '@/views/admin/EquipmentDetails.vue';
 import EquipmentManagement from '@/components/management/EquipmentManagement.vue';
 import UserDetails from '@/views/user/UserDetails.vue';
 import UserManagment from '@/components/management/UserManagment.vue';
-import EquipmentDetailsOnly from '@/views/EquipmentDetailsOnly.vue';
+import EquipmentInfos from '@/views/EquipmentInfos.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -64,12 +64,18 @@ const router = createRouter({
       component: UserDetails,
     },
     {
-
+      //see and modify the material
       path: '/admin/equipment/:id',
+      name: 'AdminEquipmentDetails',
+      component: EquipmentDetails,
+    },
+    {
+      //only to see the material
+      path: '/equipment/:id',
       name: 'EquipmentDetails',
       component: EquipmentDetails,
     },
-    
+
   ],
 })
 
