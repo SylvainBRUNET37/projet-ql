@@ -80,7 +80,7 @@ export default {
           type: 'select',
           placeholder: '',
           validate: validateNotEmpty,
-          errorMsg: 'Invalid reference',
+          errorMsg: 'Reference is required',
           required: true,
           options: [
             { value: 'AP', label: 'IOS' },
@@ -139,9 +139,12 @@ export default {
         const equipmentStore = EquipmentStore()
         await equipmentStore.addEquipment(this.form)
 
-        // Réinitialiser le formulaire après ajout
+        // Réinitialise le formulaire après ajout et affiche un message de succès
         Object.keys(this.form).forEach((key) => (this.form[key] = ''))
         alert('Equipment added successfully!')
+
+        // Redirige l'utilisateur vers la page d'accueil
+        this.$router.push('/home')
       } catch {
         alert('An error occurred while adding the equipment.')
       }

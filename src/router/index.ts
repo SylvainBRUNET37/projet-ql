@@ -64,10 +64,12 @@ const router = createRouter({
       component: UserDetails,
     },
     {
-      path: '/equipment/:id',
-      name: 'EquipmentDetailsOnly',
-      component: EquipmentDetailsOnly,
+
+      path: '/admin/equipment/:id',
+      name: 'EquipmentDetails',
+      component: EquipmentDetails,
     },
+    
   ],
 })
 

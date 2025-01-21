@@ -208,8 +208,10 @@ export default {
         } else {
           // Si l'inscription est réussie, afficher un message de succès et réinitialise le formulaire
           this.resetForm()
+          alert('User successfully registered!')
 
-          // TO DO : Rediriger l'utilisateur vers la page de consultation des utilisateurs
+          // Redirige l'utilisateur vers la page d'accueil
+          this.$router.push('/home')
         }
       }
     },

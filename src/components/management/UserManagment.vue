@@ -52,6 +52,9 @@
       </ul>
     </nav>
   </div>
+  <div class="add-button-container">
+      <button class="button is-primary" @click="handleAdd">Add</button>
+  </div>
 </template>
 
 <script lang="ts">
@@ -79,6 +82,10 @@ export default defineComponent({
 
     const isFirstPage = computed(() => currentPage.value === 1);
     const isLastPage = computed(() => currentPage.value === totalPages.value);
+
+    const handleAdd = () => {
+      router.push('/register')
+    }
 
     // Fetch users from Firestore
     const fetchUsers = async () => {
@@ -140,12 +147,20 @@ export default defineComponent({
       viewUser,
       goToPreviousPage,
       goToNextPage,
+      handleAdd,
     };
   },
 });
 </script>
 
 <style scoped>
+.add-button-container {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: flex-end;
+}
+
+
 .table {
   width: 100%;
   border-collapse: collapse;
