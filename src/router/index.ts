@@ -9,7 +9,7 @@ import EquipmentDetails from '@/views/admin/EquipmentDetails.vue';
 import EquipmentManagement from '@/components/management/EquipmentManagement.vue';
 import UserDetails from '@/views/user/UserDetails.vue';
 import UserManagment from '@/components/management/UserManagment.vue';
-import EquipmentInfos from '@/views/EquipmentInfos.vue';
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),

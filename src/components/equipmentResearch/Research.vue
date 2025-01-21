@@ -50,15 +50,14 @@
 </template>
 
 <script lang="ts">
+import { BorrowStore } from '@/stores/BorrowStore';
 import { EquipmentStore } from '@/stores/EquipmentStore';
 import { computed, onMounted, ref } from 'vue';
-import { threadId } from 'worker_threads';
 
 export default {
   name: 'EquipmentResearch',
   emits: ["switchContent", "setId"],
   setup(){
-   
     const equipmentStore = EquipmentStore();
     const allEquipments = computed(() => {
       return equipmentStore.equipment;

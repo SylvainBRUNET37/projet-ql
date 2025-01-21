@@ -14,16 +14,28 @@
         <label>Type:</label>
         <input v-model="equipment.type" :readonly="!isAdmin"/>
       </div>
-      <div class="form-group">
+      <div class="form-group" >
         <label>Status:</label>
         <select v-model="equipment.status" :disabled="!isAdmin">
           <option value="available">Available</option>
           <option value="unavailable">Unavailable</option>
         </select>
       </div>
+      <div v-if="!isAdmin" class="form-actions">
+        <div class="form-group">
+          <label>Start Date:</label>
+          <input type="date" v-model="startDate" />
+        </div>
+        <div class="form-group">
+          <label>End Date:</label>
+          <input type="date" v-model="endDate" />
+        </div>
+      </div>
       <div class="form-actions">
-        <button type="submit" class="button save" :disabled="!isAdmin">Save</button>
         <button type="button" class="button cancel" @click="goBack">Back</button>
+        <button type="button" class="button is-primary" @click="borrowEquipment(startDate, endDate)" :disabled="equipment.status === 'unavailable'">Borow</button>
+        <button type="submit" class="button save" :disabled="!isAdmin">Save</button>
+        
       </div>
     </form>
   </div>
@@ -32,15 +44,51 @@
 <script>
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { db } from '@/firebase';
+import { BorrowStore } from '../../stores/BorrowStore';
+import { UserStore } from '../../stores/UserStore'
+import { onMounted } from 'vue';
+
 
 export default {
+  setup(){ 
+  const userStore = UserStore(); // Utilisez votre store Pinia
+  // Appeler la fonction pour récupérer les données de l'utilisateur
+  onMounted(async () => {
+    await userStore.getUserData();
+  });
+
+  // Récupérer l'ID de l'utilisateur
+  const getUserId = () => {
+   sessionStorage.getItem('uid');
+   console.log(sessionStorage.getItem("uid"));
+  };
+
+  // Votre fonction d'emprunt
+  const borrowEquipment = (startDate, endDate) => {
+    const userId = getUserId();
+    if (!userId) {
+      console.error("User is not logged in!");
+      return;
+    }
+    console.log("User ID:", userId);
+    if (!this.equipment) {
+      console.error("Equipment is not loaded yet!");
+      return;
+    }
+    const equipmentId = this.equipment.id; // Récupère l'id de l'équipement
+    console.log("APPEL DU BORROW AVEC : ", this.userId, equipmentId, startDate, endDate);
+    // Appeler la méthode du store pour emprunter l'équipement
+    this.errorMessage = this.$store.borrowEquipment(this.userId, equipmentId, startDate, endDate);
+    }
+  return { borrowEquipment };
+  },
   data() {
     return {
       equipment: null,
+      errorMessage:''
     };
   },
-
- computed: {
+  computed: {
     isAdmin(){
      if(this.$route.path.startsWith("/admin/equipment/")) return true;
      return false;
@@ -161,4 +209,6 @@ export default {
 .button.cancel:hover {
   background-color: #d32f2f;
 }
+
+
 </style>

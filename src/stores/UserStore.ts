@@ -16,6 +16,7 @@ import { FirebaseError } from 'firebase/app'
 export const UserStore = defineStore('user', () => {
   // Référence pour stocker les informations utilisateur
   const userData: Ref<DocumentData | null> = ref(null)
+ 
 
   // Référence pour stocker les messages d'erreur
   const errorMessage: Ref<string> = ref('')
@@ -37,7 +38,7 @@ export const UserStore = defineStore('user', () => {
       // Récupère les informations utilisateur depuis Firestore
       const userDocRef = doc(db, 'users', currentUser.uid)
       const userDoc = await getDoc(userDocRef)
-
+      sessionStorage.setItem('uid', currentUser.uid);
       // Stocke les données utilisateur dans userData
       if (userDoc.exists()) {
         userData.value = userDoc.data()
