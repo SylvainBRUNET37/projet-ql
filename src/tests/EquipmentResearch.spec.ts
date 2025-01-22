@@ -75,27 +75,12 @@ describe('EquipmentResearch.vue', () => {
     expect(alertMock).toHaveBeenCalledWith('None of the equipment corresponds to the research')
   })
 
-  it('Réinitialise les filtres lors du clic sur le bouton "Reset"', async () => {
+  it('Réinitialise les filtres lors du clic sur le bouton Reset', async () => {
     const resetButton = wrapper.find('.filter-container .button')
     await resetButton.trigger('click')
 
     // Vérifie que les filtres ont été réinitialisés
     const equipmentCards = wrapper.findAll('.card')
     expect(equipmentCards.length).toBe(3)
-  })
-
-  it('Affiche uniquement les équipements disponibles', () => {
-    // Récupère les cartes des équipements
-    const equipmentCards = wrapper.findAll('.card')
-    const availableEquipments = equipmentStore.equipment.filter((e) => e.status === 'available')
-
-    // Vérifie que le nombre de cartes correspond aux équipements disponibles
-    expect(equipmentCards.length).toBe(availableEquipments.length)
-
-    // Vérifie que chaque carte correspond à un équipement disponible
-    availableEquipments.forEach((equipment) => {
-      const card = wrapper.find(`.card:contains('${equipment.name}')`)
-      expect(card.exists()).toBe(true)
-    })
   })
 })

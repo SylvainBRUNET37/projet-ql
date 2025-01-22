@@ -85,7 +85,7 @@ export default {
     })
 
     onMounted(() => {
-      equipmentStore.getAllEquipment()
+      equipmentStore.getAvailableEquipments()
     })
 
     const allTypes = computed(() => {

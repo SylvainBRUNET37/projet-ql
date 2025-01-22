@@ -44,7 +44,6 @@ export const EquipmentStore = defineStore('equipment', () => {
         id: doc.id,
         ...doc.data(),
       }))
-
       errorMessage.value = ''
     } catch (error: FirebaseError | unknown) {
       // Modifie le message d'erreur en fonction du type d'erreur
@@ -71,13 +70,37 @@ export const EquipmentStore = defineStore('equipment', () => {
   }
 
   /**
-   * Récupère les équipements empruntés par un utilisateur spécifique.
+   * Récupère les équipements disponibles (status "available").
    *
-   * @param {string} userId - ID de l'utilisateur.
-   * @returns {DocumentData[]} - Liste des équipements empruntés.
+   * @returns {Promise<void>} - Promesse qui se résout une fois le statut mis à jour ou en cas d'erreur.
    */
-  const getUserEquipments = (userId: string): DocumentData[] => {
-    return equipment.value.filter((item) => item.BorrowedId === userId)
+  const getAvailableEquipments = async (): Promise<void> => {
+    // Référence à la collection des équipements
+    const equipmentCollection = collection(db, 'equipments')
+
+    // Requête pour récupérer les équipements disponibles
+    const q = query(equipmentCollection, where('status', '==', 'available'))
+    try {
+      // Récupère les équipements disponibles
+      const querySnapshot = await getDocs(q)
+      equipment.value = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }))
+    } catch (error: FirebaseError | unknown) {
+      if (error instanceof FirebaseError) {
+        switch (error.code) {
+          case 'not-found':
+            errorMessage.value = 'Equipment not found.'
+            break
+          default:
+            errorMessage.value = 'Failed to update equipment status. Please try again later.'
+        }
+      } else {
+        errorMessage.value = 'Failed to update equipment status. Please try again later.'
+        console.error(error)
+      }
+    }
   }
 
   /**
@@ -252,10 +275,10 @@ export const EquipmentStore = defineStore('equipment', () => {
     equipment,
     errorMessage,
     getAllEquipment,
-    getUserEquipments,
     deleteEquipment,
     addEquipment,
     disableEquipment,
     enableEquipment,
+    getAvailableEquipments,
   }
 })
