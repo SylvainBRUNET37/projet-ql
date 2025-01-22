@@ -1,14 +1,15 @@
-import { mount } from '@vue/test-utils'
+import { mount, VueWrapper } from '@vue/test-utils'
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import AuthFormView from '@/views/AuthFormView.vue'
 import { AuthStore } from '@/stores/AuthStore'
 import { createPinia, setActivePinia } from 'pinia'
+import type { DocumentData } from 'firebase/firestore'
 
 //Fichier qui est concerné par le test
 describe('AuthFormView.vue', () => {
   //wrapper représente le component testé, authStore le système d'authentification
-  let wrapper: any
-  let authStore: any
+  let wrapper: VueWrapper<InstanceType<typeof AuthFormView>>
+  let authStore: ReturnType<typeof AuthStore>
 
   //Avant chaque test, on initialise wrapper et authStore, Pinia est obligatoire pour bien initialiser les stores
   beforeEach(() => {
@@ -96,7 +97,7 @@ describe('AuthFormView.vue', () => {
     const submitButton = wrapper.find('button[type="submit"]')
 
     // On va mocker le système d'authentification
-    const loginMock = vi.spyOn(authStore, 'login').mockImplementation(() => {
+    vi.spyOn(authStore, 'login').mockImplementation(() => {
       // Simule une BDD vide en lançant une erreur
       return Promise.reject(new Error("User doesn't exist"))
     })
@@ -124,13 +125,13 @@ describe('AuthFormView.vue', () => {
     const passwordInput = wrapper.find('input[type="password"]')
     const submitButton = wrapper.find('button[type="submit"]')
 
-    const loginMock = vi.spyOn(authStore, 'login').mockImplementation(() => {
-      const users: any[] = [{ email: 'emailvalide@gmail.com', password: '123456' }]
+    vi.spyOn(authStore, 'login').mockImplementation(() => {
+      const users: DocumentData[] = [{ email: 'emailvalide@gmail.com', password: '123456' }]
       const user = users.find(
         (user) => user.email === 'emailvalide@gmail.com' && user.password === '123456',
       )
 
-      authStore.userData = user
+      authStore.userData = user ?? null
 
       return Promise.resolve()
     })

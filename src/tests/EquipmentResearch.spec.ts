@@ -1,4 +1,4 @@
-import { mount } from '@vue/test-utils'
+import { mount, VueWrapper } from '@vue/test-utils'
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import EquipmentResearch from '@/components/equipmentResearch/Research.vue'
 import { EquipmentStore } from '@/stores/EquipmentStore'
