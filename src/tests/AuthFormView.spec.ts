@@ -4,6 +4,7 @@ import AuthFormView from '@/views/AuthFormView.vue'
 import { AuthStore } from '@/stores/AuthStore'
 import { createPinia, setActivePinia } from 'pinia'
 import type { DocumentData } from 'firebase/firestore'
+import type { Router as VueRouter } from 'vue-router'
 
 //Fichier qui est concerné par le test
 describe('AuthFormView.vue', () => {
@@ -102,7 +103,14 @@ describe('AuthFormView.vue', () => {
       return Promise.reject(new Error("User doesn't exist"))
     })
 
-    wrapper.vm.$router = { push: vi.fn() } // Simule un router
+    // Simule un router
+    wrapper.vm.$router = {
+      push: vi.fn(),
+      currentRoute: {},
+      options: {},
+      listening: false,
+      addRoute: vi.fn(),
+    } as unknown as VueRouter
 
     // On met les informations et on trigger l'événement submit du bouton
     await emailInput.setValue('emailvalide@gmail.com')
@@ -136,7 +144,14 @@ describe('AuthFormView.vue', () => {
       return Promise.resolve()
     })
 
-    wrapper.vm.$router = { push: vi.fn() }
+    // Simule un router
+    wrapper.vm.$router = {
+      push: vi.fn(),
+      currentRoute: {},
+      options: {},
+      listening: false,
+      addRoute: vi.fn(),
+    } as unknown as VueRouter
 
     await emailInput.setValue('emailvalide@gmail.com')
     await emailInput.trigger('blur')
@@ -149,6 +164,6 @@ describe('AuthFormView.vue', () => {
     expect(authStore.login).toHaveBeenCalledWith('emailvalide@gmail.com', '123456')
     expect(wrapper.vm.errorMessage).toBe('') //Pas de message d'erreur
     expect(authStore.userData).toEqual({ email: 'emailvalide@gmail.com', password: '123456' })
-    expect(wrapper.vm.$router.push).toHaveBeenCalledWith('/home') //Le changement de route vers /home doit être détecté
+    expect(wrapper.vm.$router.push).toHaveBeenCalledWith('/home') // On est bien redirigé vers /home
   })
 })
