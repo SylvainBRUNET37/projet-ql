@@ -3,6 +3,7 @@ import { ref, type Ref } from 'vue'
 import { type DocumentData, addDoc, collection, getDocs, query, where } from 'firebase/firestore'
 import { db } from '@/firebase' // Assurez-vous que `db` est correctement configuré pour Firestore
 import type { promises } from 'dns'
+import { CAlert } from '@coreui/vue'
 
 export const BorrowStore = defineStore('borrow', () => {
   // Références réactives
@@ -66,47 +67,42 @@ export const BorrowStore = defineStore('borrow', () => {
  
    * @param userId string
    * @param equipemntId string
-   * @param start string de la date de départ
-   * @param end string de la date de fin
+   * @param start number de la date de départ
+   * @param end number de la date de fin
    */
-  const borrowEquipment = async(userId: string, equipemntId:string, start: string , end: string): Promise<string> => {
+  const borrowEquipment = async(userId: string, equipemntId:string, start: number , end: number): Promise<string> => {
     try{
-      //caluls des dates
-      const currentDate = new Date();
-      const startDate = new Date(start);
-      const endDate = new Date(end);
-      const plusOneYear = new Date(currentDate);
-      plusOneYear.setFullYear(currentDate.getFullYear() + 1);
-
-      //vérifie toutes les contraintessur les dates
-      if (startDate.getTime() < currentDate.getTime() || startDate.getTime() > plusOneYear.getTime()) {
-      
-        throw new Error(
-          "The start date must not exceed 1 year from the current date and and cannot already have passed "
-        );
-      }else if(endDate.getTime() > (startDate.setMonth(startDate.getMonth()+ 6))){
-        throw new Error(
-          "The start date must not exceed 1 year from the current date and and cannot already have passed "
-        );
-      }else if (endDate.getTime() < startDate.getTime()){
-        throw new Error(
-          "Start date must be before end date "
-        );
-      }else if (endDate.getTime() > startDate.setMonth(startDate.getMonth() + 6)){
-        throw new Error(
-          "Borrowing period must not exceed 6 months "
-        );
-      }else {
-        //emprunt
-        await addDoc(collection(db, 'borrow'), {
-          userId: userId,
-          equipmentId: equipemntId,
-          borrowDate: startDate, 
-          returnDate: endDate, 
-        });
-        return "";
+      const currentDate = Date.now(); // Date actuelle en millisecondes
+      const oneYearLater = currentDate + 365 * 24 * 60 * 60 * 1000; // +1 an
+      const sixMonthsInMillis = 6 * 30 * 24 * 60 * 60 * 1000; // 6 mois
+  
+      // Vérifications des contraintes sur les dates
+      if (start < currentDate) {
+        throw new Error("The start date cannot be in the past.");
       }
-
+  
+      if (start > oneYearLater) {
+        throw new Error("The start date must not exceed 1 year from the current date.");
+      }
+  
+      if (end < start) {
+        throw new Error("The end date must be after the start date.");
+      }
+  
+      if (end > start + sixMonthsInMillis) {
+        throw new Error("The borrowing period must not exceed 6 months.");
+      }
+      
+      // Ajout de l'emprunt dans Firestore
+      alert("BORROW");
+      await addDoc(collection(db, "borrow"), {
+        userId: userId,
+        equipmentId: equipemntId,
+        borrowDate: start,
+        returnDate: end,
+      });
+  
+      return "";
     } catch (error) {
       console.error('Erreur lors de la récupération des équipements empruntés:', error);
       return String(error);

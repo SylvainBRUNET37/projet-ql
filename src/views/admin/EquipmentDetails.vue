@@ -1,128 +1,160 @@
 <template>
   <div class="form-container">
     <h1>Equipment Details</h1>
-    <form @submit.prevent="saveChanges" class="equipment-form">
-      <div class="form-group">
-        <label>Name:</label>
-        <input v-model="equipment.name" :readonly="!isAdmin" />
-      </div>
-      <div class="form-group">
-        <label>Reference:</label>
-        <input v-model="equipment.ref" :readonly="!isAdmin" />
-      </div>
-      <div class="form-group">
-        <label>Type:</label>
-        <input v-model="equipment.type" :readonly="!isAdmin"/>
-      </div>
-      <div class="form-group" >
-        <label>Status:</label>
-        <select v-model="equipment.status" :disabled="!isAdmin">
-          <option value="available">Available</option>
-          <option value="unavailable">Unavailable</option>
-        </select>
-      </div>
-      <div v-if="!isAdmin" class="form-actions">
+    <div v-if="equipment">
+      <form @submit.prevent="saveChanges" class="equipment-form">
         <div class="form-group">
-          <label>Start Date:</label>
-          <input type="date" v-model="startDate" />
+          <label>Name:</label>
+          <input v-model="equipment.name" :readonly="!isAdmin" />
         </div>
         <div class="form-group">
-          <label>End Date:</label>
-          <input type="date" v-model="endDate" />
+          <label>Reference:</label>
+          <input v-model="equipment.ref" :readonly="!isAdmin" />
         </div>
-      </div>
-      <div class="form-actions">
-        <button type="button" class="button cancel" @click="goBack">Back</button>
-        <button type="button" class="button is-primary" @click="borrowEquipment(startDate, endDate)" :disabled="equipment.status === 'unavailable'">Borow</button>
-        <button type="submit" class="button save" :disabled="!isAdmin">Save</button>
-        
-      </div>
-    </form>
+        <div class="form-group">
+          <label>Type:</label>
+          <input v-model="equipment.type" :readonly="!isAdmin" />
+        </div>
+        <div class="form-group">
+          <label>Status:</label>
+          <select v-model="equipment.status" :disabled="!isAdmin">
+            <option value="available">Available</option>
+            <option value="unavailable">Unavailable</option>
+          </select>
+        </div>
+        <div v-if="!isAdmin" class="form-actions">
+          <div class="form-group">
+            <label>Start Date:</label>
+            <input type="date" v-model="startDate" />
+          </div>
+          <div class="form-group">
+            <label>End Date:</label>
+            <input type="date" v-model="endDate" />
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="button cancel" @click="goBack">Back</button>
+          <button
+            type="button"
+            class="button is-primary"
+            @click="borrowEquipment"
+            :disabled="equipment.status === 'unavailable'"
+          >
+            Borrow
+          </button>
+          <button type="submit" class="button save" :disabled="!isAdmin">Save</button>
+        </div>
+      </form>
+    </div>
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { db } from '@/firebase';
 import { BorrowStore } from '../../stores/BorrowStore';
-import { UserStore } from '../../stores/UserStore'
-import { onMounted } from 'vue';
-
+import { UserStore } from '../../stores/UserStore';
+import { onMounted, ref, computed } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
 
 export default {
-  setup(){ 
-  const userStore = UserStore(); // Utilisez votre store Pinia
-  // Appeler la fonction pour récupérer les données de l'utilisateur
-  onMounted(async () => {
-    await userStore.getUserData();
-  });
+  setup() {
+    const userStore = UserStore();
+    const borrowStore = BorrowStore();
+    const route = useRoute();
+    const router = useRouter();
+    const equipmentId = route.params.id.toString();
 
-  // Récupérer l'ID de l'utilisateur
-  const getUserId = () => {
-   sessionStorage.getItem('uid');
-   console.log(sessionStorage.getItem("uid"));
-  };
+    const equipment = ref(null);
+    const errorMessage = ref("");
+    const startDate = ref<string | null>(null);
+    const endDate = ref<string | null>(null);
 
-  // Votre fonction d'emprunt
-  const borrowEquipment = (startDate, endDate) => {
-    const userId = getUserId();
-    if (!userId) {
-      console.error("User is not logged in!");
-      return;
-    }
-    console.log("User ID:", userId);
-    if (!this.equipment) {
-      console.error("Equipment is not loaded yet!");
-      return;
-    }
-    const equipmentId = this.equipment.id; // Récupère l'id de l'équipement
-    console.log("APPEL DU BORROW AVEC : ", this.userId, equipmentId, startDate, endDate);
-    // Appeler la méthode du store pour emprunter l'équipement
-    this.errorMessage = this.$store.borrowEquipment(this.userId, equipmentId, startDate, endDate);
-    }
-  return { borrowEquipment };
-  },
-  data() {
-    return {
-      equipment: null,
-      errorMessage:''
-    };
-  },
-  computed: {
-    isAdmin(){
-     if(this.$route.path.startsWith("/admin/equipment/")) return true;
-     return false;
-    },
- },
-  async created() {
-    const equipmentId = this.$route.params.id;
-    const docRef = doc(db, 'equipments', equipmentId);
-    const docSnap = await getDoc(docRef);
+    const borrowEquipment = async () => {
+      const userId = userStore.getUserId();
 
-    if (docSnap.exists()) {
-      this.equipment = { id: docSnap.id, ...docSnap.data() };
-    } else {
-      alert('Equipment not found!');
-      this.goBack();
-    }
-  },
-  methods: {
-    async saveChanges() {
-      try {
-        const docRef = doc(db, 'equipments', this.equipment.id);
-        // Éviter d'envoyer une référence modifiée à Firestore
-        const { ref, ...updatedFields } = this.equipment;
-        await updateDoc(docRef, updatedFields);
-        alert('Changes saved successfully!');
-        this.goBack();
-      } catch (error) {
-        console.error('Error while saving changes:', error);
-        alert('Unable to save changes.');
+      if (!userId) {
+        alert("You must be logged in to borrow equipment.");
+        return;
       }
-    },
-    goBack() {
-      this.$router.push('/home');
-    },
+
+      if (!equipment.value) {
+        alert("Equipment details are not loaded yet. Please try again later.");
+        return;
+      }
+
+      if (!startDate.value || !endDate.value) {
+        alert("Please provide both start and end dates.");
+        return;
+      }
+
+      const startDateMs = Date.parse(startDate.value);
+      const endDateMs = Date.parse(endDate.value);
+      console.log(startDateMs, "   ", endDateMs);
+      try {
+        await borrowStore.borrowEquipment(
+          userId,
+          equipmentId,
+          startDateMs,
+          endDateMs,
+        );
+        alert("Equipment borrowed successfully!");
+      } catch (error) {
+        console.error("Error borrowing equipment:", error);
+        alert("Unable to borrow equipment. Please try again later.");
+      }
+    };
+
+    const loadEquipment = async () => {
+      try {
+        const docRef = doc(db, "equipments", equipmentId);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+          equipment.value = { id: docSnap.id, ...docSnap.data() };
+        } else {
+          alert("Equipment not found!");
+          router.push("/home");
+        }
+      } catch (error) {
+        console.error("Error loading equipment:", error);
+      }
+    };
+
+    const saveChanges = async () => {
+      if (!equipment.value) {
+        alert("No equipment loaded to save changes.");
+        return;
+      }
+
+      try {
+        const docRef = doc(db, "equipments", equipment.value.id);
+        const { ref, ...updatedFields } = equipment.value; // Exclude unnecessary fields
+        await updateDoc(docRef, updatedFields);
+        alert("Changes saved successfully!");
+        goBack();
+      } catch (error) {
+        console.error("Error while saving changes:", error);
+        alert("Unable to save changes.");
+      }
+    };
+
+    const goBack = () => {
+      router.push("/home");
+    };
+
+    onMounted(loadEquipment);
+
+    return {
+      equipment,
+      errorMessage,
+      borrowEquipment,
+      saveChanges,
+      goBack,
+      startDate,
+      endDate,
+      isAdmin: computed(() => route.path.startsWith("/admin/equipment/")),
+    };
   },
 };
 </script>

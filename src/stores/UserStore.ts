@@ -38,7 +38,7 @@ export const UserStore = defineStore('user', () => {
       // Récupère les informations utilisateur depuis Firestore
       const userDocRef = doc(db, 'users', currentUser.uid)
       const userDoc = await getDoc(userDocRef)
-      sessionStorage.setItem('uid', currentUser.uid);
+      
       // Stocke les données utilisateur dans userData
       if (userDoc.exists()) {
         userData.value = userDoc.data()
@@ -71,6 +71,19 @@ export const UserStore = defineStore('user', () => {
     }
   }
 
+  
+   
+
+const getUserId = (): string | null => {
+  // Vérifie si un utilisateur est connecté
+  const currentUser = auth.currentUser
+  if (currentUser) {
+    return currentUser.uid} else {
+    errorMessage.value = 'No user is logged in.'
+    return null
+  }
+}
+
   // Retourne les données utilisateur, les erreurs et la fonction de récupération
-  return { userData, errorMessage, getUserData }
+  return { userData, errorMessage, getUserData , getUserId}
 })
