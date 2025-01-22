@@ -5,6 +5,7 @@ import { EquipmentStore } from '@/stores/EquipmentStore'
 import { createPinia, setActivePinia } from 'pinia'
 import { VueWrapper } from '@vue/test-utils'
 
+// SC06 - Recherche d'un matériel
 describe('EquipmentResearch.vue', () => {
   let wrapper: VueWrapper<InstanceType<typeof EquipmentResearch>>
   let equipmentStore: ReturnType<typeof EquipmentStore>
@@ -21,30 +22,12 @@ describe('EquipmentResearch.vue', () => {
     wrapper = mount(EquipmentResearch)
   })
 
+  // TC001
   it('Rend correctement le composant', () => {
     expect(wrapper.exists()).toBe(true)
   })
 
-  it('Affiche correctement tous les types uniques', () => {
-    const tags = wrapper.findAll('.tag')
-
-    // 2 types doivent apparaitre : "Tools" et "Laptop"
-    expect(tags.length).toBe(2)
-    expect(tags[0].text()).toBe('Tools')
-    expect(tags[1].text()).toBe('Laptop')
-  })
-
-  it('Filtre les équipements par type lors du clic sur un tag', async () => {
-    const toolsTag = wrapper.find('.tag')
-    await toolsTag.trigger('click')
-
-    // Seuls les équipements de type "Tools" doivent être affichés
-    const equipmentCards = wrapper.findAll('.card')
-    expect(equipmentCards.length).toBe(2)
-    expect(equipmentCards[0].text()).toContain('Drill')
-    expect(equipmentCards[1].text()).toContain('Hammer')
-  })
-
+  // TC002
   it('Recherche les équipements par nom', async () => {
     // Remplir le champ de recherche et simuler la touche "Entrée"
     const searchInput = wrapper.find('input[type="text"]')
@@ -62,6 +45,7 @@ describe('EquipmentResearch.vue', () => {
     expect(equipmentCards[0].text()).toContain('Asus Laptop')
   })
 
+  // TC003
   it("Affiche un message d'alerte si aucun équipement ne correspond à la recherche", async () => {
     const alertMock = vi.spyOn(window, 'alert').mockImplementation(() => {}) // Mock alert
 
@@ -75,6 +59,19 @@ describe('EquipmentResearch.vue', () => {
     expect(alertMock).toHaveBeenCalledWith('None of the equipment corresponds to the research')
   })
 
+  // TC004
+  it('Filtre les équipements par type lors du clic sur un tag', async () => {
+    const toolsTag = wrapper.find('.tag')
+    await toolsTag.trigger('click')
+
+    // Seuls les équipements de type "Tools" doivent être affichés
+    const equipmentCards = wrapper.findAll('.card')
+    expect(equipmentCards.length).toBe(2)
+    expect(equipmentCards[0].text()).toContain('Drill')
+    expect(equipmentCards[1].text()).toContain('Hammer')
+  })
+
+  // TC005
   it('Réinitialise les filtres lors du clic sur le bouton Reset', async () => {
     const resetButton = wrapper.find('.filter-container .button')
     await resetButton.trigger('click')
@@ -82,5 +79,15 @@ describe('EquipmentResearch.vue', () => {
     // Vérifie que les filtres ont été réinitialisés
     const equipmentCards = wrapper.findAll('.card')
     expect(equipmentCards.length).toBe(3)
+  })
+
+  // TC006
+  it('Affiche correctement tous les types uniques', () => {
+    const tags = wrapper.findAll('.tag')
+
+    // 2 types doivent apparaitre : "Tools" et "Laptop"
+    expect(tags.length).toBe(2)
+    expect(tags[0].text()).toBe('Tools')
+    expect(tags[1].text()).toBe('Laptop')
   })
 })
