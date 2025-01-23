@@ -21,7 +21,7 @@
           <td>{{ equipment.type }}</td>
           <td>{{ equipment.description }}</td>
           <td>
-            <button class="button is-link" @click="$router.push(`/admin/equipment/${equipment.id}`)">Details</button>
+            <button class="button is-link" @click="$router.push(`admin/equipment/${equipment.id}`)">Details</button>
           </td>
           <td>
             <button

@@ -1,3 +1,4 @@
+
 <template>
     <CSidebar>
         <CSidebarHeader class="border-bottom">
@@ -8,20 +9,17 @@
         <CNavItem href="#" @click="$emit('switchContent', 'EquipmentResearchView')">
             <CIcon customClassName="nav-icon" icon="cil-speedometer"/>Home page
         </CNavItem>
-        <CNavGroup>
+        <CNavGroup v-if="admin">
             <template #togglerContent>
-            <CIcon customClassName="nav-icon" icon="cil-puzzle"/> Equipement
+            <CIcon customClassName="nav-icon" icon="cil-puzzle"/> Management
             </template>
-            <CNavItem  href="#" @click="$emit('switchContent', 'UserEquipment')"> 
-            <span class="nav-icon"><span class="nav-icon-bullet"></span></span> My equipement
+            <CNavItem  href="#" v-if="admin" @click="$emit('switchContent', 'UserManagment')"> 
+            <span class="nav-icon"><span class="nav-icon-bullet"></span></span> User Management
             </CNavItem>
             <CNavItem href="#" v-if="admin" @click="$emit('switchContent', 'EquipmentManagement')">
             <span class="nav-icon"><span class="nav-icon-bullet" ></span></span> Equipement management
             </CNavItem>
         </CNavGroup>
-        <CNavItem href="#" v-if="admin" @click="$emit('switchContent', 'UserManagment')">
-            <CIcon customClassName="nav-icon" icon="cil-speedometer"/> User management
-        </CNavItem>
         <CNavItem href="#" @click="$emit('switchContent', 'UserProfileView')">
             <CIcon customClassName="nav-icon" icon="cil-speedometer" /> Profile
         </CNavItem>

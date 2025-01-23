@@ -3,10 +3,7 @@
     <div class="layout">
         <Sidebar @switchContent="switchContent"/>
         <div class="content">
-          <component  :is="currentContent" 
-                      :currentId="currentId"
-                      @switchContent="handleContent"
-                      @setId="handleId">
+          <component  :is="currentContent">
           </component>
         </div>
     </div>
@@ -35,7 +32,6 @@ export default {
   data(){
     return {
         currentContent :"EquipmentResearchView",
-        currentId:null,
     }
   },
   methods: {
@@ -49,12 +45,7 @@ export default {
         console.error("error type of content ")
       }
     },
-    setId(id){
-      if(id && typeof id === 'string'){
-        this.currentId = id;
-        console.log("ID SET TO ", this.currentId)
-      }
-    }
+  
   },
 };
 </script>
@@ -72,8 +63,10 @@ export default {
 
 .content{
   display: flex;
+  flex: 1;  
+  flex-grow: 1;
   flex-direction: column;
   width: 100%;
-  height: 100%;
+  min-height: 100vh;
 }
 </style>
