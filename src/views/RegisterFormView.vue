@@ -203,14 +203,18 @@ export default {
           this.form.password,
         )
 
-        const { errorMessage } = RegisterStore()
+        const errorMessage = RegisterStore().errorMessage
 
         // Gestion des erreurs de l'inscription
-        if (errorMessage !== '') {
-          this.errors.email = 'The email already corresponds to a user'
+        if (errorMessage === 'Email is already in use.') {
+          this.errors.email = 'Email is already in use.'
         } else {
-          // Si l'inscription est réussie, affiche un message de succès
-          alert('User successfully registered!')
+          if (errorMessage === 'The account has been reactivated.') {
+            alert('User successfully reactivated!')
+            this.errors.email = 'The account has been reactivated.'
+          } else {
+            alert('User successfully registered!')
+          }
 
           // Redirige l'utilisateur vers la page d'accueil
           this.$router.push('/home')

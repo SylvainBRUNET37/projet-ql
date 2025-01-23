@@ -67,6 +67,7 @@ export const RegisterStore = defineStore('register', () => {
         // Vérifier si le statut est inactif pour réactiver le compte
         if (userDoc.status === 'inactive') {
           const userDocRef = querySnapshot.docs[0].ref
+          userData.value = { lastName, firstName, role, email: normalizedEmail }
           await updateDoc(userDocRef, { status: 'active' })
           errorMessage.value = 'The account has been reactivated.'
           return
