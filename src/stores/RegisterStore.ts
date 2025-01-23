@@ -8,12 +8,17 @@ import { defineStore } from 'pinia'
 import { ref, type Ref } from 'vue'
 import { auth, db } from '../firebase'
 import { FirebaseError } from 'firebase/app'
+import { createUserWithEmailAndPassword, type User } from 'firebase/auth'
 import {
-  createUserWithEmailAndPassword,
-  fetchSignInMethodsForEmail,
-  type User,
-} from 'firebase/auth'
-import { doc, setDoc, getDoc, updateDoc, type DocumentData } from 'firebase/firestore'
+  doc,
+  setDoc,
+  updateDoc,
+  query,
+  where,
+  collection,
+  getDocs,
+  type DocumentData,
+} from 'firebase/firestore'
 
 /**
  * Gère l'état d'enregistrement d'un utilisateur et l'ajout des données dans Firestore.
@@ -27,9 +32,6 @@ export const RegisterStore = defineStore('register', () => {
 
   // Référence pour stocker les messages d'erreur
   const errorMessage: Ref<string> = ref('')
-
-  // Référence pour l'état de chargement pendant l'enregistrement
-  const isLoading: Ref<boolean> = ref(false)
 
   /**
    * Enregistre un nouvel utilisateur via Firebase Authentication et ajoute ses données dans Firestore.
@@ -50,28 +52,32 @@ export const RegisterStore = defineStore('register', () => {
     password: string,
   ): Promise<void> => {
     try {
-      // Vérifie si l'email est déjà utilisé
-      const signInMethods = await fetchSignInMethodsForEmail(auth, email)
-      if (signInMethods.length > 0) {
-        // Récupère les données utilisateur depuis Firestore
-        const existingUserDocRef = doc(db, 'users', email)
-        const userDoc = await getDoc(existingUserDocRef)
+      // Normalise l'email
+      const normalizedEmail = email.trim().toLowerCase()
 
-        // Modifie le message d'erreur si l'utilisateur est inactif
-        if (userDoc.exists() && userDoc.data()?.status === 'inactive') {
-          await updateDoc(existingUserDocRef, { status: 'active' })
+      // Vérifie si un utilisateur existe déjà avec cet email
+      const usersRef = collection(db, 'users')
+      const q = query(usersRef, where('email', '==', normalizedEmail))
+      const querySnapshot = await getDocs(q)
 
+      // Si l'utilisateur existe déjà, vérifie si le statut est inactif pour le réactiver
+      if (!querySnapshot.empty) {
+        const userDoc = querySnapshot.docs[0].data()
+
+        // Vérifier si le statut est inactif pour réactiver le compte
+        if (userDoc.status === 'inactive') {
+          const userDocRef = querySnapshot.docs[0].ref
+          await updateDoc(userDocRef, { status: 'active' })
           errorMessage.value = 'The account has been reactivated.'
           return
         } else {
-          // Modifie le message d'erreur si l'email est déjà utilisé
           errorMessage.value = 'Email is already in use.'
           return
         }
       }
 
       // Crée un nouvel utilisateur avec email et mot de passe
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password)
+      const userCredential = await createUserWithEmailAndPassword(auth, normalizedEmail, password)
       user.value = userCredential.user
 
       // Récupère l'ID de l'utilisateur
@@ -84,15 +90,15 @@ export const RegisterStore = defineStore('register', () => {
         lastName,
         firstName,
         role,
-        email,
+        email: normalizedEmail,
         status: 'active',
       })
 
-      // Récupère les données utilisateur et les stocke dans le store
-      userData.value = { lastName, firstName, role, email }
+      // Stocke les données utilisateur dans le store
+      userData.value = { lastName, firstName, role, email: normalizedEmail }
       errorMessage.value = ''
     } catch (error: FirebaseError | unknown) {
-      // Modifie le message d'erreur en fonction du type d'erreur
+      // Gestion des erreurs
       if (error instanceof FirebaseError) {
         switch (error.code) {
           case 'auth/network-request-failed':
@@ -108,7 +114,6 @@ export const RegisterStore = defineStore('register', () => {
             errorMessage.value = 'Internal error, please try again later.'
         }
       } else {
-        // Gestion d'autres types d'erreurs
         errorMessage.value = 'Internal error, please try again later.'
         console.error(error)
       }
@@ -116,5 +121,5 @@ export const RegisterStore = defineStore('register', () => {
   }
 
   // Retourne l'état utilisateur, les données et les fonctions d'enregistrement
-  return { user, userData, errorMessage, isLoading, register }
+  return { user, userData, errorMessage, register }
 })

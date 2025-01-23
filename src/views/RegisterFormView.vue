@@ -187,14 +187,15 @@ export default {
      *
      * @returns {void}
      */
-    handleSubmit(): void {
+    async handleSubmit(): Promise<void> {
       // Valide chaque champ du formulaire
       this.fields.forEach((field) => this.validateField(field))
 
       // Si le formulaire est valide, fait une requête d'inscription
       if (this.isFormValid) {
-        const { register, errorMessage } = RegisterStore()
-        register(
+        const { register } = RegisterStore()
+
+        await register(
           this.form.firstName,
           this.form.lastName,
           this.form.role,
@@ -202,12 +203,13 @@ export default {
           this.form.password,
         )
 
-        // Gestion des erreurs de l'inscription (a améliorer)
-        if (errorMessage) {
+        const { errorMessage } = RegisterStore()
+
+        // Gestion des erreurs de l'inscription
+        if (errorMessage !== '') {
           this.errors.email = 'The email already corresponds to a user'
         } else {
-          // Si l'inscription est réussie, afficher un message de succès et réinitialise le formulaire
-          this.resetForm()
+          // Si l'inscription est réussie, affiche un message de succès
           alert('User successfully registered!')
 
           // Redirige l'utilisateur vers la page d'accueil
