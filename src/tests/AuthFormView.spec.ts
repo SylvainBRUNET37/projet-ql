@@ -32,7 +32,7 @@ describe('AuthFormView.vue', () => {
     });
 
     //Tous les tests qui utilisent le mot clé await doivent être async !
-    it('Un ou plusieurs champs ne sont pas remplis.', async () => {
+    it('Login sans avoir rempli tous les champs.', async () => {
         const emailInput = wrapper.find('input[type="email"]');
         const passwordInput = wrapper.find('input[type="password"]');
         const submitButton = wrapper.find('button[type="submit"]');
@@ -50,7 +50,7 @@ describe('AuthFormView.vue', () => {
         expect(submitButton.attributes('disabled')).toBeDefined();
     });
 
-    it('Le mail n\'est pas valide.', async () => {
+    it('Login avec un email non conforme au REGEX.', async () => {
         const emailInput = wrapper.find('input[type="email"]');
         const submitButton = wrapper.find('button[type="submit"]');
 
@@ -63,7 +63,7 @@ describe('AuthFormView.vue', () => {
         expect(submitButton.attributes('disabled')).toBeDefined();
     });
 
-    it('Le mot de passe n\'est pas valide.', async () => {
+    it('Login avec un mot de passe non conforme au REGEX.', async () => {
         //pareil pour mdp trop court (< 6 caractères)
         const passwordInput = wrapper.find('input[type="password"]');
         const submitButton = wrapper.find('button[type="submit"]');
@@ -75,7 +75,7 @@ describe('AuthFormView.vue', () => {
         expect(submitButton.attributes('disabled')).toBeDefined();
     });
 
-    it('Le bouton s\'active quand les champs sont remplis correctement.', async () => {
+    it('Vérifier si le bouton s\'active correctement.', async () => {
         const emailInput = wrapper.find('input[type="email"]');
         const passwordInput = wrapper.find('input[type="password"]');
         const submitButton = wrapper.find('button[type="submit"]');
@@ -90,7 +90,7 @@ describe('AuthFormView.vue', () => {
         expect(submitButton.attributes('disabled')).toBeUndefined();
     });
 
-    it('Les informations sont conformes mais ne correspondent pas à un utilisateur existant.', async () => {
+    it('Login avec des informations non existantes.', async () => {
         const emailInput = wrapper.find('input[type="email"]');
         const passwordInput = wrapper.find('input[type="password"]');
         const submitButton = wrapper.find('button[type="submit"]');

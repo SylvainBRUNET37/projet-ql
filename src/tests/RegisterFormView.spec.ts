@@ -32,7 +32,7 @@ describe('RegisterFormView.vue', () => {
         expect(submitButton.exists()).toBe(true);
     });
 
-    it('Un ou plusieurs champs ne sont pas remplis.', async () => {
+    it('Création d\'utilisateur sans avoir rempli tous les champs.', async () => {
         const firstNameInput = wrapper.find('#firstName');
         const lastNameInput = wrapper.find('#lastName');
         const emailInput = wrapper.find('#email');
@@ -58,7 +58,7 @@ describe('RegisterFormView.vue', () => {
         expect(submitButton.attributes('disabled')).toBeDefined();
     });
 
-    it('Le nom/prénom n\'est pas valide.', async () => {
+    it('Création d\'utilisateur avec un nom/prénom non conforme au REGEX.', async () => {
         const firstNameInput = wrapper.find('#firstName');
         const lastNameInput = wrapper.find('#lastName');
         const submitButton = wrapper.find('button[type="submit"]');
@@ -74,7 +74,7 @@ describe('RegisterFormView.vue', () => {
         expect(submitButton.attributes('disabled')).toBeDefined();
     });
 
-    it('Le mail n\'est pas valide.', async () => {
+    it('Création d\'utilisateur avec un mail non conforme au REGEX.', async () => {
         const emailInput = wrapper.find('#email');
         const submitButton = wrapper.find('button[type="submit"]');
 
@@ -86,7 +86,7 @@ describe('RegisterFormView.vue', () => {
         expect(submitButton.attributes('disabled')).toBeDefined();
     });
 
-    it('Le rôle n\'est pas valide.', async () => {
+    it('Création d\'utilisateur avec un rôle non conforme au REGEX.', async () => {
         const roleInput = wrapper.find('#role');
         const submitButton = wrapper.find('button[type="submit"]');
 
@@ -98,7 +98,7 @@ describe('RegisterFormView.vue', () => {
         expect(submitButton.attributes('disabled')).toBeDefined();
     });
 
-    it('Le mot de passe n\'est pas valide.', async () => {
+    it('Création d\'utilisateur avec un mot de passe non conforme au REGEX.', async () => {
         const passwordInput = wrapper.find('#password');
         const submitButton = wrapper.find('button[type="submit"]');
 
@@ -110,7 +110,7 @@ describe('RegisterFormView.vue', () => {
         expect(submitButton.attributes('disabled')).toBeDefined();
     });
 
-    it('La confirmation de mot de passe ne correspond pas au mot de passe', async () => {
+    it('Création d\'utilisateur avec une confirmation de mot de passe ne correspondant pas au mot de passe.', async () => {
         const passwordInput = wrapper.find('#password');
         const confirmPasswordInput = wrapper.find('#confirmPassword');
         const submitButton = wrapper.find('button[type="submit"]');
@@ -125,7 +125,7 @@ describe('RegisterFormView.vue', () => {
         expect(submitButton.attributes('disabled')).toBeDefined();
     });
 
-    it('Le bouton s\'active quand les champs sont remplis correctement.', async () => {
+    it('Vérifier si le bouton s\'active correctement.', async () => {
         const firstNameInput = wrapper.find('#firstName');
         const lastNameInput = wrapper.find('#lastName');
         const emailInput = wrapper.find('#email');
@@ -151,5 +151,119 @@ describe('RegisterFormView.vue', () => {
         expect(submitButton.attributes('disabled')).toBeUndefined();
     });
 
+    it('Création d\'utilisateur avec un mail correspondant à utilisateur activé.', async () => {
+        const firstNameInput = wrapper.find('#firstName');
+        const lastNameInput = wrapper.find('#lastName');
+        const emailInput = wrapper.find('#email');
+        const roleInput = wrapper.find('#role');
+        const passwordInput = wrapper.find('#password');
+        const confirmPasswordInput = wrapper.find('#confirmPassword');
+        const submitButton = wrapper.find('button[type="submit"]');
+
+        // Mock pour simuler la vérification des méthodes de register
+        const registerMock = vi.spyOn(registerStore, 'register').mockImplementation(() => {
+            return Promise.reject(new Error("Email is already in use."));
+        });
+
+        wrapper.vm.$router = { push: vi.fn() };
+
+        await firstNameInput.setValue('John');
+        await lastNameInput.setValue('Doe');
+        await emailInput.setValue('johndoe@gmail.com');
+        await roleInput.setValue('admin');
+        await passwordInput.setValue('123456');
+        await confirmPasswordInput.setValue('123456');
+        
+        await firstNameInput.trigger('blur');
+        await lastNameInput.trigger('blur');
+        await emailInput.trigger('blur');
+        await roleInput.trigger('blur');
+        await passwordInput.trigger('blur');
+        await confirmPasswordInput.trigger('blur');
+
+        await submitButton.trigger('submit');
     
+        expect(registerStore.register).toHaveBeenCalledWith('John', 'Doe', 'admin', 'johndoe@gmail.com', '123456');
+        expect(wrapper.vm.errorMessage).toBe("Email is already in use.");
+        expect(wrapper.vm.$router.push).not.toHaveBeenCalledWith('/home'); // Pas de changement de route vers /home détecté
+    });
+
+    it('Création d\'utilisateur avec un mail correspondant à utilisateur désactivé.', async () => {
+        const firstNameInput = wrapper.find('#firstName');
+        const lastNameInput = wrapper.find('#lastName');
+        const emailInput = wrapper.find('#email');
+        const roleInput = wrapper.find('#role');
+        const passwordInput = wrapper.find('#password');
+        const confirmPasswordInput = wrapper.find('#confirmPassword');
+        const submitButton = wrapper.find('button[type="submit"]');
+
+        // Mock pour simuler la vérification des méthodes de register
+        const registerMock = vi.spyOn(registerStore, 'register').mockImplementation(() => {
+            return Promise.reject(new Error("The account has been reactivated."));
+        });
+
+        wrapper.vm.$router = { push: vi.fn() };
+
+        await firstNameInput.setValue('John');
+        await lastNameInput.setValue('Doe');
+        await emailInput.setValue('johndoe@gmail.com');
+        await roleInput.setValue('admin');
+        await passwordInput.setValue('123456');
+        await confirmPasswordInput.setValue('123456');
+        
+        await firstNameInput.trigger('blur');
+        await lastNameInput.trigger('blur');
+        await emailInput.trigger('blur');
+        await roleInput.trigger('blur');
+        await passwordInput.trigger('blur');
+        await confirmPasswordInput.trigger('blur');
+
+        await submitButton.trigger('submit');
+    
+        expect(registerStore.register).toHaveBeenCalledWith('John', 'Doe', 'admin', 'johndoe@gmail.com', '123456');
+        expect(wrapper.vm.errorMessage).toBe("The account has been reactivated.");
+        expect(wrapper.vm.$router.push).not.toHaveBeenCalledWith('/home'); // Pas de changement de route vers /home détecté
+    });
+
+    it('Création d\'utilisateur OK', async () => {
+        const firstNameInput = wrapper.find('#firstName');
+        const lastNameInput = wrapper.find('#lastName');
+        const emailInput = wrapper.find('#email');
+        const roleInput = wrapper.find('#role');
+        const passwordInput = wrapper.find('#password');
+        const confirmPasswordInput = wrapper.find('#confirmPassword');
+        const submitButton = wrapper.find('button[type="submit"]');
+
+        // Mock pour simuler la vérification des méthodes de register
+        const registerMock = vi.spyOn(registerStore, 'register').mockImplementation(() => {
+            const users: any[] = [];
+            
+            registerStore.userData = {lastname: "Doe", firstname: "John", role: "admin", email: "johndoe@gmail.com"};
+
+            return Promise.resolve();
+        });
+
+        wrapper.vm.$router = { push: vi.fn() };
+
+        await firstNameInput.setValue('John');
+        await lastNameInput.setValue('Doe');
+        await emailInput.setValue('johndoe@gmail.com');
+        await roleInput.setValue('admin');
+        await passwordInput.setValue('123456');
+        await confirmPasswordInput.setValue('123456');
+        
+        await firstNameInput.trigger('blur');
+        await lastNameInput.trigger('blur');
+        await emailInput.trigger('blur');
+        await roleInput.trigger('blur');
+        await passwordInput.trigger('blur');
+        await confirmPasswordInput.trigger('blur');
+
+        await submitButton.trigger('submit');
+    
+        expect(registerStore.register).toHaveBeenCalledWith('John', 'Doe', 'admin', 'johndoe@gmail.com', '123456');
+        expect(registerStore.userData).toEqual({lastname: "Doe", firstname: "John", role: "admin", email: "johndoe@gmail.com"});
+        expect(wrapper.vm.errors.email).toBe(undefined);
+        expect(wrapper.vm.$router.push).toHaveBeenCalledWith('/home');
+    });
 });
