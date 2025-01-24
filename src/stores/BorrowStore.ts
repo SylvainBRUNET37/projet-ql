@@ -72,24 +72,30 @@ export const BorrowStore = defineStore('borrow', () => {
    */
   const borrowEquipment = async(userId: string, equipemntId:string, start: number , end: number): Promise<string> => {
     try{
-      const currentDate = Date.now(); // Date actuelle en millisecondes
+      const now = new Date(Date.now()); // Date actuelle en millisecondes
+      const currentDate = roundDayUTC(now);
       const oneYearLater = currentDate + 365 * 24 * 60 * 60 * 1000; // +1 an
       const sixMonthsInMillis = 6 * 30 * 24 * 60 * 60 * 1000; // 6 mois
   
+      // dates round on hours because start < currentDate will alway be true on UTC format with milisecondes
+      const startDate = roundDayUTC(new Date(start));
+      const endDate = roundDayUTC(new Date(start)); 
+      console.log(startDate, "    ", currentDate);
       // Vérifications des contraintes sur les dates
-      if (start < currentDate) {
+      if (startDate < currentDate) {
+        
         throw new Error("The start date cannot be in the past.");
       }
   
-      if (start > oneYearLater) {
+      if (startDate > oneYearLater) {
         throw new Error("The start date must not exceed 1 year from the current date.");
       }
   
-      if (end < start) {
+      if (endDate < startDate) {
         throw new Error("The end date must be after the start date.");
       }
   
-      if (end > start + sixMonthsInMillis) {
+      if (endDate > startDate + sixMonthsInMillis) {
         throw new Error("The borrowing period must not exceed 6 months.");
       }
       
@@ -107,6 +113,11 @@ export const BorrowStore = defineStore('borrow', () => {
       console.error('Erreur lors de la récupération des équipements empruntés:', error);
       return String(error);
     }
+  }
+
+  const roundDayUTC = (date: Date): number =>{
+    date.setUTCHours(0, 0, 0, 0); // Resets also seconds and milliseconds
+    return date.getTime();
   }
 
   /**
@@ -138,5 +149,6 @@ export const BorrowStore = defineStore('borrow', () => {
     getUserEquipments,
     borrowEquipment,
     getEquipmentStatus,
+    roundDayUTC,
   }
 })
