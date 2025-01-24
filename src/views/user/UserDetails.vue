@@ -1,6 +1,7 @@
 <template>
     <div class="form-container">
       <h1>User Details</h1>
+      <div v-if="user">
       <form @submit.prevent="saveChanges" class="user-form">
         <div class="form-group">
           <label>First Name:</label>
@@ -35,6 +36,7 @@
           <button type="button" class="button cancel" @click="goBack">Back</button>
         </div>
       </form>
+    </div>
     </div>
   </template>
   
