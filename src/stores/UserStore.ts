@@ -70,6 +70,16 @@ export const UserStore = defineStore('user', () => {
     }
   }
 
+  const getUserId = (): string | null => {
+    // Vérifie si un utilisateur est connecté
+    const currentUser = auth.currentUser
+    if (currentUser) {
+      return currentUser.uid} else {
+      errorMessage.value = 'No user is logged in.'
+      return null
+    }
+  }
+
   /**
    * Supprime un utilisateur de Firestore à partir de son ID.
    *
@@ -114,5 +124,5 @@ export const UserStore = defineStore('user', () => {
   }
 
   // Retourne les données utilisateur, les erreurs et la fonction de récupération
-  return { userData, errorMessage, getUserData, deleteUserById }
+  return { userData, errorMessage, getUserData, deleteUserById, getUserId }
 })
