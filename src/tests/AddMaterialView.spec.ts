@@ -17,40 +17,31 @@ describe('AddMaterialView.vue', () => {
         authStore = EquipmentStore();
     })
 
-    //it est le cas que l'on veut tester
-    it('Le formulaire existe.', () => {
-        //On trouve les différentes parties de notre component (ici les 2 champs et le bouton) et on les associe à une constante
-        const nameInput = wrapper.find('#name');
-        const typeInput = wrapper.find('#type');
-        const descriptionInput = wrapper.find('#description');
-        const addEquipmentButton = wrapper.find('button[type="submit"]');
-
-        //Ce qu'il y a dans expect représente ce qu'on s'attend à voir après avoir fait le test
-        //Si c'est bon, le test est réussi sinon erreur
-        expect(nameInput.exists()).toBe(true);
-        expect(typeInput.exists()).toBe(true);
-        expect(descriptionInput.exists()).toBe(true);
-        expect(addEquipmentButton.exists()).toBe(true);
-    });
-
     //Tous les tests qui utilisent le mot clé await doivent être async !
     it('Un ou plusieurs champs ne sont pas remplis.', async () => {
       const nameInput = wrapper.find('#name');
       const typeInput = wrapper.find('#type');
+      const refInput = wrapper.find('#ref');
       const descriptionInput = wrapper.find('#description');
       const addEquipmentButton = wrapper.find('button[type="submit"]');
         //await permet d'attendre qu'une opération soit terminée avant de continuer le code
         //on peut donner des valeurs aux champs avec setValue
         await nameInput.setValue('');
         await typeInput.setValue('');
+        await refInput.setValue('');
         await descriptionInput.setValue('');
 
         //trigger simule un évènement, blur permet de valider un champ
         await nameInput.trigger('blur');
         await typeInput.trigger('blur');
+        await refInput.trigger('blur');
         await descriptionInput.trigger('blur');
 
         //on regarde si le bouton est bien désactivé
+        expect(wrapper.vm.errors.name).toBe('Name is required');
+        expect(wrapper.vm.errors.type).toBe('Type is required');
+        expect(wrapper.vm.errors.ref).toBe('Reference is required');
+        expect(wrapper.vm.errors.description).toBe('Description is required');
         expect(addEquipmentButton.attributes('disabled')).toBeDefined();
     });
 
@@ -58,40 +49,77 @@ describe('AddMaterialView.vue', () => {
         const nameInput = wrapper.find('#name');
         const addEquipmentButton = wrapper.find('button[type="submit"]');
 
-        //mail sans @ ni .
+        //charactère non alphanumérique
         await nameInput.setValue('a!');
         await nameInput.trigger('blur');
 
         //on regarde si le message d'erreur est bien mis et au bon endroit puis si le bouton est désactivé
-        expect(wrapper.vm.errors.email).toBe('Invalid email');
+        expect(wrapper.vm.errors.name).toBe('Invalid name');
         expect(addEquipmentButton.attributes('disabled')).toBeDefined();
+
+        await nameInput.setValue('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
+        await nameInput.trigger('blur');
+
+        expect(wrapper.vm.errors.name).toBe('Invalid name');
+        expect(addEquipmentButton.attributes('disabled')).toBeDefined();
+
     });
 
     it('Le type n\'est pas valide.', async () => {
-        //pareil pour mdp trop court (< 6 caractères)
-        const typeInput = wrapper.find('input[type="password"]');
-        const addEquipmentButton = wrapper.find('button[type="submit"]');
+      const nameInput = wrapper.find('#type');
+      const addEquipmentButton = wrapper.find('button[type="submit"]');
 
-        await typeInput.setValue('12345');
-        await typeInput.trigger('blur');
+      //charactère non alphanumérique
+      await nameInput.setValue('a!');
+      await nameInput.trigger('blur');
 
-        expect(wrapper.vm.errors.password).toBe('Invalid password');
-        expect(addEquipmentButton.attributes('disabled')).toBeDefined();
+      //on regarde si le message d'erreur est bien mis et au bon endroit puis si le bouton est désactivé
+      expect(wrapper.vm.errors.name).toBe('Invalid type');
+      expect(addEquipmentButton.attributes('disabled')).toBeDefined();
+
+      await nameInput.setValue('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
+      await nameInput.trigger('blur');
+
+      expect(wrapper.vm.errors.name).toBe('Invalid type');
+      expect(addEquipmentButton.attributes('disabled')).toBeDefined();
+
+    });
+
+    it('La description n\'est pas valide.', async () => {
+      const nameInput = wrapper.find('#description');
+      const addEquipmentButton = wrapper.find('button[type="submit"]');
+
+      //charactère non alphanumérique
+      await nameInput.setValue('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
+      await nameInput.trigger('blur');
+
+      //on regarde si le message d'erreur est bien mis et au bon endroit puis si le bouton est désactivé
+      expect(wrapper.vm.errors.name).toBe('Invalid description');
+      expect(addEquipmentButton.attributes('disabled')).toBeDefined();
+
     });
 
     it('Le bouton s\'active quand les champs sont remplis correctement.', async () => {
-        const nameInput = wrapper.find('#name');
-        const typeInput = wrapper.find('input[type="password"]');
-        const addEquipmentButton = wrapper.find('button[type="submit"]');
+      const nameInput = wrapper.find('#name');
+      const typeInput = wrapper.find('#type');
+      const refInput = wrapper.find('#ref');
+      const descriptionInput = wrapper.find('#description');
+      const addEquipmentButton = wrapper.find('button[type="submit"]');
+      //await permet d'attendre qu'une opération soit terminée avant de continuer le code
+      //on peut donner des valeurs aux champs avec setValue
+      await nameInput.setValue('clavierCool');
+      await typeInput.setValue('clavier');
+      await refInput.setValue('XX123');
+      await descriptionInput.setValue('voici un super clavier');
 
-        await nameInput.setValue('emailvalide@gmail.com');
-        await nameInput.trigger('blur');
+      //trigger simule un évènement, blur permet de valider un champ
+      await nameInput.trigger('blur');
+      await typeInput.trigger('blur');
+      await refInput.trigger('blur');
+      await descriptionInput.trigger('blur');
 
-        await typeInput.setValue('123456');
-        await typeInput.trigger('blur');
-
-        //L'état disabled du bouton ne doit pas être défini
-        expect(addEquipmentButton.attributes('disabled')).toBeUndefined();
+      //L'état disabled du bouton ne doit pas être défini
+      expect(addEquipmentButton.attributes('disabled')).toBeUndefined();
     });
 
     it('Les informations sont conformes mais ne correspondent pas à un utilisateur existant.', async () => {
