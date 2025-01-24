@@ -1,19 +1,30 @@
 <template>
   <div>
-    <h1>Liste des emprunts en cours</h1>
+    <h1>Borrow List</h1>
 
-    <!-- Affichage des emprunts -->
-    <ul v-if="userLoans.length">
-      <li v-for="loan in userLoans" :key="loan.id" style="list-style-type: none">
-        <p><strong>Équipement:</strong> {{ loan.equipment.name }} ({{ loan.equipment.type }})</p>
-        <p><strong>Description:</strong> {{ loan.equipment.description }}</p>
-        <p><strong>Date d'emprunt:</strong> {{ formatDate(loan.borrowDate) }}</p>
-        <p><strong>Date de retour:</strong> {{ formatDate(loan.returnDate) }}</p>
+    <!-- Emprunts en cours -->
+    <h2>Current borrows</h2>
+    <ul v-if="currentBorrows.length">
+      <li v-for="borrow in currentBorrows" :key="borrow.id" style="list-style-type: none">
+        <p><strong>Equipment:</strong> {{ borrow.equipment.name }} ({{ borrow.equipment.type }})</p>
+        <p><strong>Description:</strong> {{ borrow.equipment.description }}</p>
+        <p><strong>Borrow Date:</strong> {{ formatDate(borrow.borrowDate) }}</p>
+        <p><strong>Return date:</strong> {{ formatDate(borrow.returnDate) }}</p>
       </li>
     </ul>
+    <p v-else>No current borrows</p>
 
-    <!-- Message lorsqu'il n'y a pas d'emprunts -->
-    <p v-else>Aucun emprunt en cours pour cet utilisateur.</p>
+    <!-- Emprunts à venir -->
+    <h2>Upcoming borrows</h2>
+    <ul v-if="upcomingBorrows.length">
+      <li v-for="borrow in upcomingBorrows" :key="borrow.id" style="list-style-type: none">
+        <p><strong>Equipment:</strong> {{ borrow.equipment.name }} ({{ borrow.equipment.type }})</p>
+        <p><strong>Description:</strong> {{ borrow.equipment.description }}</p>
+        <p><strong>Borrow Date:</strong> {{ formatDate(borrow.borrowDate) }}</p>
+        <p><strong>Return date:</strong> {{ formatDate(borrow.returnDate) }}</p>
+      </li>
+    </ul>
+    <p v-else>No upcoming borrows</p>
   </div>
 </template>
 
@@ -32,12 +43,46 @@ export default defineComponent({
   },
   setup(props) {
     const borrowStore = BorrowStore()
-    const userLoans = ref<DocumentData[]>([])
+    const currentBorrows = ref<DocumentData[]>([])
+    const upcomingBorrows = ref<DocumentData[]>([])
+
+    // Trie les emprunts par date
+    const sortBorrowsByDate = (borrows: DocumentData[]) => {
+      return [...borrows].sort((a, b) => {
+        const dateA = typeof a.borrowDate === 'number' ? a.borrowDate : a.borrowDate.seconds * 1000
+        const dateB = typeof b.borrowDate === 'number' ? b.borrowDate : b.borrowDate.seconds * 1000
+        return dateA - dateB
+      })
+    }
 
     // Charge les emprunts de l'utilisateur
-    const loadUserLoans = async () => {
+    const loadUserBorrows = async () => {
       try {
-        userLoans.value = await borrowStore.getUserEquipments(props.userId)
+        // Récupère les emprunts de l'utilisateur
+        const borrows = await borrowStore.getUserBorrowedEquipments(props.userId)
+        const nowDate = Date.now()
+
+        // Récupère les emprunts en cours et les trie par date
+        currentBorrows.value = sortBorrowsByDate(
+          borrows.filter((borrow) => {
+            const borrowDate =
+              typeof borrow.borrowDate === 'number'
+                ? borrow.borrowDate
+                : borrow.borrowDate.seconds * 1000
+            return borrowDate <= nowDate
+          }),
+        )
+
+        // Récupère les emprunts à venir et les trie par date
+        upcomingBorrows.value = sortBorrowsByDate(
+          borrows.filter((borrow) => {
+            const borrowDate =
+              typeof borrow.borrowDate === 'number'
+                ? borrow.borrowDate
+                : borrow.borrowDate.seconds * 1000
+            return borrowDate > nowDate
+          }),
+        )
       } catch (error) {
         console.error('Erreur lors de la récupération des emprunts :', error)
       }
@@ -46,7 +91,7 @@ export default defineComponent({
     // Formate les dates pour affichage
     const formatDate = (timestamp: number | { seconds: number }) => {
       const seconds = typeof timestamp === 'number' ? timestamp : timestamp.seconds
-      const date = new Date(seconds * 1000)
+      const date = new Date(seconds)
       return date.toLocaleDateString('fr-FR', {
         weekday: 'long',
         year: 'numeric',
@@ -57,12 +102,13 @@ export default defineComponent({
 
     // Charge les emprunts lorsque le composant est monté
     onMounted(async () => {
-      await loadUserLoans()
+      await loadUserBorrows()
     })
 
     return {
-      userLoans,
       formatDate,
+      upcomingBorrows,
+      currentBorrows,
     }
   },
 })
