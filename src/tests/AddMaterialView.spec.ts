@@ -24,172 +24,130 @@ describe('AddMaterialView.vue', () => {
       const refInput = wrapper.find('#ref');
       const descriptionInput = wrapper.find('#description');
       const addEquipmentButton = wrapper.find('button[type="submit"]');
-        //await permet d'attendre qu'une opération soit terminée avant de continuer le code
-        //on peut donner des valeurs aux champs avec setValue
-        await nameInput.setValue('');
-        await typeInput.setValue('');
-        await refInput.setValue('');
-        await descriptionInput.setValue('');
 
-        //trigger simule un évènement, blur permet de valider un champ
-        await nameInput.trigger('blur');
-        await typeInput.trigger('blur');
-        await refInput.trigger('blur');
-        await descriptionInput.trigger('blur');
+      await nameInput.setValue('');
+      await typeInput.setValue('');
+      await refInput.setValue('');
+      await descriptionInput.setValue('');
 
-        //on regarde si le bouton est bien désactivé
-        expect(wrapper.vm.errors.name).toBe('Name is required');
-        expect(wrapper.vm.errors.type).toBe('Type is required');
-        expect(wrapper.vm.errors.ref).toBe('Reference is required');
-        expect(wrapper.vm.errors.description).toBe('Description is required');
-        expect(addEquipmentButton.attributes('disabled')).toBeDefined();
-    });
-
-    it('Le nom n\'est pas valide.', async () => {
-        const nameInput = wrapper.find('#name');
-        const addEquipmentButton = wrapper.find('button[type="submit"]');
-
-        //charactère non alphanumérique
-        await nameInput.setValue('a!');
-        await nameInput.trigger('blur');
-
-        //on regarde si le message d'erreur est bien mis et au bon endroit puis si le bouton est désactivé
-        expect(wrapper.vm.errors.name).toBe('Invalid name');
-        expect(addEquipmentButton.attributes('disabled')).toBeDefined();
-
-        await nameInput.setValue('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
-        await nameInput.trigger('blur');
-
-        expect(wrapper.vm.errors.name).toBe('Invalid name');
-        expect(addEquipmentButton.attributes('disabled')).toBeDefined();
-
-    });
-
-    it('Le type n\'est pas valide.', async () => {
-      const nameInput = wrapper.find('#type');
-      const addEquipmentButton = wrapper.find('button[type="submit"]');
-
-      //charactère non alphanumérique
-      await nameInput.setValue('a!');
-      await nameInput.trigger('blur');
-
-      //on regarde si le message d'erreur est bien mis et au bon endroit puis si le bouton est désactivé
-      expect(wrapper.vm.errors.name).toBe('Invalid type');
-      expect(addEquipmentButton.attributes('disabled')).toBeDefined();
-
-      await nameInput.setValue('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
-      await nameInput.trigger('blur');
-
-      expect(wrapper.vm.errors.name).toBe('Invalid type');
-      expect(addEquipmentButton.attributes('disabled')).toBeDefined();
-
-    });
-
-    it('La description n\'est pas valide.', async () => {
-      const nameInput = wrapper.find('#description');
-      const addEquipmentButton = wrapper.find('button[type="submit"]');
-
-      //charactère non alphanumérique
-      await nameInput.setValue('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
-      await nameInput.trigger('blur');
-
-      //on regarde si le message d'erreur est bien mis et au bon endroit puis si le bouton est désactivé
-      expect(wrapper.vm.errors.name).toBe('Invalid description');
-      expect(addEquipmentButton.attributes('disabled')).toBeDefined();
-
-    });
-
-    it('Le bouton s\'active quand les champs sont remplis correctement.', async () => {
-      const nameInput = wrapper.find('#name');
-      const typeInput = wrapper.find('#type');
-      const refInput = wrapper.find('#ref');
-      const descriptionInput = wrapper.find('#description');
-      const addEquipmentButton = wrapper.find('button[type="submit"]');
-      //await permet d'attendre qu'une opération soit terminée avant de continuer le code
-      //on peut donner des valeurs aux champs avec setValue
-      await nameInput.setValue('clavierCool');
-      await typeInput.setValue('clavier');
-      await refInput.setValue('XX123');
-      await descriptionInput.setValue('voici un super clavier');
-
-      //trigger simule un évènement, blur permet de valider un champ
       await nameInput.trigger('blur');
       await typeInput.trigger('blur');
       await refInput.trigger('blur');
       await descriptionInput.trigger('blur');
 
-      //L'état disabled du bouton ne doit pas être défini
-      expect(addEquipmentButton.attributes('disabled')).toBeUndefined();
-    });
+      expect(wrapper.vm.errors.name).toBe('Name is required');
+      expect(wrapper.vm.errors.type).toBe('Type is required');
+      expect(wrapper.vm.errors.ref).toBe('Reference is required');
+      expect(wrapper.vm.errors.description).toBe('Description is required');
+      expect(addEquipmentButton.attributes('disabled')).toBeDefined();
+  });
 
-    it('Les informations sont conformes mais ne correspondent pas à un utilisateur existant.', async () => {
-        const nameInput = wrapper.find('#name');
-        const typeInput = wrapper.find('input[type="password"]');
-        const addEquipmentButton = wrapper.find('button[type="submit"]');
+  it('Ajout d un matériel avec une référence déjà existante.', async () => {
+      authStore.addMaterial.mockRejectedValueOnce({ message: 'The reference already corresponds to a material' });
 
-        //On va mocker (= simuler) un système d'authentification
-        const loginMock = vi.spyOn(authStore, 'login').mockImplementation(() => {
-            const users: any[] = []; //liste d'utilisateurs vide pour simuler une bdd vide
-            //on cherche l'user
-            const user = users.find(user => user.email === 'emailvalide@gmail.com' && user.password === '123456');
+      const nameInput = wrapper.find('#name');
+      const typeInput = wrapper.find('#type');
+      const refInput = wrapper.find('#ref');
+      const descriptionInput = wrapper.find('#description');
+      const addEquipmentButton = wrapper.find('button[type="submit"]');
 
-            if (!user) {
-                authStore.errorMessage = "User doesn't exist";
-            }
-            else authStore.userData = user;
+      await nameInput.setValue('Material Name');
+      await typeInput.setValue('Type');
+      await refInput.setValue('EXISTING_REF');
+      await descriptionInput.setValue('Description');
 
-            return Promise.resolve();
-        });
+      await addEquipmentButton.trigger('click');
 
-        wrapper.vm.$router = { push: vi.fn() }; //Permet de mocker (=simuler) un router
+      expect(wrapper.vm.errorMessage).toBe('The reference already corresponds to a material');
+  });
 
-        //On met les informations et on trigger l'évènement submit du bouton
-        await nameInput.setValue('emailvalide@gmail.com');
-        await nameInput.trigger('blur');
+  it('Le nom n est pas valide.', async () => {
+      const nameInput = wrapper.find('#name');
+      const addEquipmentButton = wrapper.find('button[type="submit"]');
 
-        await typeInput.setValue('123456');
-        await typeInput.trigger('blur');
+      await nameInput.setValue('a!');
+      await nameInput.trigger('blur');
 
-        await addEquipmentButton.trigger('submit');
+      expect(wrapper.vm.errors.name).toBe('Invalid name');
+      expect(addEquipmentButton.attributes('disabled')).toBeDefined();
 
-        //Le système d'authentification doit être appelé et il doit y avoir une erreur
-        expect(authStore.login).toHaveBeenCalledWith('emailvalide@gmail.com', '123456');
-        expect(wrapper.vm.errorMessage).toBe("User doesn't exist");
-        expect(wrapper.vm.$router.push).not.toHaveBeenCalledWith('/home'); //Pas de changement de route vers /home détecté
-    });
+      await nameInput.setValue('a'.repeat(101));
+      await nameInput.trigger('blur');
 
-    it('Login OK', async () => {
-        //Même chose que le test d'avant mais on a un user existant dans la bdd
-        const nameInput = wrapper.find('#name');
-        const typeInput = wrapper.find('input[type="password"]');
-        const addEquipmentButton = wrapper.find('button[type="submit"]');
+      expect(wrapper.vm.errors.name).toBe('Invalid name');
+      expect(addEquipmentButton.attributes('disabled')).toBeDefined();
+  });
 
-        const loginMock = vi.spyOn(authStore, 'login').mockImplementation(() => {
-            const users: any[] = [{ email: 'emailvalide@gmail.com', password: '123456'}];
-            const user = users.find(user => user.email === 'emailvalide@gmail.com' && user.password === '123456');
+  it('Ajout d un matériel avec des champs valides.', async () => {
+      const nameInput = wrapper.find('#name');
+      const typeInput = wrapper.find('#type');
+      const refInput = wrapper.find('#ref');
+      const descriptionInput = wrapper.find('#description');
+      const addEquipmentButton = wrapper.find('button[type="submit"]');
 
-            if (!user) {
-                authStore.errorMessage = "User doesn't exist";
-            }
-            else authStore.userData = user;
+      await nameInput.setValue('Valid Name');
+      await typeInput.setValue('Valid Type');
+      await refInput.setValue('VALID_REF');
+      await descriptionInput.setValue('Valid description.');
 
-            return Promise.resolve();
-        });
+      await addEquipmentButton.trigger('click');
 
-        wrapper.vm.$router = { push: vi.fn() };
+      expect(authStore.addMaterial).toHaveBeenCalledWith({
+          name: 'Valid Name',
+          type: 'Valid Type',
+          ref: 'VALID_REF',
+          description: 'Valid description.'
+      });
+      expect(wrapper.vm.successMessage).toBe('Material successfully added');
+  });
 
-        await nameInput.setValue('emailvalide@gmail.com');
-        await nameInput.trigger('blur');
+  it('Modification d un matériel OK.', async () => {
+      const material = { id: 1, name: 'Old Name', ref: 'OLD_REF', type: 'Old Type', description: 'Old Description' };
+      authStore.material = material;
 
-        await typeInput.setValue('123456');
-        await typeInput.trigger('blur');
+      await wrapper.setProps({ material });
+      const nameInput = wrapper.find('#name');
+      const typeInput = wrapper.find('#type');
+      const refInput = wrapper.find('#ref');
+      const descriptionInput = wrapper.find('#description');
+      const saveButton = wrapper.find('button[type="submit"]');
 
-        await addEquipmentButton.trigger('submit');
+      await nameInput.setValue('Updated Name');
+      await typeInput.setValue('Updated Type');
+      await refInput.setValue('UPDATED_REF');
+      await descriptionInput.setValue('Updated Description');
+      await saveButton.trigger('click');
 
-        expect(authStore.login).toHaveBeenCalledWith('emailvalide@gmail.com', '123456');
-        expect(wrapper.vm.errorMessage).toBe(''); //Pas de message d'erreur
-        expect(authStore.userData).toEqual({ email: 'emailvalide@gmail.com', password: '123456' });
-        expect(wrapper.vm.$router.push).toHaveBeenCalledWith('/home'); //Le changement de route vers /home doit être détecté
-    });
-}
-);
+      expect(authStore.updateMaterial).toHaveBeenCalledWith({
+          id: 1,
+          name: 'Updated Name',
+          ref: 'UPDATED_REF',
+          type: 'Updated Type',
+          description: 'Updated Description'
+      });
+      expect(wrapper.vm.successMessage).toBe('Successful changes');
+  });
+
+  it('Suppression d un matériel OK.', async () => {
+      const material = { id: 1, name: 'Material to Delete', ref: 'DEL_REF', type: 'Type', description: 'Description' };
+      authStore.material = material;
+
+      const deleteButton = wrapper.find('button[type="delete"]');
+      await deleteButton.trigger('click');
+
+      expect(authStore.deleteMaterial).toHaveBeenCalledWith(material.id);
+      expect(wrapper.vm.successMessage).toBe('Material removed from user borrowing catalog');
+  });
+
+  it('Suppression d un matériel emprunté.', async () => {
+      authStore.deleteMaterial.mockRejectedValueOnce({ message: 'Already borrowed by user until [date]' });
+
+      const material = { id: 1, name: 'Borrowed Material', ref: 'BORROW_REF', type: 'Type', description: 'Description' };
+      authStore.material = material;
+
+      const deleteButton = wrapper.find('button[type="delete"]');
+      await deleteButton.trigger('click');
+
+      expect(wrapper.vm.errorMessage).toBe('Already borrowed by user until [date]');
+  });
+});
