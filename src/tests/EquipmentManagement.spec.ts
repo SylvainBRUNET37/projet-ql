@@ -1,6 +1,6 @@
 import { mount } from '@vue/test-utils'
 import { describe, it, expect, beforeEach } from 'vitest'
-import { EquipmentManagement } from '@/views/equipment/EquipmentManagement.vue'
+import EquipmentManagement from '@/views/equipment/EquipmentManagement.vue'
 import { EquipmentStore } from '@/stores/EquipmentStore'
 import { createPinia, setActivePinia } from 'pinia'
 
