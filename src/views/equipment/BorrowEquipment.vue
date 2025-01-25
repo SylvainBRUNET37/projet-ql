@@ -1,28 +1,47 @@
+<!-- Ce composant permet d'afficher les détails d'un équipement. -->
+
 <template>
   <div class="form-container">
     <h1>Equipment Details</h1>
+
+    <!-- Formulaire d'équipement -->
     <div v-if="equipment">
       <form @submit.prevent="saveChanges" class="equipment-form">
+        <!-- Nom de l'équipement -->
         <div class="form-group">
           <label>Name:</label>
-          <input v-model="equipment.name" :readonly="!isAdmin" />
+          <input v-model="equipment.name" />
         </div>
+
+        <!-- Reference de l'équipement -->
         <div class="form-group">
           <label>Reference:</label>
-          <input v-model="equipment.ref" :readonly="!isAdmin" />
+          <input v-model="equipment.ref" readonly />
         </div>
+
+        <!-- Type de l'équipement -->
         <div class="form-group">
           <label>Type:</label>
-          <input v-model="equipment.type" :readonly="!isAdmin" />
+          <input v-model="equipment.type" />
         </div>
+
+        <!-- Status de l'équipement -->
         <div class="form-group">
           <label>Status:</label>
-          <select v-model="equipment.status" :disabled="!isAdmin">
+          <select v-model="equipment.status">
             <option value="available">Available</option>
             <option value="unavailable">Unavailable</option>
           </select>
         </div>
-        <div v-if="!isAdmin" class="form-actions">
+
+        <!-- Description de l'équipement -->
+        <div class="form-group">
+          <label>Description:</label>
+          <input v-model="equipment.description" />
+        </div>
+
+        <!-- Champs pour les dates de début et de fin -->
+        <div class="form-actions">
           <div class="form-group">
             <label>Start Date:</label>
             <input type="date" v-model="startDate" />
@@ -32,17 +51,21 @@
             <input type="date" v-model="endDate" />
           </div>
         </div>
+
+        <!-- Boutons pour emprunter un équipement -->
+        <button
+          type="button"
+          class="button is-primary"
+          @click="borrowEquipment"
+          :disabled="equipment.status === 'unavailable'"
+        >
+          Borrow
+        </button>
+
+        <!-- Boutons pour revenir en arrière et modifier -->
         <div class="form-actions">
           <button type="button" class="button cancel" @click="goBack">Back</button>
-          <button
-            type="button"
-            class="button is-primary"
-            @click="borrowEquipment"
-            :disabled="equipment.status === 'unavailable'"
-          >
-            Borrow
-          </button>
-          <button type="submit" class="button save" :disabled="!isAdmin">Save</button>
+          <button type="submit" class="button save">Modify</button>
         </div>
       </form>
     </div>
@@ -52,20 +75,28 @@
 <script lang="ts">
 import { doc, getDoc, updateDoc } from 'firebase/firestore'
 import { db } from '@/firebase'
-import { BorrowStore } from '../../stores/BorrowStore'
-import { UserStore } from '../../stores/UserStore'
-import { onMounted, ref, computed } from 'vue'
+import { onMounted, ref } from 'vue'
+import { UserStore } from '@/stores/UserStore'
+import { BorrowStore } from '@/stores/BorrowStore'
 import { useRouter, useRoute } from 'vue-router'
 
 export default {
   setup() {
-    const userStore = UserStore()
-    const borrowStore = BorrowStore()
     const route = useRoute()
     const router = useRouter()
     const equipmentId = route.params.id.toString()
+    const equipment = ref<{
+      id: string
+      name: string
+      ref: string
+      type: string
+      status: string
+      description: string
+    } | null>(null)
 
-    const equipment = ref(null)
+    const userStore = UserStore()
+    const borrowStore = BorrowStore()
+
     const errorMessage = ref('')
     const startDate = ref<string | null>(null)
     const endDate = ref<string | null>(null)
@@ -106,7 +137,14 @@ export default {
         const docSnap = await getDoc(docRef)
 
         if (docSnap.exists()) {
-          equipment.value = { id: docSnap.id, ...docSnap.data() }
+          const data = docSnap.data() as {
+            name: string
+            ref: string
+            type: string
+            status: string
+            description: string
+          }
+          equipment.value = { id: docSnap.id, ...data }
         } else {
           alert('Equipment not found!')
           router.push('/home')
@@ -124,7 +162,7 @@ export default {
 
       try {
         const docRef = doc(db, 'equipments', equipment.value.id)
-        const { ref, ...updatedFields } = equipment.value // Exclude unnecessary fields
+        const { ...updatedFields } = equipment.value // Exclude unnecessary fields
         await updateDoc(docRef, updatedFields)
         alert('Changes saved successfully!')
         goBack()
@@ -143,12 +181,11 @@ export default {
     return {
       equipment,
       errorMessage,
-      borrowEquipment,
       saveChanges,
       goBack,
       startDate,
       endDate,
-      isAdmin: computed(() => route.path.startsWith('/admin/equipment/')),
+      borrowEquipment,
     }
   },
 }
