@@ -37,6 +37,11 @@ import { defineComponent, ref, onMounted } from 'vue'
 import { type DocumentData } from 'firebase/firestore'
 import { BorrowStore } from '../../stores/BorrowStore'
 
+/**
+ * Composant affichant la liste des emprunts en cours et à venir d'un utilisateur.
+ *
+ * @prop {string} userId - Identifiant de l'utilisateur dont on récupère les emprunts.
+ */
 export default defineComponent({
   name: 'UserEquipment',
   props: {

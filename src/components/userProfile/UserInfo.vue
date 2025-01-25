@@ -1,7 +1,8 @@
-<!-- UserInfo.vue -->
+<!-- Ce composant est utilisé pour afficher les informations de compte d'un utilisateur -->
 
 <template>
   <div class="content">
+    <!-- Puisque l'utilisateur ne peut pas changer lui même ses informations, affiche ce message pour lui indiquer -->
     <p class="mb-4">Need to change something ? Ask an administrator !</p>
 
     <!-- Informations de l'utilisateur -->
@@ -15,6 +16,11 @@
 <script lang="ts">
 import { defineComponent, type PropType } from 'vue'
 
+/**
+ * Composant affichant les informations de compte d'un utilisateur.
+ *
+ * @prop {Object} userInfo - Informations de l'utilisateur.
+ */
 export default defineComponent({
   name: 'UserInfo',
   props: {
@@ -79,7 +85,6 @@ h1 {
   color: #363636;
 }
 
-/* Tabs */
 .tabs {
   display: flex;
   justify-content: center;
