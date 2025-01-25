@@ -63,6 +63,7 @@ export default {
       } as { [key: string]: string },
       // Erreurs de validation
       errors: {} as ErrorMessages,
+      errorMessage: '',
       // Champs de formulaire
       fields: [
         {
@@ -70,8 +71,8 @@ export default {
           label: 'Name',
           type: 'text',
           placeholder: 'Enter equipment name',
-          validate: validateNotEmpty,
-          errorMsg: 'Name is required',
+          validate: this.validateName,
+          errorMsg: 'Invalid name',
           required: true,
         },
         {
@@ -80,7 +81,7 @@ export default {
           type: 'select',
           placeholder: '',
           validate: validateNotEmpty,
-          errorMsg: 'Reference is required',
+          errorMsg: 'Invalid reference',
           required: true,
           options: [
             { value: 'AP', label: 'IOS' },
@@ -92,9 +93,9 @@ export default {
           name: 'type',
           label: 'Type',
           type: 'text',
-          placeholder: 'Enter equipment type',
-          validate: validateNotEmpty,
-          errorMsg: 'Type is required',
+          placeholder: 'Enter type',
+          validate: this.validateType,
+          errorMsg: 'Invalid type',
           required: true,
         },
         {
@@ -102,8 +103,8 @@ export default {
           label: 'Description',
           type: 'text',
           placeholder: 'Enter description',
-          validate: validateNotEmpty,
-          errorMsg: 'Description is required',
+          validate: this.validateDescription,
+          errorMsg: 'Invalid description',
           required: true,
         },
       ] as ValidationField[],
@@ -122,6 +123,20 @@ export default {
     },
   },
   methods: {
+    validateName(name: string) {
+      const regex = /^[A-Za-z0-9\-_ ]{1,30}$/
+      return regex.test(name)
+    },
+
+    validateType(type: string) {
+      return this.validateName(type)
+    },
+
+    validateDescription(description: string) {
+      const regex = /^[A-Za-z0-9\-_ ]{1,200}$/
+      return regex.test(description)
+    },
+
     /**
      * Gère la soumission du formulaire.
      */
@@ -139,12 +154,14 @@ export default {
         const equipmentStore = EquipmentStore()
         await equipmentStore.addEquipment(this.form)
 
-        // Réinitialise le formulaire après ajout et affiche un message de succès
-        Object.keys(this.form).forEach((key) => (this.form[key] = ''))
-        alert('Equipment added successfully!')
-
-        // Redirige l'utilisateur vers la page d'accueil
-        this.$router.push('/home')
+        // Affiche un message de succès ou d'erreur
+        if (equipmentStore.errorMessage) {
+          this.errorMessage = equipmentStore.errorMessage
+          alert(this.errorMessage)
+        } else {
+          // Redirige l'utilisateur vers la page d'accueil
+          this.$router.push('/home')
+        }
       } catch {
         alert('An error occurred while adding the equipment.')
       }
@@ -165,6 +182,16 @@ export default {
      * @param {ValidationField} field - Le champ à valider.
      */
     validateField(field: ValidationField): void {
+      // Récupère la valeur du champ
+      const value = this.form[field.name as keyof typeof this.form]
+
+      // Vérifie si le champ est vide
+      if (!value) {
+        this.errors[field.name] = 'Please complete this field'
+        return
+      }
+
+      // Vérifie si le champ est valide
       const isValid = field.validate(this.form[field.name as keyof typeof this.form])
       this.errors[field.name] = isValid ? '' : field.errorMsg
     },
