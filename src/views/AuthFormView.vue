@@ -157,6 +157,14 @@ export default {
      * @param {ValidationField} field - Le champ à valider.
      */
     validateField(field: ValidationField): void {
+      const value = this.form[field.name as keyof typeof this.form]
+
+      // Vérifie si le champ est vide
+      if (!value) {
+        this.errors[field.name] = 'Please complete this field'
+        return
+      }
+
       const isValid = field.validate(this.form[field.name as keyof typeof this.form])
       this.errors[field.name] = isValid ? '' : field.errorMsg
     },

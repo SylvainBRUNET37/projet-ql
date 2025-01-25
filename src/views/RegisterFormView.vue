@@ -174,6 +174,14 @@ export default {
      * @returns {void}
      */
     validateField(field: ValidationField): void {
+      const value = this.form[field.name as keyof typeof this.form]
+
+      // Vérifie si le champ est vide
+      if (!value) {
+        this.errors[field.name] = 'Please complete this field'
+        return
+      }
+
       const valid =
         field.name === 'confirmPassword'
           ? field.validate(this.form[field.name], this.form.password) // Validation pour le champ confirmPassword
