@@ -93,11 +93,11 @@ export default defineComponent({
   name: 'UserManagement',
   setup() {
     const userStore = UserStore()
-    const currentPage = ref(1)
-    const itemsPerPage = ref(10)
+    const currentPage = ref(1) // Page courante
+    const itemsPerPage = ref(10) // Nombre d'utilisateur max par page
     const router = useRouter()
 
-    // Calcul du nombre total de pages
+    // Calcul du nombre total de pages et si on est sur la première ou la dernière page
     const totalPages = computed(() => Math.ceil(userStore.users.length / itemsPerPage.value))
     const isFirstPage = computed(() => currentPage.value === 1)
     const isLastPage = computed(() => currentPage.value === totalPages.value)

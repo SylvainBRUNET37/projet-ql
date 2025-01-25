@@ -100,30 +100,33 @@ export default defineComponent({
 
   setup() {
     const equipmentStore = EquipmentStore()
-    const currentPage = ref(1)
-    const itemsPerPage = ref(15)
+    const currentPage = ref(1) // Page courante
+    const itemsPerPage = ref(10) // Nombre d'équipements max par page
     const router = useRouter()
 
+    // Calcul du nombre total de pages et si on est sur la première ou la dernière page
+    const totalPages = computed(() =>
+      Math.ceil(equipmentStore.equipment.length / itemsPerPage.value),
+    )
+    const isFirstPage = computed(() => currentPage.value === 1)
+    const isLastPage = computed(() => currentPage.value === totalPages.value)
+
+    // Récupère et stocke les équipements paginés
     const paginatedEquipments = computed(() => {
       const start = (currentPage.value - 1) * itemsPerPage.value
       return equipmentStore.equipment.slice(start, start + itemsPerPage.value)
     })
 
-    const totalPages = computed(() =>
-      Math.ceil(equipmentStore.equipment.length / itemsPerPage.value),
-    )
-
-    const isFirstPage = computed(() => currentPage.value === 1)
-    const isLastPage = computed(() => currentPage.value === totalPages.value)
-
-    const handleDetails = (id: string) => {
-      console.log('Details:', id)
-    }
-
-    const handleToggleStatus = async (id: string, status: string) => {
+    /**
+     * Active ou désactive un équipement en fonction de son statut actuel.
+     *
+     * @param {string} equipmentId - L'ID de l'équipement à modifier.
+     * @param {string} currentStatus - Le statut actuel de l'équipement (ex: 'available', 'disabled').
+     */
+    const handleToggleStatus = async (equipmentId: string, currentStatus: string) => {
       try {
-        await equipmentStore.updateEquipmentStatus(id, status)
-
+        // Inverse le status de l'équipement et met à jour la liste des équipements
+        await equipmentStore.updateEquipmentStatus(equipmentId, currentStatus)
         await equipmentStore.getAllEquipment()
       } catch (error) {
         console.error('Error toggling equipment status:', error)
