@@ -22,17 +22,20 @@ describe('EquipmentResearch.vue', () => {
   })
 
   // TC001
-  it('Consultation des matériels OK', () => {
-    expect(wrapper.exists()).toBe(true)
-
-    // Vérifie que tous les équipements sont affichés
+  it('Consultation des matériels OK, les matériels disponibles sont affichés', () => {
+    // Trouver tous les éléments de carte d'équipement
     const equipmentCards = wrapper.findAll('.card')
-    expect(equipmentCards).toHaveLength(equipmentStore.equipment.length)
 
-    // Vérifie que chaque équipement est présent
-    equipmentStore.equipment.forEach((equipment, index) => {
-      expect(equipmentCards[index].text()).toContain(equipment.name)
-    })
+    // Vérifie qu'il n'y a que les équipements avec status 'available' dans l'affichage
+    expect(equipmentCards).toHaveLength(2) // On sait qu'il y a 2 équipements disponibles
+
+    // Vérifier que la carte d'équipement contient bien "Drill" et "Asus Laptop", mais pas "Hammer"
+    expect(equipmentCards[0].text()).toContain('Drill')
+    expect(equipmentCards[1].text()).toContain('Asus Laptop')
+
+    // Vérifier qu'il n'y a pas d'équipement "Hammer" dans l'affichage
+    expect(equipmentCards[0].text()).not.toContain('Hammer')
+    expect(equipmentCards[1].text()).not.toContain('Hammer')
   })
 
   // TC002
@@ -74,9 +77,8 @@ describe('EquipmentResearch.vue', () => {
 
     // Seuls les équipements de type "Tools" doivent être affichés
     const equipmentCards = wrapper.findAll('.card')
-    expect(equipmentCards.length).toBe(2)
+    expect(equipmentCards.length).toBe(1)
     expect(equipmentCards[0].text()).toContain('Drill')
-    expect(equipmentCards[1].text()).toContain('Hammer')
   })
 
   // TC005
@@ -86,7 +88,7 @@ describe('EquipmentResearch.vue', () => {
 
     // Vérifie que les filtres ont été réinitialisés
     const equipmentCards = wrapper.findAll('.card')
-    expect(equipmentCards.length).toBe(3)
+    expect(equipmentCards.length).toBe(2)
   })
 
   // TC006
@@ -97,5 +99,22 @@ describe('EquipmentResearch.vue', () => {
     expect(tags.length).toBe(2)
     expect(tags[0].text()).toBe('Tools')
     expect(tags[1].text()).toBe('Laptop')
+  })
+
+  // TC007
+  it('Les équipements affichés sont seulement ceux disponibles', async () => {
+    // Trouver tous les éléments de carte d'équipement
+    const equipmentCards = wrapper.findAll('.card')
+
+    // Vérifie qu'il n'y a que les équipements avec status 'available' dans l'affichage
+    expect(equipmentCards).toHaveLength(2) // On sait qu'il y a 2 équipements disponibles
+
+    // Vérifier que la carte d'équipement contient bien "Drill" et "Asus Laptop", mais pas "Hammer"
+    expect(equipmentCards[0].text()).toContain('Drill')
+    expect(equipmentCards[1].text()).toContain('Asus Laptop')
+
+    // Vérifier qu'il n'y a pas d'équipement "Hammer" dans l'affichage
+    expect(equipmentCards[0].text()).not.toContain('Hammer')
+    expect(equipmentCards[1].text()).not.toContain('Hammer')
   })
 })
