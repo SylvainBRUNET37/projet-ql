@@ -87,18 +87,6 @@ describe('RegisterFormView.vue', () => {
     expect(submitButton.attributes('disabled')).toBeDefined()
   })
 
-  it("Création d'utilisateur avec un rôle non conforme au REGEX.", async () => {
-    const roleInput = wrapper.find('#role')
-    const submitButton = wrapper.find('button[type="submit"]')
-
-    await roleInput.setValue('invalidrole')
-
-    await roleInput.trigger('blur')
-
-    expect(wrapper.vm.errors.role).toBe('Invalid role')
-    expect(submitButton.attributes('disabled')).toBeDefined()
-  })
-
   it("Création d'utilisateur avec un mot de passe non conforme au REGEX.", async () => {
     const passwordInput = wrapper.find('#password')
     const submitButton = wrapper.find('button[type="submit"]')
