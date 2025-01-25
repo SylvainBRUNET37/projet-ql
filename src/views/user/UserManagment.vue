@@ -156,6 +156,7 @@ export default defineComponent({
      */
     const handleDetails = (userId: string) => {
       router.push(`/admin/user/${userId}`)
+      console.log(userId);
     }
 
     /**

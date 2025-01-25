@@ -1,19 +1,19 @@
 <template>
-  <div class="form-container">
+  <div class="form-container" v-if="userStore.userData">
     <h1>User Details</h1>
     <form @submit.prevent="saveChanges" class="user-form">
       <div class="form-group">
         <label>First Name:</label>
-        <input v-model="user.firstName" class="input-field" placeholder="Enter first name" />
+        <input v-model="userStore.userData.firstName" class="input-field" placeholder="Enter first name" />
       </div>
       <div class="form-group">
         <label>Last Name:</label>
-        <input v-model="user.lastName" class="input-field" placeholder="Enter last name" />
+        <input v-model="userStore.userData.lastName" class="input-field" placeholder="Enter last name" />
       </div>
       <div class="form-group">
         <label>Email:</label>
         <input
-          v-model="user.email"
+          v-model="userStore.userData.email"
           class="input-field"
           placeholder="Enter email"
           @blur="validateEmailField"
@@ -22,7 +22,7 @@
       </div>
       <div class="form-group">
         <label>Role:</label>
-        <select v-model="user.role" class="dropdown">
+        <select v-model="userStore.userData.role" class="dropdown">
           <option value="user">User</option>
           <option value="admin">Admin</option>
         </select>
@@ -30,13 +30,13 @@
       </div>
       <div class="form-group">
         <label>Status:</label>
-        <select v-model="user.status" class="dropdown">
+        <select v-model="userStore.userData.status" class="dropdown">
           <option value="active">Active</option>
           <option value="inactive">Inactive</option>
         </select>
       </div>
       <div class="form-actions">
-        <button type="submit" class="button save">Save</button>
+        <button type="submit" class="button save" @click="saveChanges">Save</button>
         <button type="button" class="button cancel" @click="goBack">Back</button>
       </div>
     </form>
@@ -44,40 +44,51 @@
 </template>
 
 <script>
-import { doc, getDoc, updateDoc } from 'firebase/firestore'
-import { db } from '@/firebase'
+import { onMounted, ref, watch } from 'vue';
+import { useRoute } from 'vue-router';
 import { validateEmail, validateRole } from '@/utils/Validator'
+import { UserStore } from '@/stores/UserStore';
 
 export default {
-  data() {
-    return {
-      user: null, // Contient les informations de l'utilisateur
-      emailError: '', // Message d'erreur pour l'email
-      roleError: '', // Message d'erreur pour le rôle
-    }
-  },
-  async created() {
-    const userId = this.$route.params.id
-    const docRef = doc(db, 'users', userId)
-    const docSnap = await getDoc(docRef)
 
-    if (docSnap.exists()) {
-      this.user = { id: docSnap.id, ...docSnap.data() }
-    } else {
-      alert('User not found!')
-      this.goBack()
-    }
+  setup() {
+    const route = useRoute();
+    const userId = ref(route.params.id);
+  
+    console.log("ID USER ", userId);
+    const userStore = UserStore();
+
+    const localUserData  = ref(null);
+     // Charger les données utilisateur lorsque le composant est monté
+     onMounted(() => {
+      userStore.getUserById(userId.value);
+      localUserData .value = { ...userStore.userData };
+    });
+
+      // Observer les changements du paramètre id dans la route
+      watch(() => route.params.id, (newId, oldId) => {
+      if (newId !== oldId) {  // Si l'ID a changé
+        userId.value = newId;
+        userStore.getUserById(userId.value); // Recharger les données lorsque l'ID change
+      }
+    });
+
+    return {
+      userStore, // Rendre userStore accessible dans le template
+      localUserData,
+    };
   },
+  
   methods: {
     validateEmailField() {
-      if (!validateEmail(this.user.email)) {
+      if (!validateEmail(this.localUserData.email)) {
         this.emailError = 'Invalid email format'
       } else {
         this.emailError = ''
       }
     },
     validateRoleField() {
-      if (!validateRole(this.user.role)) {
+      if (!validateRole(this.localUserData.role)) {
         this.roleError = 'Invalid role. Must be "user" or "admin".'
       } else {
         this.roleError = ''
@@ -86,20 +97,28 @@ export default {
     async saveChanges() {
       this.validateEmailField()
       this.validateRoleField()
-
-      if (this.emailError || this.roleError) {
-        alert('Please fix the errors before saving.')
-        return
-      }
-
       try {
-        const docRef = doc(db, 'users', this.user.id)
-        await updateDoc(docRef, this.user)
-        alert('Changes saved successfully!')
-        this.goBack()
+        const OlddUserData = {
+          id: this.localUserData.id, 
+          email: this.localUserData.email,
+          firstName: this.localUserData.firstName,
+          lastName: this.localUserData.lastName,
+          role: this.localUserData.role,
+          status: this.localUserData.status,
+        };
+        console.log("new ", this.userStore.userData, "old ", OlddUserData)
+        await this.userStore.updateUser(OlddUserData, this.userStore.userData)
+        if (this.userStore.errorMessage.includes("This email is already in use. Please use a different email.")) {
+          // Si l'erreur est liée à l'email, on n'effectue pas la redirection
+          alert(this.userStore.errorMessage);
+        } else {
+          // Si tout se passe bien, on redirige
+          alert("Changes saved successfully");
+          this.goBack();
+        }
       } catch (error) {
-        console.error('Error while saving changes:', error)
-        alert('Unable to save changes.')
+        alert(this.userStore.errorMessage)
+        console.error('Error while saving changes:', this.userStore.errorMessage)
       }
     },
     goBack() {

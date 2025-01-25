@@ -15,6 +15,9 @@ import {
   updateDoc,
   collection,
   type DocumentData,
+  query,
+  where,
+  setDoc,
 } from 'firebase/firestore'
 import { FirebaseError } from 'firebase/app'
 
@@ -184,6 +187,54 @@ export const UserStore = defineStore('user', () => {
     }
   }
 
+
+  const updateUser = async (userDataOld: DocumentData, userDataNew: DocumentData): Promise<void> => {
+    try {
+        console.log("OLD : ",userDataOld.email,"NEW : ",userDataNew.email);
+        if (userDataOld.email !== userDataNew.email) {
+          const usersRef = collection(db, "users");
+          const emailQuery = query(usersRef, where("email", "==", userDataNew.email));
+          const querySnapshot = await getDocs(emailQuery);
+    
+          if (!querySnapshot.empty) {
+            errorMessage.value = "This email is already in use. Please use a different email.";
+            return;
+          }
+        }
+        const userDocRef = doc(db, "users", userDataOld.id); 
+        await setDoc(userDocRef, userDataNew, { merge: true });
+        errorMessage.value ='';
+        return; // Met à jour uniquement les champs modifiés
+        
+      }catch (error: FirebaseError | unknown) {
+        // Gestion des erreurs
+        if (error instanceof FirebaseError) {
+          switch (error.code) {
+            case 'auth/network-request-failed':
+              errorMessage.value = 'Service temporarily unavailable, please try again later.'
+              break
+            default:
+              errorMessage.value = 'Internal error, please try again later.'
+          }
+        } else {
+          errorMessage.value = 'Internal error, please try again later.'
+          console.error(error)
+      }      
+    }
+  }
+  const getUserById = async (userId: string) => {
+    try {
+      console.log("DANS STORE : USER ID ", userId);
+      const docRef = doc(db, "users", userId);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        userData.value = { id: docSnap.id, ...docSnap.data() }; 
+        console.error('User not found');
+      }
+    } catch (error) {
+      console.error('Error getting user data:', error);
+    }
+  }
   // Retourne les données utilisateur, les erreurs et la fonction de récupération
   return {
     userData,
@@ -194,5 +245,7 @@ export const UserStore = defineStore('user', () => {
     updateUserStatus,
     getUsers,
     users,
+    updateUser,
+    getUserById,
   }
 })

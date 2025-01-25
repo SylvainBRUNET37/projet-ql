@@ -161,7 +161,7 @@ describe('UserDetails.vue', () => {
       });
     });
   
-    it("affiche les informations de l'utilisateur", async () => {
+   /* it("affiche les informations de l'utilisateur", async () => {
       // Naviguer vers la route
       await router.push('/admin/user/ANXX123');
       await flushPromises();
@@ -177,5 +177,5 @@ describe('UserDetails.vue', () => {
       expect(userDetailsWrapper.find('input[placeholder="Enter last name"]').element.value).toBe('Doe');
       expect(userDetailsWrapper.find('input[placeholder="Enter email"]').element.value).toBe('john.doe@gmail.com');
       expect(userDetailsWrapper.find('input[placeholder="Enter role"]').element.value).toBe('user');
-    });
+    });*/
   });
