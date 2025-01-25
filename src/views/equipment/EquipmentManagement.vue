@@ -1,7 +1,15 @@
+<!--
+Ce composant permet d'afficher un tableau avec tous les équipements. Via cette page, on peut supprimer un équipement ou le désactiver.
+On peut aussi passer à la page de détails d'un équipement, ou à la page de création d'équipement.
+-->
+
 <template>
   <div>
     <h1>Equipment Management</h1>
+
+    <!-- Tableau des équipements -->
     <table class="table is-hoverable">
+      <!-- En-tête du tableau -->
       <thead>
         <tr>
           <th>Reference</th>
@@ -14,6 +22,8 @@
           <th>Delete</th>
         </tr>
       </thead>
+
+      <!-- Ligne pour chaque équipement -->
       <tbody>
         <tr v-for="equipment in paginatedEquipments" :key="equipment.id">
           <td>{{ equipment.ref }}</td>
@@ -40,6 +50,8 @@
         </tr>
       </tbody>
     </table>
+
+    <!-- Pagination -->
     <nav class="pagination" role="navigation" aria-label="pagination">
       <a
         :class="{ 'pagination-previous': true, 'is-disabled': isFirstPage }"
@@ -58,6 +70,8 @@
         </li>
       </ul>
     </nav>
+
+    <!-- Bouton pour ajouter un équipement -->
     <div class="add-button-container">
       <button class="button is-primary" @click="handleAdd">Add</button>
     </div>

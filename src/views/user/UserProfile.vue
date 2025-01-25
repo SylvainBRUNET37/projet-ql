@@ -1,4 +1,4 @@
-<!-- UserProfile.vue -->
+<!-- Ce composant est utilisé gérer les onglets (equipments et informations de l'utilisateur) sur le profil de l'utilisateur -->
 
 <template>
   <div class="section">
