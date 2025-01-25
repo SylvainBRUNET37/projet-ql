@@ -97,55 +97,82 @@ export default defineComponent({
     const itemsPerPage = ref(10)
     const router = useRouter()
 
-    // Pagination logic
+    // Calcul du nombre total de pages
+    const totalPages = computed(() => Math.ceil(userStore.users.length / itemsPerPage.value))
+    const isFirstPage = computed(() => currentPage.value === 1)
+    const isLastPage = computed(() => currentPage.value === totalPages.value)
+
+    // Récupère et stocke les utilisateurs paginés
     const paginatedUsers = computed(() => {
       const start = (currentPage.value - 1) * itemsPerPage.value
       return userStore.users.slice(start, start + itemsPerPage.value)
     })
 
-    const totalPages = computed(() => Math.ceil(userStore.users.length / itemsPerPage.value))
-
-    const isFirstPage = computed(() => currentPage.value === 1)
-    const isLastPage = computed(() => currentPage.value === totalPages.value)
-
+    /**
+     * Supprime un utilisateur après confirmation.
+     *
+     * @param {string} userId - L'ID de l'utilisateur à supprimer.
+     */
     const handleDelete = async (userId: string) => {
+      // Demande de confirmation avant suppression
       const confirmed = window.confirm('Do you really want to delete this user ?')
+
+      // Si l'utilisateur annule, on ne supprime pas l'utilisateur
       if (!confirmed) {
         return
       }
 
+      // Sinon, suppression de l'utilisateur
       try {
         await userStore.deleteUserById(userId)
       } catch (error) {
-        console.error('Error deleting user:', error)
+        console.error('Error deleting user: ', error)
       }
     }
 
+    /**
+     * Redirige vers la page d'ajout d'un nouvel utilisateur.
+     */
     const handleAdd = () => {
       router.push('/register')
     }
 
-    // Change user status
+    /**
+     * Change le statut d'un utilisateur.
+     *
+     * @param {string} userId - L'ID de l'utilisateur.
+     * @param {string} status - Le statut actuel de l'utilisateur.
+     */
     const handleToggleStatus = async (userId: string, status: string) => {
+      // Change le statut de l'utilisateur et met à jour la liste des utilisateurs
       await userStore.updateUserStatus(userId, status)
       await userStore.getUsers()
     }
 
-    // View user details
+    /**
+     * Redirige vers la page des détails d'un utilisateur.
+     *
+     * @param {string} userId - L'ID de l'utilisateur à afficher.
+     */
     const handleDetails = (userId: string) => {
       router.push(`/admin/user/${userId}`)
     }
 
-    // Pagination controls
+    /**
+     * Va à la page précédente si ce n'est pas déjà la première page.
+     */
     const goToPreviousPage = () => {
       if (!isFirstPage.value) currentPage.value--
     }
 
+    /**
+     * Va à la page suivante si ce n'est pas déjà la dernière page.
+     */
     const goToNextPage = () => {
       if (!isLastPage.value) currentPage.value++
     }
 
-    // Fetch users on mount
+    // Récupère les utilisateurs au chargement du composant
     onMounted(async () => {
       await userStore.getUsers()
     })
