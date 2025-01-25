@@ -2,7 +2,7 @@
 
 <template>
   <div class="content">
-    <p class="mb-4">Need to change something? Ask an administrator!</p>
+    <p class="mb-4">Need to change something ? Ask an administrator !</p>
 
     <!-- Informations de l'utilisateur -->
     <p><strong>Last name:</strong> {{ userInfo?.lastName || 'Not available' }}</p>

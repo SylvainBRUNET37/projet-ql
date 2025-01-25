@@ -1,5 +1,5 @@
 <!-- GenericForm.vue -->
-<!-- Ce composant générique est utilisé pour afficher un champ de formulaire. Il peut être utilisé pour afficher des champs de texte, des champs de sélection, etc. -->
+<!-- Ce composant générique est utilisé pour afficher un champ de formulaire. Il peut être utilisé pour afficher des champs de texte et des champs de sélection -->
 
 <template>
   <div class="form-field">
