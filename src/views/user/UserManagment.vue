@@ -25,19 +25,26 @@ On peut aussi passer à la page de détails d'un utilisateur, ou à la page de c
       <!-- Ligne pour chaque utilisateur -->
       <tbody>
         <tr v-for="user in paginatedUsers" :key="user.id">
+          <!-- Affiche les informations de l'utilisateur -->
           <td>{{ user.firstName }}</td>
           <td>{{ user.lastName }}</td>
           <td>{{ user.role }}</td>
           <td>{{ user.status }}</td>
           <td>{{ user.email }}</td>
+
+          <!-- Bouton pour afficher les détails de l'utilisateur -->
           <td>
             <button class="button is-link" @click="handleDetails(user.id)">Details</button>
           </td>
+
+          <!-- Bouton pour changer le status de l'utilisateur -->
           <td>
             <button class="button is-link" @click="handleToggleStatus(user.id, user.status)">
               {{ user.status === 'active' ? 'Disable' : 'Enable' }}
             </button>
           </td>
+
+          <!-- Bouton pour supprimer l'utilisateur -->
           <td>
             <button class="button is-link" @click="handleDelete(user.id)">Delete</button>
           </td>
@@ -47,15 +54,20 @@ On peut aussi passer à la page de détails d'un utilisateur, ou à la page de c
 
     <!-- Pagination -->
     <nav class="pagination" role="navigation" aria-label="pagination">
+      <!-- Bouton pour passer à la page précédente -->
       <a
         :class="{ 'pagination-previous': true, 'is-disabled': isFirstPage }"
         @click="goToPreviousPage"
       >
         Previous
       </a>
+
+      <!-- Bouton pour passer à la page suivante -->
       <a :class="{ 'pagination-next': true, 'is-disabled': isLastPage }" @click="goToNextPage">
         Next page
       </a>
+
+      <!-- Affiche la page courante -->
       <ul class="pagination-list">
         <li>
           <a class="pagination-link is-current" aria-label="Page 1" aria-current="page">

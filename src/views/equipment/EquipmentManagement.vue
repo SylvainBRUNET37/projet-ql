@@ -26,16 +26,21 @@ On peut aussi passer à la page de détails d'un équipement, ou à la page de c
       <!-- Ligne pour chaque équipement -->
       <tbody>
         <tr v-for="equipment in paginatedEquipments" :key="equipment.id">
+          <!-- Affiche les informations de l'équipement -->
           <td>{{ equipment.ref }}</td>
           <td>{{ equipment.name }}</td>
           <td>{{ equipment.status }}</td>
           <td>{{ equipment.type }}</td>
           <td>{{ equipment.description }}</td>
+
+          <!-- Bouton pour afficher les détails de l'équipement -->
           <td>
             <button class="button is-link" @click="$router.push(`admin/equipment/${equipment.id}`)">
               Details
             </button>
           </td>
+
+          <!-- Bouton pour changer le status de l'équipement -->
           <td>
             <button
               class="button is-link"
@@ -44,6 +49,8 @@ On peut aussi passer à la page de détails d'un équipement, ou à la page de c
               {{ equipment.status === 'available' ? 'Disable' : 'Enable' }}
             </button>
           </td>
+
+          <!-- Bouton pour supprimer l'équipement -->
           <td>
             <button class="button is-link" @click="handleDelete(equipment.id)">Delete</button>
           </td>
@@ -53,15 +60,20 @@ On peut aussi passer à la page de détails d'un équipement, ou à la page de c
 
     <!-- Pagination -->
     <nav class="pagination" role="navigation" aria-label="pagination">
+      <!-- Bouton pour passer à la page précédente -->
       <a
         :class="{ 'pagination-previous': true, 'is-disabled': isFirstPage }"
         @click="goToPreviousPage"
       >
         Previous
       </a>
+
+      <!-- Bouton pour passer à la page suivante -->
       <a :class="{ 'pagination-next': true, 'is-disabled': isLastPage }" @click="goToNextPage">
         Next page
       </a>
+
+      <!-- Affichage de la page courante -->
       <ul class="pagination-list">
         <li>
           <a class="pagination-link is-current" aria-label="Page 1" aria-current="page">
