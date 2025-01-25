@@ -134,12 +134,21 @@ export default defineComponent({
       }
     }
 
+    /**
+     * Supprime un équipement après confirmation.
+     *
+     * @param {string} id - L'ID de l'équipement à supprimer.
+     */
     const handleDelete = async (id: string) => {
+      // Demande de confirmation avant suppression
       const confirmed = window.confirm('Do you really want to delete this equipment ?')
+
+      // Si l'utilisateur annule, on ne supprime pas l'équipement
       if (!confirmed) {
         return
       }
 
+      // Sinon, suppression de l'équipement
       try {
         await equipmentStore.deleteEquipment(id)
       } catch (error) {
@@ -147,18 +156,28 @@ export default defineComponent({
       }
     }
 
+    /**
+     * Redirige vers la page d'ajout d'un nouvel équipement.
+     */
     const handleAdd = () => {
       router.push('/add-equipment')
     }
 
+    /**
+     * Va à la page précédente si ce n'est pas déjà la première page.
+     */
     const goToPreviousPage = () => {
       if (!isFirstPage.value) currentPage.value--
     }
 
+    /**
+     * Va à la page suivante si ce n'est pas déjà la dernière page.
+     */
     const goToNextPage = () => {
       if (!isLastPage.value) currentPage.value++
     }
 
+    // Récupère tous les équipements au montage du composant
     onMounted(() => {
       equipmentStore.getAllEquipment()
     })
