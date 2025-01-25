@@ -1,0 +1,133 @@
+{
+  "id": "bdd8f876-c36a-43c6-ba8f-6edd56e9ab25",
+  "version": "2.0",
+  "name": "quali-log",
+  "url": "http://localhost:5173",
+  "tests": [{
+    "id": "81ba254d-9a87-4329-934d-8c710c2fc876",
+    "name": "Login avec un utilisateur désactivé",
+    "commands": [{
+      "id": "04b0389d-a220-4525-9f8f-db23447efe2b",
+      "comment": "",
+      "command": "open",
+      "target": "/auth",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "e950549b-8720-4dcb-b772-4f41c969c59c",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "945x1020",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "c9fc0c02-e821-4533-8eeb-7cd4605b758e",
+      "comment": "",
+      "command": "click",
+      "target": "id=email",
+      "targets": [
+        ["id=email", "id"],
+        ["css=#email", "css:finder"],
+        ["xpath=//input[@id='email']", "xpath:attributes"],
+        ["xpath=//div[@id='form-container']/div/form/div/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "06a2ee79-38f2-4e06-ab99-80ebba43f418",
+      "comment": "",
+      "command": "type",
+      "target": "id=email",
+      "targets": [
+        ["id=email", "id"],
+        ["css=#email", "css:finder"],
+        ["xpath=//input[@id='email']", "xpath:attributes"],
+        ["xpath=//div[@id='form-container']/div/form/div/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": "inactive"
+    }, {
+      "id": "0cb17e7b-04b3-40c7-8d7f-568c0f7366ad",
+      "comment": "",
+      "command": "mouseOver",
+      "target": "css=.form-submit-button",
+      "targets": [
+        ["css=.form-submit-button", "css:finder"],
+        ["xpath=//button[@type='submit']", "xpath:attributes"],
+        ["xpath=//div[@id='form-container']/div/form/button", "xpath:idRelative"],
+        ["xpath=//button", "xpath:position"],
+        ["xpath=//button[contains(.,'Login')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "3e406bea-7792-444a-95aa-f5933be30a68",
+      "comment": "",
+      "command": "type",
+      "target": "id=email",
+      "targets": [
+        ["id=email", "id"],
+        ["css=#email", "css:finder"],
+        ["xpath=//input[@id='email']", "xpath:attributes"],
+        ["xpath=//div[@id='form-container']/div/form/div/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": "inactive.user@example.com"
+    }, {
+      "id": "f35db0e3-306c-4de9-b9ec-480916b805d4",
+      "comment": "",
+      "command": "click",
+      "target": "id=password",
+      "targets": [
+        ["id=password", "id"],
+        ["css=#password", "css:finder"],
+        ["xpath=//input[@id='password']", "xpath:attributes"],
+        ["xpath=//div[@id='form-container']/div/form/div[2]/input", "xpath:idRelative"],
+        ["xpath=//div[2]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "9ac5d3ca-f765-4870-af03-47f547f0e153",
+      "comment": "",
+      "command": "type",
+      "target": "id=password",
+      "targets": [
+        ["id=password", "id"],
+        ["css=#password", "css:finder"],
+        ["xpath=//input[@id='password']", "xpath:attributes"],
+        ["xpath=//div[@id='form-container']/div/form/div[2]/input", "xpath:idRelative"],
+        ["xpath=//div[2]/input", "xpath:position"]
+      ],
+      "value": "password"
+    }, {
+      "id": "1aa97e76-1059-4517-b5e8-5e46e8ff2f58",
+      "comment": "",
+      "command": "click",
+      "target": "css=.form-submit-button",
+      "targets": [
+        ["css=.form-submit-button", "css:finder"],
+        ["xpath=//button[@type='submit']", "xpath:attributes"],
+        ["xpath=//div[@id='form-container']/div/form/button", "xpath:idRelative"],
+        ["xpath=//button", "xpath:position"],
+        ["xpath=//button[contains(.,'Login')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "1c89947b-8e7a-46d4-86b5-99b7a036ccb3",
+      "comment": "",
+      "command": "assertAlert",
+      "target": "Your account has been desactivated. Contact support to reactivate it",
+      "targets": [],
+      "value": ""
+    }]
+  }],
+  "suites": [{
+    "id": "d0fa17cb-fcff-427d-9e71-a96c344903dd",
+    "name": "Default Suite",
+    "persistSession": false,
+    "parallel": false,
+    "timeout": 300,
+    "tests": ["81ba254d-9a87-4329-934d-8c710c2fc876"]
+  }],
+  "urls": ["http://localhost:5173/"],
+  "plugins": []
+}

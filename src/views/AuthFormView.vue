@@ -123,8 +123,8 @@ export default {
 
         // Affiche un message de succès ou d'erreur
         if (authStore.errorMessage) {
-          alert(this.errorMessage)
           this.errorMessage = authStore.errorMessage
+          alert(this.errorMessage)
         } else {
           if (authStore.userData) {
             const user = {
