@@ -1,5 +1,6 @@
 <template>
   <div>
+    <h1>Equipment Management</h1>
     <table class="table is-hoverable">
       <thead>
         <tr>
@@ -21,7 +22,9 @@
           <td>{{ equipment.type }}</td>
           <td>{{ equipment.description }}</td>
           <td>
-            <button class="button is-link" @click="$router.push(`admin/equipment/${equipment.id}`)">Details</button>
+            <button class="button is-link" @click="$router.push(`admin/equipment/${equipment.id}`)">
+              Details
+            </button>
           </td>
           <td>
             <button
@@ -94,21 +97,21 @@ export default defineComponent({
     const handleToggleStatus = async (id: string, status: string) => {
       try {
         if (status === 'available') {
-          await equipmentStore.disableEquipment(id);
+          await equipmentStore.disableEquipment(id)
         } else {
-          await equipmentStore.enableEquipment(id);
+          await equipmentStore.enableEquipment(id)
         }
 
-        await equipmentStore.getAllEquipment();
+        await equipmentStore.getAllEquipment()
       } catch (error) {
-        console.error('Error toggling equipment status:', error);
+        console.error('Error toggling equipment status:', error)
       }
     }
 
     const handleDelete = async (id: string) => {
-      const confirmed = window.confirm("Do you really want to delete this equipment ?");
+      const confirmed = window.confirm('Do you really want to delete this equipment ?')
       if (!confirmed) {
-        return;
+        return
       }
 
       try {
