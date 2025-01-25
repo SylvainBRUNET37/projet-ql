@@ -1,66 +1,77 @@
 <template>
-<<<<<<< HEAD
-    <div class="form-container">
-      <h1>User Details</h1>
-      <div v-if="user">
-      <form @submit.prevent="saveChanges" class="user-form">
-        <div class="form-group">
-          <label>First Name:</label>
-          <input v-model="user.firstName" class="input-field" placeholder="Enter first name" />
-        </div>
-        <div class="form-group">
-          <label>Last Name:</label>
-          <input v-model="user.lastName" class="input-field" placeholder="Enter last name" />
-        </div>
-        <div class="form-group">
-          <label>Email:</label>
-          <input v-model="user.email" class="input-field" placeholder="Enter email" @blur="validateEmailField" />
-          <span v-if="emailError" class="error">{{ emailError }}</span>
-        </div>
-        <div class="form-group">
-          <label>Role:</label>
-          <select v-model="user.role" class="dropdown">
-            <option value="user">User</option>
-            <option value="admin">Admin</option>
-          </select>
-          <span v-if="roleError" class="error">{{ roleError }}</span>
-        </div>
-        <div class="form-group">
-          <label>Status:</label>
-          <select v-model="user.status" class="dropdown">
-            <option value="active">Active</option>
-            <option value="inactive">Inactive</option>
-          </select>
-        </div>
-        <div class="form-actions">
-          <button type="submit" class="button save">Save</button>
-          <button type="button" class="button cancel" @click="goBack">Back</button>
-        </div>
-      </form>
-    </div>
-    </div>
-  </template>
-  
-  <script>
-  import { doc, getDoc, updateDoc } from 'firebase/firestore';
-  import { db } from '@/firebase';
-  import { validateEmail, validateRole } from '@/utils/Validator';
-  
-  export default {
-    data() {
-      return {
-        user: null, // Contient les informations de l'utilisateur
-        emailError: '', // Message d'erreur pour l'email
-        roleError: '', // Message d'erreur pour le rôle
-      };
-    },
-    async created() {
-      const userId = this.$route.params.id;
-      const docRef = doc(db, 'users', userId);
-      const docSnap = await getDoc(docRef);
-  
-      if (docSnap.exists()) {
-        this.user = { id: docSnap.id, ...docSnap.data() };
+  <div class="form-container">
+    <h1>User Details</h1>
+    <form @submit.prevent="saveChanges" class="user-form">
+      <div class="form-group">
+        <label>First Name:</label>
+        <input v-model="user.firstName" class="input-field" placeholder="Enter first name" />
+      </div>
+      <div class="form-group">
+        <label>Last Name:</label>
+        <input v-model="user.lastName" class="input-field" placeholder="Enter last name" />
+      </div>
+      <div class="form-group">
+        <label>Email:</label>
+        <input
+          v-model="user.email"
+          class="input-field"
+          placeholder="Enter email"
+          @blur="validateEmailField"
+        />
+        <span v-if="emailError" class="error">{{ emailError }}</span>
+      </div>
+      <div class="form-group">
+        <label>Role:</label>
+        <select v-model="user.role" class="dropdown">
+          <option value="user">User</option>
+          <option value="admin">Admin</option>
+        </select>
+        <span v-if="roleError" class="error">{{ roleError }}</span>
+      </div>
+      <div class="form-group">
+        <label>Status:</label>
+        <select v-model="user.status" class="dropdown">
+          <option value="active">Active</option>
+          <option value="inactive">Inactive</option>
+        </select>
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="button save">Save</button>
+        <button type="button" class="button cancel" @click="goBack">Back</button>
+      </div>
+    </form>
+  </div>
+</template>
+
+<script>
+import { doc, getDoc, updateDoc } from 'firebase/firestore'
+import { db } from '@/firebase'
+import { validateEmail, validateRole } from '@/utils/Validator'
+
+export default {
+  data() {
+    return {
+      user: null, // Contient les informations de l'utilisateur
+      emailError: '', // Message d'erreur pour l'email
+      roleError: '', // Message d'erreur pour le rôle
+    }
+  },
+  async created() {
+    const userId = this.$route.params.id
+    const docRef = doc(db, 'users', userId)
+    const docSnap = await getDoc(docRef)
+
+    if (docSnap.exists()) {
+      this.user = { id: docSnap.id, ...docSnap.data() }
+    } else {
+      alert('User not found!')
+      this.goBack()
+    }
+  },
+  methods: {
+    validateEmailField() {
+      if (!validateEmail(this.user.email)) {
+        this.emailError = 'Invalid email format'
       } else {
         this.emailError = ''
       }
