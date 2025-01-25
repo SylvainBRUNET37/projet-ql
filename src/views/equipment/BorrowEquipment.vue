@@ -41,7 +41,7 @@
         </div>
 
         <!-- Champs pour les dates de début et de fin -->
-        <div class="form-actions">
+        <div class="date-fields">
           <div class="form-group">
             <label>Start Date:</label>
             <input type="date" v-model="startDate" />
@@ -52,20 +52,20 @@
           </div>
         </div>
 
-        <!-- Boutons pour emprunter un équipement -->
-        <button
-          type="button"
-          class="button is-primary"
-          @click="borrowEquipment"
-          :disabled="equipment.status === 'unavailable'"
-        >
-          Borrow
-        </button>
-
-        <!-- Boutons pour revenir en arrière et modifier -->
+        <!-- Boutons -->
         <div class="form-actions">
+          <!-- Bouton pour revenir en arrière -->
           <button type="button" class="button cancel" @click="goBack">Back</button>
-          <button type="submit" class="button save">Modify</button>
+
+          <!-- Bouton pour emprunter un équipement -->
+          <button
+            type="button"
+            class="button is-primary"
+            @click="borrowEquipment"
+            :disabled="equipment.status === 'unavailable'"
+          >
+            Borrow
+          </button>
         </div>
       </form>
     </div>
@@ -242,6 +242,21 @@ export default {
   cursor: not-allowed;
 }
 
+.date-fields {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.date-fields .form-group {
+  flex: 1;
+  margin-right: 10px;
+}
+
+.date-fields .form-group:last-child {
+  margin-right: 0;
+}
+
 .form-actions {
   display: flex;
   justify-content: space-between;
@@ -256,12 +271,12 @@ export default {
   transition: background-color 0.3s;
 }
 
-.button.save {
+.button.is-primary {
   background-color: #007bff;
   color: white;
 }
 
-.button.save:hover {
+.button.is-primary:hover {
   background-color: #0056b3;
 }
 
