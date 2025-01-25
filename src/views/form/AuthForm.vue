@@ -1,4 +1,3 @@
-<!-- AuthForm.vue -->
 <!-- Formulaire d'authentification -->
 
 <template>
@@ -38,13 +37,13 @@ type ErrorMessages = {
 
 // Définition des types pour les champs de formulaire
 type ValidationField = {
-  name: string
-  label: string
-  type: string
-  placeholder: string
-  validate: (value: string) => boolean
-  errorMsg: string
-  required?: boolean
+  name: string // Nom du champ
+  label: string // Label du champ
+  type: string // Type du champ (text, email, password, etc.)
+  placeholder: string // Texte d'exemple à afficher dans le champ
+  validate: (value: string) => boolean // Fonction de validation du champ
+  errorMsg: string // Message d'erreur à afficher si la validation échoue
+  required?: boolean // Indique si le champ est obligatoire
 }
 
 export default {
@@ -157,6 +156,7 @@ export default {
      * @param {ValidationField} field - Le champ à valider.
      */
     validateField(field: ValidationField): void {
+      // Récupère la valeur du champ
       const value = this.form[field.name as keyof typeof this.form]
 
       // Vérifie si le champ est vide
@@ -165,6 +165,7 @@ export default {
         return
       }
 
+      // Vérifie si le champ est valide
       const isValid = field.validate(this.form[field.name as keyof typeof this.form])
       this.errors[field.name] = isValid ? '' : field.errorMsg
     },

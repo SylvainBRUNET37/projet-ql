@@ -203,6 +203,7 @@ export default {
       if (this.isFormValid) {
         const { register } = RegisterStore()
 
+        // Envoie les données d'inscription au serveur
         await register(
           this.form.firstName,
           this.form.lastName,
@@ -211,6 +212,7 @@ export default {
           this.form.password,
         )
 
+        // Récupère le message d'erreur
         const errorMessage = RegisterStore().errorMessage
 
         // Gestion des erreurs de l'inscription
@@ -224,7 +226,7 @@ export default {
             alert('User successfully registered!')
           }
 
-          // Redirige l'utilisateur vers la page d'accueil
+          // Redirige l'utilisateur vers la page d'accueil si l'inscription est réussie
           this.$router.push('/home')
         }
       }
