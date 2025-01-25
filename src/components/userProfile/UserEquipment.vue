@@ -50,8 +50,13 @@ export default defineComponent({
     const currentBorrows = ref<DocumentData[]>([])
     const upcomingBorrows = ref<DocumentData[]>([])
 
-    // Trie les emprunts par date
+    /**
+     * Trie les emprunts par date.
+     *
+     * @param {DocumentData[]} borrows - Liste des emprunts à trier.
+     */
     const sortBorrowsByDate = (borrows: DocumentData[]) => {
+      // Trie les emprunts par date
       return [...borrows].sort((a, b) => {
         const dateA = typeof a.borrowDate === 'number' ? a.borrowDate : a.borrowDate.seconds * 1000
         const dateB = typeof b.borrowDate === 'number' ? b.borrowDate : b.borrowDate.seconds * 1000
@@ -59,7 +64,9 @@ export default defineComponent({
       })
     }
 
-    // Charge les emprunts de l'utilisateur
+    /**
+     * Charge les emprunts de l'utilisateur.
+     */
     const loadUserBorrows = async () => {
       try {
         // Récupère les emprunts de l'utilisateur
@@ -92,10 +99,18 @@ export default defineComponent({
       }
     }
 
-    // Formate les dates pour affichage
+    /**
+     * Formate une date pour l'affichage.
+     *
+     * @param {number | { seconds: number }} timestamp - Timestamp ou objet contenant un timestamp.
+     * @returns {string} Date formatée en français.
+     */
     const formatDate = (timestamp: number | { seconds: number }) => {
+      // Récupère le timestamp en secondes
       const seconds = typeof timestamp === 'number' ? timestamp : timestamp.seconds
       const date = new Date(seconds)
+
+      // Retourne la date formatée en français
       return date.toLocaleDateString('fr-FR', {
         weekday: 'long',
         year: 'numeric',
