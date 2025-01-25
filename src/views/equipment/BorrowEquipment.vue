@@ -41,11 +41,11 @@
     <div class="date-fields">
       <div class="form-group">
         <label>Start Date:</label>
-        <input type="date" v-model="startDate" />
+        <input type="date" v-model="startDate" id="start-date" data-test="start-date"/>
       </div>
       <div class="form-group">
         <label>End Date:</label>
-        <input type="date" v-model="endDate" />
+        <input type="date" v-model="endDate" id="end-date" data-test="end-date"/>
       </div>
     </div>
 
@@ -55,7 +55,7 @@
       <button type="button" class="button cancel" @click="goBack">Back</button>
 
       <!-- Bouton pour emprunter un équipement -->
-      <button type="button" class="button is-primary" @click="borrowEquipment">Borrow</button>
+      <button type="button" class="button is-primary" id="borrow-button" data-test="borrow-button" @click="borrowEquipment">Borrow</button>
     </div>
   </div>
 </template>
