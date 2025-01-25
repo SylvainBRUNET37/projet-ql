@@ -10,8 +10,8 @@
 import EquipmentResearch from '@/views/equipment/EquipmentResearch.vue'
 import Sidebar from '../sideBar/sidebar.vue'
 import UserProfile from '@/views/user/UserProfile.vue'
-import UserEquipment from '../userProfile/UserEquipment.vue'
-import UserInfo from '../userProfile/UserInfo.vue'
+import UserEquipment from '../../views/user/UserEquipment.vue'
+import UserInfo from '../../views/user/UserInfo.vue'
 import UserManagment from '../../views/user/UserManagment.vue'
 import EquipmentManagement from '../../views/equipment/EquipmentManagement.vue'
 
