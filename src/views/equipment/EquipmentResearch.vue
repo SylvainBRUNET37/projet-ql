@@ -80,8 +80,9 @@ export default {
   emits: ['switchContent', 'setId'],
   setup() {
     const equipmentStore = EquipmentStore()
+
     const allEquipments = computed(() => {
-      return equipmentStore.equipment
+      return equipmentStore.equipment.filter((equipment) => equipment.status === 'available')
     })
 
     onMounted(() => {
@@ -139,6 +140,7 @@ export default {
     const equipmentToDisplay = computed(() =>
       filteredEquipments.value.length > 0 ? filteredEquipments.value : allEquipments.value,
     )
+
     return {
       allEquipments,
       search,
