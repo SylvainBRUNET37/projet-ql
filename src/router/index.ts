@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import AuthFormView from '../views/AuthFormView.vue'
 import RegisterFormView from '../views/RegisterFormView.vue'
-import EquipmentResearchView from '../views/EquipmentResearchView.vue'
+import EquipmentResearchView from '../views/equipment/EquipmentResearchView.vue'
 import UserProfileView from '../views/UserProfileView.vue'
 import Layout from '@/components/mainLayOut/layout.vue'
 import AddEquipmentView from '../views/equipment/AddEquipmentView.vue'
