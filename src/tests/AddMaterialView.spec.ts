@@ -55,7 +55,7 @@ describe('AddEquipment.vue', () => {
 
     await nameInput.setValue('Material Name')
     await typeInput.setValue('Type')
-    await refInput.setValue('EXISTING_REF')
+    await refInput.setValue('IOS')
     await descriptionInput.setValue('Description')
 
     await addEquipmentButton.trigger('click')
@@ -89,7 +89,7 @@ describe('AddEquipment.vue', () => {
 
     await nameInput.setValue('Valid Name')
     await typeInput.setValue('Valid Type')
-    await refInput.setValue('VALID_REF')
+    await refInput.setValue('IOS')
     await descriptionInput.setValue('Valid description.')
 
     await addEquipmentButton.trigger('click')
@@ -97,7 +97,7 @@ describe('AddEquipment.vue', () => {
     expect(authStore.addMaterial).toHaveBeenCalledWith({
       name: 'Valid Name',
       type: 'Valid Type',
-      ref: 'VALID_REF',
+      ref: 'IOS',
       description: 'Valid description.',
     })
     expect(wrapper.vm.successMessage).toBe('Material successfully added')
@@ -107,7 +107,7 @@ describe('AddEquipment.vue', () => {
     const material = {
       id: 1,
       name: 'Old Name',
-      ref: 'OLD_REF',
+      ref: 'Android',
       type: 'Old Type',
       description: 'Old Description',
     }
@@ -122,14 +122,14 @@ describe('AddEquipment.vue', () => {
 
     await nameInput.setValue('Updated Name')
     await typeInput.setValue('Updated Type')
-    await refInput.setValue('UPDATED_REF')
+    await refInput.setValue('IOS')
     await descriptionInput.setValue('Updated Description')
     await saveButton.trigger('click')
 
     expect(authStore.updateMaterial).toHaveBeenCalledWith({
       id: 1,
       name: 'Updated Name',
-      ref: 'UPDATED_REF',
+      ref: 'IOS',
       type: 'Updated Type',
       description: 'Updated Description',
     })
