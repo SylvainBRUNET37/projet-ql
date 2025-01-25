@@ -1,52 +1,62 @@
-<!--
-Ce composant permet d'afficher les détails d'un équipement.
--->
+<!-- Ce composant permet d'afficher les détails d'un équipement. -->
 
 <template>
   <div class="form-container">
     <h1>Equipment Details</h1>
 
-    <!-- Formulaire d'équipement -->
-    <form @submit.prevent="saveChanges" class="equipment-form">
-      <!-- Nom de l'équipement -->
-      <div class="form-group">
-        <label>Name:</label>
-        <input v-model="equipment.name" />
-      </div>
+    <!-- Nom de l'équipement -->
+    <div class="form-group">
+      <label>Name:</label>
+      <input v-model="equipment.name" />
+    </div>
 
-      <!-- Reference de l'équipement -->
-      <div class="form-group">
-        <label>Reference:</label>
-        <input v-model="equipment.ref" readonly />
-      </div>
+    <!-- Reference de l'équipement -->
+    <div class="form-group">
+      <label>Reference:</label>
+      <input v-model="equipment.ref" readonly />
+    </div>
 
-      <!-- Type de l'équipement -->
-      <div class="form-group">
-        <label>Type:</label>
-        <input v-model="equipment.type" />
-      </div>
+    <!-- Type de l'équipement -->
+    <div class="form-group">
+      <label>Type:</label>
+      <input v-model="equipment.type" />
+    </div>
 
-      <!-- Status de l'équipement -->
-      <div class="form-group">
-        <label>Status:</label>
-        <select v-model="equipment.status">
-          <option value="available">Available</option>
-          <option value="unavailable">Unavailable</option>
-        </select>
-      </div>
+    <!-- Status de l'équipement -->
+    <div class="form-group">
+      <label>Status:</label>
+      <select v-model="equipment.status">
+        <option value="available">Available</option>
+        <option value="unavailable">Unavailable</option>
+      </select>
+    </div>
 
-      <!-- Description de l'équipement -->
-      <div class="form-group">
-        <label>Description:</label>
-        <input v-model="equipment.description" />
-      </div>
+    <!-- Description de l'équipement -->
+    <div class="form-group">
+      <label>Description:</label>
+      <input v-model="equipment.description" />
+    </div>
 
-      <!-- Boutons pour revenir en arrière et modifier -->
-      <div class="form-actions">
-        <button type="button" class="button cancel" @click="goBack">Back</button>
-        <button type="submit" class="button save">Modify</button>
+    <!-- Champs pour les dates de début et de fin -->
+    <div class="date-fields">
+      <div class="form-group">
+        <label>Start Date:</label>
+        <input type="date" v-model="startDate" />
       </div>
-    </form>
+      <div class="form-group">
+        <label>End Date:</label>
+        <input type="date" v-model="endDate" />
+      </div>
+    </div>
+
+    <!-- Boutons -->
+    <div class="form-actions">
+      <!-- Bouton pour revenir en arrière -->
+      <button type="button" class="button cancel" @click="goBack">Back</button>
+
+      <!-- Bouton pour emprunter un équipement -->
+      <button type="button" class="button is-primary" @click="borrowEquipment">Borrow</button>
+    </div>
   </div>
 </template>
 
@@ -54,6 +64,8 @@ Ce composant permet d'afficher les détails d'un équipement.
 import { doc, getDoc, updateDoc } from 'firebase/firestore'
 import { db } from '@/firebase'
 import { onMounted, ref } from 'vue'
+import { UserStore } from '@/stores/UserStore'
+import { BorrowStore } from '@/stores/BorrowStore'
 import { useRouter, useRoute } from 'vue-router'
 
 export default {
@@ -70,9 +82,42 @@ export default {
       description: '',
     })
 
+    const userStore = UserStore()
+    const borrowStore = BorrowStore()
+
     const errorMessage = ref('')
     const startDate = ref<string | null>(null)
     const endDate = ref<string | null>(null)
+
+    const borrowEquipment = async () => {
+      const userId = userStore.getUserId()
+
+      if (!userId) {
+        alert('You must be logged in to borrow equipment.')
+        return
+      }
+
+      if (!equipment.value) {
+        alert('Equipment details are not loaded yet. Please try again later.')
+        return
+      }
+
+      if (!startDate.value || !endDate.value) {
+        alert('Please provide both start and end dates.')
+        return
+      }
+
+      const startDateMs = Date.parse(startDate.value)
+      const endDateMs = Date.parse(endDate.value)
+      console.log(startDateMs, '   ', endDateMs)
+      try {
+        await borrowStore.borrowEquipment(userId, equipmentId, startDateMs, endDateMs)
+        alert('Equipment borrowed successfully!')
+      } catch (error) {
+        console.error('Error borrowing equipment:', error)
+        alert('Unable to borrow equipment. Please try again later.')
+      }
+    }
 
     const loadEquipment = async () => {
       try {
@@ -128,6 +173,7 @@ export default {
       goBack,
       startDate,
       endDate,
+      borrowEquipment,
     }
   },
 }
@@ -184,6 +230,21 @@ export default {
   cursor: not-allowed;
 }
 
+.date-fields {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.date-fields .form-group {
+  flex: 1;
+  margin-right: 10px;
+}
+
+.date-fields .form-group:last-child {
+  margin-right: 0;
+}
+
 .form-actions {
   display: flex;
   justify-content: space-between;
@@ -198,12 +259,12 @@ export default {
   transition: background-color 0.3s;
 }
 
-.button.save {
+.button.is-primary {
   background-color: #007bff;
   color: white;
 }
 
-.button.save:hover {
+.button.is-primary:hover {
   background-color: #0056b3;
 }
 

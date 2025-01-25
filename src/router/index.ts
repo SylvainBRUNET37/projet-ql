@@ -9,6 +9,7 @@ import EquipmentDetails from '@/views/equipment/EquipmentDetails.vue'
 import EquipmentManagement from '@/views/equipment/EquipmentManagement.vue'
 import UserDetails from '@/views/user/UserDetails.vue'
 import UserManagment from '@/views/user/UserManagment.vue'
+import BorrowEquipment from '@/views/equipment/BorrowEquipment.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -21,6 +22,11 @@ const router = createRouter({
       path: '/auth',
       name: 'auth',
       component: AuthForm,
+    },
+    {
+      path: '/borrow/:id',
+      name: 'borrow',
+      component: BorrowEquipment,
     },
     {
       path: '/register',

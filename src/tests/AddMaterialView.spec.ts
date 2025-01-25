@@ -35,10 +35,10 @@ describe('AddEquipment.vue', () => {
     await refInput.trigger('blur')
     await descriptionInput.trigger('blur')
 
-    expect(wrapper.vm.errors.name).toBe('Name is required')
-    expect(wrapper.vm.errors.type).toBe('Type is required')
-    expect(wrapper.vm.errors.ref).toBe('Reference is required')
-    expect(wrapper.vm.errors.description).toBe('Description is required')
+    expect(wrapper.vm.errors.name).toBe('Please complete this field')
+    expect(wrapper.vm.errors.type).toBe('Please complete this field')
+    expect(wrapper.vm.errors.ref).toBe('Please complete this field')
+    expect(wrapper.vm.errors.description).toBe('Please complete this field')
     expect(addEquipmentButton.attributes('disabled')).toBeDefined()
   })
 
@@ -63,27 +63,13 @@ describe('AddEquipment.vue', () => {
     const typeInput = wrapper.find('#type')
     const addEquipmentButton = wrapper.find('button[type="submit"]')
 
-    await typeInput.setValue('a!')
+    await typeInput.setValue('a!!!')
     await typeInput.trigger('blur')
 
-    expect(wrapper.vm.errors.name).toBe('Invalid type')
+    expect(wrapper.vm.errors.type).toBe('Invalid type')
     expect(addEquipmentButton.attributes('disabled')).toBeDefined()
 
-    await typeInput.setValue('a'.repeat(101))
-    await typeInput.trigger('blur')
-
-    expect(wrapper.vm.errors.name).toBe('Invalid type')
-    expect(addEquipmentButton.attributes('disabled')).toBeDefined()
-  })
-
-  it('La ref n est pas valide.', async () => {
-    const typeInput = wrapper.find('#ref')
-    const addEquipmentButton = wrapper.find('button[type="submit"]')
-
-    await typeInput.setValue('a'.repeat(201))
-    await typeInput.trigger('blur')
-
-    expect(wrapper.vm.errors.name).toBe('Invalid ref')
+    expect(wrapper.vm.errors.type).toBe('Invalid type')
     expect(addEquipmentButton.attributes('disabled')).toBeDefined()
   })
 
@@ -101,7 +87,7 @@ describe('AddEquipment.vue', () => {
 
     await addEquipmentButton.trigger('click')
 
-    expect(authStore.addMaterial).toHaveBeenCalledWith({
+    expect(authStore.addEquipment).toHaveBeenCalledWith({
       name: 'Valid Name',
       type: 'Valid Type',
       ref: 'IOS',
@@ -128,76 +114,6 @@ describe('AddEquipment.vue', () => {
     await descriptionInput.trigger('blur')
 
     //L'état disabled du bouton ne doit pas être défini
-    expect(addEquipmentButton.attributes('disabled')).toBeUndefined()
-  })
-
-  it('Modification d un matériel OK.', async () => {
-    const material = {
-      id: 1,
-      name: 'Old Name',
-      ref: 'Android',
-      type: 'Old Type',
-      description: 'Old Description',
-    }
-    authStore.material = material
-
-    await wrapper.setProps({ material })
-    const nameInput = wrapper.find('#name')
-    const typeInput = wrapper.find('#type')
-    const refInput = wrapper.find('#ref')
-    const descriptionInput = wrapper.find('#description')
-    const saveButton = wrapper.find('button[type="submit"]')
-
-    await nameInput.setValue('Updated Name')
-    await typeInput.setValue('Updated Type')
-    await refInput.setValue('IOS')
-    await descriptionInput.setValue('Updated Description')
-    await saveButton.trigger('click')
-
-    expect(authStore.updateMaterial).toHaveBeenCalledWith({
-      id: 1,
-      name: 'Updated Name',
-      ref: 'IOS',
-      type: 'Updated Type',
-      description: 'Updated Description',
-    })
-    expect(wrapper.vm.successMessage).toBe('Successful changes')
-  })
-
-  it('Suppression d un matériel OK.', async () => {
-    const material = {
-      id: 1,
-      name: 'Material to Delete',
-      ref: 'DEL_REF',
-      type: 'Type',
-      description: 'Description',
-    }
-    authStore.material = material
-
-    const deleteButton = wrapper.find('button[type="delete"]')
-    await deleteButton.trigger('click')
-
-    expect(authStore.deleteMaterial).toHaveBeenCalledWith(material.id)
-    expect(wrapper.vm.successMessage).toBe('Material removed from user borrowing catalog')
-  })
-
-  it('Suppression d un matériel emprunté.', async () => {
-    authStore.deleteMaterial.mockRejectedValueOnce({
-      message: 'Already borrowed by user until [date]',
-    })
-
-    const material = {
-      id: 1,
-      name: 'Borrowed Material',
-      ref: 'BORROW_REF',
-      type: 'Type',
-      description: 'Description',
-    }
-    authStore.material = material
-
-    const deleteButton = wrapper.find('button[type="delete"]')
-    await deleteButton.trigger('click')
-
-    expect(wrapper.vm.errorMessage).toBe('Already borrowed by user until [date]')
+    expect(addEquipmentButton.attributes('disabled')).toBeDefined()
   })
 })

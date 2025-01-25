@@ -156,8 +156,7 @@ export default {
   methods: {
     handleContent(id: string) {
       if (id) {
-        this.$router.push(`/equipment/${id}`)
-        console.log('route : /equipment/:', id)
+        this.$router.push(`/borrow/${id}`)
       } else {
         alert('no id')
       }
