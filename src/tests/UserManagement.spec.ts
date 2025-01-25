@@ -123,59 +123,6 @@ describe('UserEquipment.vue', async () => {
 })
 
 describe('UserDetails.vue', () => {
-<<<<<<< HEAD
-    let userDetailsWrapper: any;
-    let userStore: any;
-    const router = createRouter({
-      history: createWebHistory(),
-      routes: [
-        { path: '/admin/user/:id', name: 'UserDetails', component: UserDetails },
-      ],
-    });
-  
-    beforeEach(() => {
-      // Initialisation de Pinia
-      setActivePinia(createPinia());
-      userStore = UserStore();
-  
-      // Données utilisateur simulées
-      const user = {
-        firstName: 'John',
-        lastName: 'Doe',
-        email: 'john.doe@gmail.com',
-        role: 'user',
-      };
-  
-      // Initialiser le wrapper avec les props et router
-      userDetailsWrapper = mount(UserDetails, {
-        props: {
-          user, // Injection directe des props utilisateur
-        },
-        global: {
-          plugins: [router],
-        },
-      });
-    });
-  
-   /* it("affiche les informations de l'utilisateur", async () => {
-      // Naviguer vers la route
-      await router.push('/admin/user/ANXX123');
-      await flushPromises();
-  
-      // Vérifier que les données utilisateur sont affichées
-      expect(userDetailsWrapper.text()).toContain('First name: John');
-      expect(userDetailsWrapper.text()).toContain('Last name: Doe');
-      expect(userDetailsWrapper.text()).toContain('Mail: john.doe@gmail.com');
-      expect(userDetailsWrapper.text()).toContain('Role: user');
-  
-      // Vérifier les valeurs dans les champs d'entrée
-      expect(userDetailsWrapper.find('input[placeholder="Enter first name"]').element.value).toBe('John');
-      expect(userDetailsWrapper.find('input[placeholder="Enter last name"]').element.value).toBe('Doe');
-      expect(userDetailsWrapper.find('input[placeholder="Enter email"]').element.value).toBe('john.doe@gmail.com');
-      expect(userDetailsWrapper.find('input[placeholder="Enter role"]').element.value).toBe('user');
-    });*/
-  });
-=======
   let userDetailsWrapper: any
   let userStore: any
   const router = createRouter({
@@ -231,4 +178,3 @@ describe('UserDetails.vue', () => {
     expect(userDetailsWrapper.find('input[placeholder="Enter role"]').element.value).toBe('user')
   })
 })
->>>>>>> dc641ee1ca7b2997edf54298223d83ec21826921
