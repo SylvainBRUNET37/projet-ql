@@ -24,10 +24,10 @@
 </template>
 
 <script lang="ts">
-import GenericForm from '../components/form/GenericForm.vue'
+import GenericForm from '@/components/form/GenericForm.vue'
 import { EquipmentStore } from '@/stores/EquipmentStore'
 
-import '../assets/styles/form.css' // Import du style CSS pour le formulaire
+import '@/assets/styles/form.css' // Import du style CSS pour le formulaire
 
 type ErrorMessages = {
   [key: string]: string
@@ -171,13 +171,3 @@ export default {
   },
 }
 </script>
-
-
-
-
-
-
-
-
-
-

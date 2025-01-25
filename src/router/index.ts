@@ -1,15 +1,14 @@
-import { createRouter, createWebHistory } from 'vue-router';
-import AuthFormView from '../views/AuthFormView.vue';
-import RegisterFormView from '../views/RegisterFormView.vue';
-import EquipmentResearchView from '../views/EquipmentResearchView.vue';
-import UserProfileView from '../views/UserProfileView.vue';
-import Layout from '@/components/mainLayOut/layout.vue';
-import AddMaterialView from '../views/AddMaterialView.vue';
-import EquipmentDetails from '@/views/admin/EquipmentDetails.vue';
-import EquipmentManagement from '@/components/management/EquipmentManagement.vue';
-import UserDetails from '@/views/user/UserDetails.vue';
-import UserManagment from '@/components/management/UserManagment.vue';
-
+import { createRouter, createWebHistory } from 'vue-router'
+import AuthFormView from '../views/AuthFormView.vue'
+import RegisterFormView from '../views/RegisterFormView.vue'
+import EquipmentResearchView from '../views/EquipmentResearchView.vue'
+import UserProfileView from '../views/UserProfileView.vue'
+import Layout from '@/components/mainLayOut/layout.vue'
+import AddEquipmentView from '../views/equipment/AddEquipmentView.vue'
+import EquipmentDetails from '@/views/equipment/EquipmentDetails.vue'
+import EquipmentManagement from '@/components/management/EquipmentManagement.vue'
+import UserDetails from '@/views/user/UserDetails.vue'
+import UserManagment from '@/components/management/UserManagment.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -46,7 +45,7 @@ const router = createRouter({
     {
       path: '/add-material',
       name: 'add-material',
-      component: AddMaterialView,
+      component: AddEquipmentView,
     },
     {
       path: '/components/management',
@@ -59,7 +58,7 @@ const router = createRouter({
       component: UserManagment,
     },
     {
-      path: '/admin/user/:id', 
+      path: '/admin/user/:id',
       name: 'UserDetails',
       component: UserDetails,
     },
@@ -75,7 +74,6 @@ const router = createRouter({
       name: 'EquipmentDetails',
       component: EquipmentDetails,
     },
-
   ],
 })
 
