@@ -12,8 +12,8 @@ import Sidebar from '../sideBar/sidebar.vue'
 import UserProfile from '@/views/user/UserProfile.vue'
 import UserEquipment from '../userProfile/UserEquipment.vue'
 import UserInfo from '../userProfile/UserInfo.vue'
-import UserManagment from '../management/UserManagment.vue'
-import EquipmentManagement from '../management/EquipmentManagement.vue'
+import UserManagment from '../../views/user/UserManagment.vue'
+import EquipmentManagement from '../../views/equipment/EquipmentManagement.vue'
 
 export default {
   name: 'Layout',
