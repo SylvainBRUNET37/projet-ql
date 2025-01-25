@@ -4,70 +4,58 @@
   <div class="form-container">
     <h1>Equipment Details</h1>
 
-    <!-- Formulaire d'équipement -->
-    <div v-if="equipment">
-      <form @submit.prevent="saveChanges" class="equipment-form">
-        <!-- Nom de l'équipement -->
-        <div class="form-group">
-          <label>Name:</label>
-          <input v-model="equipment.name" />
-        </div>
+    <!-- Nom de l'équipement -->
+    <div class="form-group">
+      <label>Name:</label>
+      <input v-model="equipment.name" />
+    </div>
 
-        <!-- Reference de l'équipement -->
-        <div class="form-group">
-          <label>Reference:</label>
-          <input v-model="equipment.ref" readonly />
-        </div>
+    <!-- Reference de l'équipement -->
+    <div class="form-group">
+      <label>Reference:</label>
+      <input v-model="equipment.ref" readonly />
+    </div>
 
-        <!-- Type de l'équipement -->
-        <div class="form-group">
-          <label>Type:</label>
-          <input v-model="equipment.type" />
-        </div>
+    <!-- Type de l'équipement -->
+    <div class="form-group">
+      <label>Type:</label>
+      <input v-model="equipment.type" />
+    </div>
 
-        <!-- Status de l'équipement -->
-        <div class="form-group">
-          <label>Status:</label>
-          <select v-model="equipment.status">
-            <option value="available">Available</option>
-            <option value="unavailable">Unavailable</option>
-          </select>
-        </div>
+    <!-- Status de l'équipement -->
+    <div class="form-group">
+      <label>Status:</label>
+      <select v-model="equipment.status">
+        <option value="available">Available</option>
+        <option value="unavailable">Unavailable</option>
+      </select>
+    </div>
 
-        <!-- Description de l'équipement -->
-        <div class="form-group">
-          <label>Description:</label>
-          <input v-model="equipment.description" />
-        </div>
+    <!-- Description de l'équipement -->
+    <div class="form-group">
+      <label>Description:</label>
+      <input v-model="equipment.description" />
+    </div>
 
-        <!-- Champs pour les dates de début et de fin -->
-        <div class="date-fields">
-          <div class="form-group">
-            <label>Start Date:</label>
-            <input type="date" v-model="startDate" />
-          </div>
-          <div class="form-group">
-            <label>End Date:</label>
-            <input type="date" v-model="endDate" />
-          </div>
-        </div>
+    <!-- Champs pour les dates de début et de fin -->
+    <div class="date-fields">
+      <div class="form-group">
+        <label>Start Date:</label>
+        <input type="date" v-model="startDate" />
+      </div>
+      <div class="form-group">
+        <label>End Date:</label>
+        <input type="date" v-model="endDate" />
+      </div>
+    </div>
 
-        <!-- Boutons -->
-        <div class="form-actions">
-          <!-- Bouton pour revenir en arrière -->
-          <button type="button" class="button cancel" @click="goBack">Back</button>
+    <!-- Boutons -->
+    <div class="form-actions">
+      <!-- Bouton pour revenir en arrière -->
+      <button type="button" class="button cancel" @click="goBack">Back</button>
 
-          <!-- Bouton pour emprunter un équipement -->
-          <button
-            type="button"
-            class="button is-primary"
-            @click="borrowEquipment"
-            :disabled="equipment.status === 'unavailable'"
-          >
-            Borrow
-          </button>
-        </div>
-      </form>
+      <!-- Bouton pour emprunter un équipement -->
+      <button type="button" class="button is-primary" @click="borrowEquipment">Borrow</button>
     </div>
   </div>
 </template>
@@ -85,14 +73,14 @@ export default {
     const route = useRoute()
     const router = useRouter()
     const equipmentId = route.params.id.toString()
-    const equipment = ref<{
-      id: string
-      name: string
-      ref: string
-      type: string
-      status: string
-      description: string
-    } | null>(null)
+    const equipment = ref({
+      id: '',
+      name: '',
+      ref: '',
+      type: '',
+      status: '',
+      description: '',
+    })
 
     const userStore = UserStore()
     const borrowStore = BorrowStore()

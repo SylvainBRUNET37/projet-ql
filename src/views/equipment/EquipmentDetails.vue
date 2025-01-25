@@ -7,48 +7,46 @@ Ce composant permet d'afficher les détails d'un équipement.
     <h1>Equipment Details</h1>
 
     <!-- Formulaire d'équipement -->
-    <div v-if="equipment">
-      <form @submit.prevent="saveChanges" class="equipment-form">
-        <!-- Nom de l'équipement -->
-        <div class="form-group">
-          <label>Name:</label>
-          <input v-model="equipment.name" />
-        </div>
+    <form @submit.prevent="saveChanges" class="equipment-form">
+      <!-- Nom de l'équipement -->
+      <div class="form-group">
+        <label>Name:</label>
+        <input v-model="equipment.name" />
+      </div>
 
-        <!-- Reference de l'équipement -->
-        <div class="form-group">
-          <label>Reference:</label>
-          <input v-model="equipment.ref" readonly />
-        </div>
+      <!-- Reference de l'équipement -->
+      <div class="form-group">
+        <label>Reference:</label>
+        <input v-model="equipment.ref" readonly />
+      </div>
 
-        <!-- Type de l'équipement -->
-        <div class="form-group">
-          <label>Type:</label>
-          <input v-model="equipment.type" />
-        </div>
+      <!-- Type de l'équipement -->
+      <div class="form-group">
+        <label>Type:</label>
+        <input v-model="equipment.type" />
+      </div>
 
-        <!-- Status de l'équipement -->
-        <div class="form-group">
-          <label>Status:</label>
-          <select v-model="equipment.status">
-            <option value="available">Available</option>
-            <option value="unavailable">Unavailable</option>
-          </select>
-        </div>
+      <!-- Status de l'équipement -->
+      <div class="form-group">
+        <label>Status:</label>
+        <select v-model="equipment.status">
+          <option value="available">Available</option>
+          <option value="unavailable">Unavailable</option>
+        </select>
+      </div>
 
-        <!-- Description de l'équipement -->
-        <div class="form-group">
-          <label>Description:</label>
-          <input v-model="equipment.description" />
-        </div>
+      <!-- Description de l'équipement -->
+      <div class="form-group">
+        <label>Description:</label>
+        <input v-model="equipment.description" />
+      </div>
 
-        <!-- Boutons pour revenir en arrière et modifier -->
-        <div class="form-actions">
-          <button type="button" class="button cancel" @click="goBack">Back</button>
-          <button type="submit" class="button save">Modify</button>
-        </div>
-      </form>
-    </div>
+      <!-- Boutons pour revenir en arrière et modifier -->
+      <div class="form-actions">
+        <button type="button" class="button cancel" @click="goBack">Back</button>
+        <button type="submit" class="button save">Modify</button>
+      </div>
+    </form>
   </div>
 </template>
 
@@ -63,14 +61,14 @@ export default {
     const route = useRoute()
     const router = useRouter()
     const equipmentId = route.params.id.toString()
-    const equipment = ref<{
-      id: string
-      name: string
-      ref: string
-      type: string
-      status: string
-      description: string
-    } | null>(null)
+    const equipment = ref({
+      id: '',
+      name: '',
+      ref: '',
+      type: '',
+      status: '',
+      description: '',
+    })
 
     const errorMessage = ref('')
     const startDate = ref<string | null>(null)
