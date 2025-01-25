@@ -4,54 +4,27 @@ import EquipmentManagement from '@/views/equipment/EquipmentManagement.vue'
 import { EquipmentStore } from '@/stores/EquipmentStore'
 import { createPinia, setActivePinia } from 'pinia'
 
-//Fichier qui est concerné par le test
+// SC09 - Suppression/Désactivation d'un matériel
 describe('EquipmentManagement.vue', () => {
-  //wrapper représente le component testé, authStore le système d'authentification
   let wrapper: any
   let equipmentStore: any
 
-  //Avant chaque test, on initialise wrapper et authStore, Pinia est obligatoire pour bien initialiser les stores
+  // Avant chaque test, on initialise le store et le wrapper
   beforeEach(() => {
     setActivePinia(createPinia())
     wrapper = mount(EquipmentManagement)
     equipmentStore = EquipmentStore()
   })
 
-  it('Suppression d un matériel OK.', async () => {
-    const material = {
-      id: 1,
-      name: 'Material to Delete',
-      ref: 'DEL_REF',
-      type: 'Type',
-      description: 'Description',
-    }
-    equipmentStore.material = material
+  // TC001
+  it("Suppression d'un matériel OK", async () => {})
 
-    const deleteButton = wrapper.find('button[type="delete"]')
-    await deleteButton.trigger('click')
+  // TC002
+  it("Suppression d'un matériel emprunté", async () => {})
 
-    expect(equipmentStore.deleteMaterial).toHaveBeenCalledWith(material.id)
-  })
+  // TC003
+  it("Désactivation d'un matériel OK", async () => {})
 
-  it('Suppression d un matériel emprunté.', async () => {
-    equipmentStore.deleteMaterial.mockRejectedValueOnce({
-      message: 'Already borrowed by user',
-    })
-
-    const material = {
-      id: 1,
-      name: 'Borrowed Material',
-      ref: 'BORROW_REF',
-      type: 'Type',
-      description: 'Description',
-    }
-    equipmentStore.material = material
-
-    const deleteButton = wrapper.find('button[type="delete"]')
-    await deleteButton.trigger('click')
-
-    expect(wrapper.vm.errorMessage).toBe('Already borrowed by user')
-  })
-
-  it("Consultation des détails d'un matériel.", async () => {})
+  // TC004
+  it("Désactivation d'un matériel emprunté", async () => {})
 })

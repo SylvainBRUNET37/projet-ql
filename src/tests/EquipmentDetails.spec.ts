@@ -1,21 +1,11 @@
 import { mount, flushPromises } from '@vue/test-utils'
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import EquipmentDetails from '@/views/equipment/EquipmentDetails.vue'
-import EquipmentResearch from '@/views/equipment/EquipmentResearch.vue'
 import { EquipmentStore } from '@/stores/EquipmentStore'
 import { createPinia, setActivePinia } from 'pinia'
 import { createRouter, createWebHistory } from 'vue-router'
 
-// Mock routes
-const routes = [{ path: '/equipment/:id', name: 'EquipmentDetails', component: EquipmentDetails }]
-
-// Create a mock router instance
-const router = createRouter({
-  history: createWebHistory(),
-  routes,
-})
-
-// SC008
+// SC008 - Modification d'un matériel
 describe('EquipmentDetails.vue', () => {
   let wrapper: any
   let equipmentStore: any
@@ -25,8 +15,8 @@ describe('EquipmentDetails.vue', () => {
     routes: [{ path: '/equipment/:id', name: 'EquipmentDetails', component: EquipmentDetails }],
   })
 
+  // Avant chaque test, on initialise le store et le wrapper
   beforeEach(async () => {
-    // Initialisation de Pinia
     setActivePinia(createPinia())
     equipmentStore = EquipmentStore()
     equipmentStore.equipment = [
@@ -53,7 +43,8 @@ describe('EquipmentDetails.vue', () => {
     vi.spyOn(router, 'push').mockResolvedValue()
   })
 
-  it('Modification d un matériel OK.', async () => {
+  // TC001
+  it('Modification d un matériel OK', async () => {
     const material = {
       id: 'testId9785',
       name: 'Iphone 16',
