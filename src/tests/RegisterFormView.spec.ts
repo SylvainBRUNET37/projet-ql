@@ -1,6 +1,6 @@
 import { mount } from '@vue/test-utils'
 import { describe, it, expect, beforeEach, vi } from 'vitest'
-import RegisterFormView from '@/views/RegisterFormView.vue'
+import RegisterFormView from '@/views/form/RegisterForm.vue'
 import { RegisterStore } from '@/stores/RegisterStore'
 import { createPinia, setActivePinia } from 'pinia'
 import { nextTick } from 'vue'

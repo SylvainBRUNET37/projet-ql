@@ -25,11 +25,11 @@
 </template>
 
 <script lang="ts">
-import GenericForm from '../components/form/GenericForm.vue'
-import { validateEmail, validatePassword } from '../utils/Validator.ts'
-import { AuthStore } from '../stores/AuthStore.ts'
+import GenericForm from '@/components/form/GenericForm.vue'
+import { validateEmail, validatePassword } from '@/utils/Validator.ts'
+import { AuthStore } from '@/stores/AuthStore.ts'
 
-import '../assets/styles/form.css' // Import du style CSS pour le formulaire
+import '@/assets/styles/form.css' // Import du style CSS pour le formulaire
 
 // Définition des types pour les messages d'erreur
 type ErrorMessages = {
@@ -48,7 +48,7 @@ type ValidationField = {
 }
 
 export default {
-  name: 'AuthFormView',
+  name: 'AuthForm',
   components: {
     GenericForm,
   },

@@ -1,8 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import AuthFormView from '../views/AuthFormView.vue'
-import RegisterFormView from '../views/RegisterFormView.vue'
+import AuthForm from '../views/form/AuthForm.vue'
+import RegisterForm from '../views/form/RegisterForm.vue'
 import EquipmentResearch from '../views/equipment/EquipmentResearch.vue'
-import UserProfileView from '../views/UserProfileView.vue'
+import UserProfile from '../views/user/UserProfile.vue'
 import Layout from '@/components/mainLayOut/layout.vue'
 import AddEquipment from '../views/equipment/AddEquipment.vue'
 import EquipmentDetails from '@/views/equipment/EquipmentDetails.vue'
@@ -20,12 +20,12 @@ const router = createRouter({
     {
       path: '/auth',
       name: 'auth',
-      component: AuthFormView,
+      component: AuthForm,
     },
     {
       path: '/register',
       name: 'register',
-      component: RegisterFormView,
+      component: RegisterForm,
     },
     {
       path: '/home',
@@ -40,7 +40,7 @@ const router = createRouter({
     {
       path: '/user-profile',
       name: 'user-profile',
-      component: UserProfileView,
+      component: UserProfile,
     },
     {
       path: '/add-equipment',

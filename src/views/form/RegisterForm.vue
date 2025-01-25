@@ -27,11 +27,11 @@
 </template>
 
 <script lang="ts">
-import GenericForm from '../components/form/GenericForm.vue'
-import { validateEmail, validatePassword, validateName, validateRole } from '../utils/Validator.ts'
-import { RegisterStore } from '../stores/RegisterStore.ts'
+import GenericForm from '@/components/form/GenericForm.vue'
+import { validateEmail, validatePassword, validateName, validateRole } from '@/utils/Validator.ts'
+import { RegisterStore } from '@/stores/RegisterStore.ts'
 
-import '../assets/styles/form.css' // Import du style CSS pour le formulaire
+import '@/assets/styles/form.css' // Import du style CSS pour le formulaire
 
 // Définition des types pour les messages d'erreur
 type ErrorMessages = {
@@ -50,7 +50,7 @@ type ValidationField = {
 }
 
 export default {
-  name: 'RegisterFormView',
+  name: 'RegisterForm',
   components: {
     GenericForm, // Import du composant GenericForm pour gérer chaque champ
   },

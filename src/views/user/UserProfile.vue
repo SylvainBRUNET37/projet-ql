@@ -34,12 +34,12 @@
 
 <script lang="ts">
 import { defineComponent, ref, onMounted, type Ref } from 'vue'
-import UserInfo from '../components/userProfile/UserInfo.vue'
-import UserEquipment from '../components/userProfile/UserEquipment.vue'
+import UserInfo from '@/components/userProfile/UserInfo.vue'
+import UserEquipment from '@/components/userProfile/UserEquipment.vue'
 import { UserStore } from '@/stores/UserStore.ts'
 
 export default defineComponent({
-  name: 'UserProfileView',
+  name: 'UserProfile',
   components: { UserInfo, UserEquipment },
   setup() {
     const activeTab = ref('personalInfo')

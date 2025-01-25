@@ -24,8 +24,8 @@
 </template>
 
 <script lang="ts">
-import GenericForm from '@/components/form/GenericForm.vue'
-import { EquipmentStore } from '@/stores/EquipmentStore'
+import GenericForm from '../../components/form/GenericForm.vue'
+import { EquipmentStore } from '../../stores/EquipmentStore'
 
 import '@/assets/styles/form.css' // Import du style CSS pour le formulaire
 
