@@ -122,11 +122,7 @@ export default defineComponent({
 
     const handleToggleStatus = async (id: string, status: string) => {
       try {
-        if (status === 'available') {
-          await equipmentStore.disableEquipment(id)
-        } else {
-          await equipmentStore.enableEquipment(id)
-        }
+        await equipmentStore.updateEquipmentStatus(id, status)
 
         await equipmentStore.getAllEquipment()
       } catch (error) {

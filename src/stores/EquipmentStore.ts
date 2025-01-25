@@ -104,62 +104,34 @@ export const EquipmentStore = defineStore('equipment', () => {
   }
 
   /**
-   * Met à jour le statut d'un équipement à "unavailable".
+   * Met à jour le statut d'un équipement.
    *
    * @param {string} equipmentId - ID de l'équipement à mettre à jour.
+   * @param {string} currentStatus - Le statut actutel de l'équipement ('available' ou 'unavailable').
    * @returns {Promise<void>} - Promesse qui se résout une fois le statut mis à jour ou en cas d'erreur.
    */
-  const disableEquipment = async (equipmentId: string): Promise<void> => {
+  const updateEquipmentStatus = async (
+    equipmentId: string,
+    currentStatus: string,
+  ): Promise<void> => {
     try {
       // Référence au document de l'équipement dans Firestore
       const equipmentDocRef = doc(db, 'equipments', equipmentId)
 
-      // Mise à jour du champ "status" à "unavailable"
+      // Récupère le statut actuel de l'équipement
+      const newStatus = currentStatus === 'available' ? 'unavailable' : 'available'
+
+      // Mise à jour du champ "status" avec la valeur fournie
       await updateDoc(equipmentDocRef, {
-        status: 'unavailable',
+        status: newStatus,
       })
 
       // Met à jour la liste locale après modification du statut
       equipment.value = equipment.value.map((item) =>
-        item.id === equipmentId ? { ...item, status: 'unavailable' } : item,
+        item.id === equipmentId ? { ...item, status: newStatus } : item,
       )
-      errorMessage.value = ''
-    } catch (error: FirebaseError | unknown) {
-      if (error instanceof FirebaseError) {
-        switch (error.code) {
-          case 'not-found':
-            errorMessage.value = 'Equipment not found.'
-            break
-          default:
-            errorMessage.value = 'Failed to update equipment status. Please try again later.'
-        }
-      } else {
-        errorMessage.value = 'Failed to update equipment status. Please try again later.'
-        console.error(error)
-      }
-    }
-  }
 
-  /**
-   * Met à jour le statut d'un équipement à "available".
-   *
-   * @param {string} equipmentId - ID de l'équipement à mettre à jour.
-   * @returns {Promise<void>} - Promesse qui se résout une fois le statut mis à jour ou en cas d'erreur.
-   */
-  const enableEquipment = async (equipmentId: string): Promise<void> => {
-    try {
-      // Référence au document de l'équipement dans Firestore
-      const equipmentDocRef = doc(db, 'equipments', equipmentId)
-
-      // Mise à jour du champ "status" à "available"
-      await updateDoc(equipmentDocRef, {
-        status: 'available',
-      })
-
-      // Met à jour la liste locale après modification du statut
-      equipment.value = equipment.value.map((item) =>
-        item.id === equipmentId ? { ...item, status: 'available' } : item,
-      )
+      // Réinitialisation du message d'erreur
       errorMessage.value = ''
     } catch (error: FirebaseError | unknown) {
       if (error instanceof FirebaseError) {
@@ -277,8 +249,7 @@ export const EquipmentStore = defineStore('equipment', () => {
     getAllEquipment,
     deleteEquipment,
     addEquipment,
-    disableEquipment,
-    enableEquipment,
+    updateEquipmentStatus,
     getAvailableEquipments,
   }
 })
