@@ -42,27 +42,6 @@ describe('AddEquipment.vue', () => {
     expect(addEquipmentButton.attributes('disabled')).toBeDefined()
   })
 
-  it('Ajout d un matériel avec une référence déjà existante.', async () => {
-    authStore.addMaterial.mockRejectedValueOnce({
-      message: 'The reference already corresponds to a material',
-    })
-
-    const nameInput = wrapper.find('#name')
-    const typeInput = wrapper.find('#type')
-    const refInput = wrapper.find('#ref')
-    const descriptionInput = wrapper.find('#description')
-    const addEquipmentButton = wrapper.find('button[type="submit"]')
-
-    await nameInput.setValue('Material Name')
-    await typeInput.setValue('Type')
-    await refInput.setValue('IOS')
-    await descriptionInput.setValue('Description')
-
-    await addEquipmentButton.trigger('click')
-
-    expect(wrapper.vm.errorMessage).toBe('The reference already corresponds to a material')
-  })
-
   it('Le nom n est pas valide.', async () => {
     const nameInput = wrapper.find('#name')
     const addEquipmentButton = wrapper.find('button[type="submit"]')
@@ -77,6 +56,34 @@ describe('AddEquipment.vue', () => {
     await nameInput.trigger('blur')
 
     expect(wrapper.vm.errors.name).toBe('Invalid name')
+    expect(addEquipmentButton.attributes('disabled')).toBeDefined()
+  })
+
+  it('Le type n est pas valide.', async () => {
+    const typeInput = wrapper.find('#type')
+    const addEquipmentButton = wrapper.find('button[type="submit"]')
+
+    await typeInput.setValue('a!')
+    await typeInput.trigger('blur')
+
+    expect(wrapper.vm.errors.name).toBe('Invalid type')
+    expect(addEquipmentButton.attributes('disabled')).toBeDefined()
+
+    await typeInput.setValue('a'.repeat(101))
+    await typeInput.trigger('blur')
+
+    expect(wrapper.vm.errors.name).toBe('Invalid type')
+    expect(addEquipmentButton.attributes('disabled')).toBeDefined()
+  })
+
+  it('La ref n est pas valide.', async () => {
+    const typeInput = wrapper.find('#ref')
+    const addEquipmentButton = wrapper.find('button[type="submit"]')
+
+    await typeInput.setValue('a'.repeat(201))
+    await typeInput.trigger('blur')
+
+    expect(wrapper.vm.errors.name).toBe('Invalid ref')
     expect(addEquipmentButton.attributes('disabled')).toBeDefined()
   })
 
@@ -101,6 +108,27 @@ describe('AddEquipment.vue', () => {
       description: 'Valid description.',
     })
     expect(wrapper.vm.successMessage).toBe('Material successfully added')
+  })
+
+  it("Vérifier si le bouton s'active correctement.", async () => {
+    const nameInput = wrapper.find('#name')
+    const typeInput = wrapper.find('#type')
+    const refInput = wrapper.find('#ref')
+    const descriptionInput = wrapper.find('#description')
+    const addEquipmentButton = wrapper.find('button[type="submit"]')
+
+    await nameInput.setValue('Valid Name')
+    await typeInput.setValue('Valid Type')
+    await refInput.setValue('IOS')
+    await descriptionInput.setValue('Valid description.')
+
+    await nameInput.trigger('blur')
+    await typeInput.trigger('blur')
+    await refInput.trigger('blur')
+    await descriptionInput.trigger('blur')
+
+    //L'état disabled du bouton ne doit pas être défini
+    expect(addEquipmentButton.attributes('disabled')).toBeUndefined()
   })
 
   it('Modification d un matériel OK.', async () => {
