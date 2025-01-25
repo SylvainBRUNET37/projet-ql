@@ -22,15 +22,15 @@
           <td>{{ user.status }}</td>
           <td>{{ user.email }}</td>
           <td>
-            <button class="button is-link" @click="viewUser(user)">Details</button>
+            <button class="button is-link" @click="handleDetails(user.id)">Details</button>
           </td>
           <td>
-            <button class="button is-link" @click="changeUserStatusHandler(user.id, user.status)">
-              Change Status
+            <button class="button is-link" @click="handleToggleStatus(user.id, user.status)">
+              {{ user.status === 'active' ? 'Disable' : 'Enable' }}
             </button>
           </td>
           <td>
-            <button class="button is-link" @click="handleDelete(equipment.id)">Delete</button>
+            <button class="button is-link" @click="handleDelete(user.id)">Delete</button>
           </td>
         </tr>
       </tbody>
@@ -61,13 +61,13 @@
 
 <script lang="ts">
 import { defineComponent, ref, computed, onMounted } from 'vue'
-import { getUsers, changeUserStatus } from '@/services/userService'
+import { UserStore } from '../../stores/UserStore'
 import { useRouter } from 'vue-router'
 
 export default defineComponent({
   name: 'UserManagement',
   setup() {
-    const users = ref([])
+    const userStore = UserStore()
     const currentPage = ref(1)
     const itemsPerPage = ref(10)
     const router = useRouter()
@@ -75,52 +75,40 @@ export default defineComponent({
     // Pagination logic
     const paginatedUsers = computed(() => {
       const start = (currentPage.value - 1) * itemsPerPage.value
-      return users.value.slice(start, start + itemsPerPage.value)
+      return userStore.users.slice(start, start + itemsPerPage.value)
     })
 
-    const totalPages = computed(() => Math.ceil(users.value.length / itemsPerPage.value))
+    const totalPages = computed(() => Math.ceil(userStore.users.length / itemsPerPage.value))
 
     const isFirstPage = computed(() => currentPage.value === 1)
     const isLastPage = computed(() => currentPage.value === totalPages.value)
 
-    const handleDelete = () => {}
+    const handleDelete = async (userId: string) => {
+      const confirmed = window.confirm('Do you really want to delete this user ?')
+      if (!confirmed) {
+        return
+      }
+
+      try {
+        await userStore.deleteUserById(userId)
+      } catch (error) {
+        console.error('Error deleting user:', error)
+      }
+    }
 
     const handleAdd = () => {
       router.push('/register')
     }
 
-    // Fetch users from Firestore
-    const fetchUsers = async () => {
-      try {
-        users.value = await getUsers()
-      } catch (error) {
-        console.error('Error fetching users:', error)
-      }
-    }
-
     // Change user status
-    const changeUserStatusHandler = async (id, currentStatus) => {
-      try {
-        console.log(`Changing status for user ID: ${id}`)
-        await changeUserStatus(id, currentStatus)
-
-        // Update status locally
-        users.value = users.value.map((user) =>
-          user.id === id
-            ? { ...user, status: currentStatus === 'active' ? 'inactive' : 'active' }
-            : user,
-        )
-
-        alert('User status updated successfully!')
-      } catch (error) {
-        console.error('Error changing user status:', error)
-        alert('An error occurred while changing the user status.')
-      }
+    const handleToggleStatus = async (userId: string, status: string) => {
+      await userStore.updateUserStatus(userId, status)
+      await userStore.getUsers()
     }
 
     // View user details
-    const viewUser = (user) => {
-      router.push(`/admin/user/${user.id}`)
+    const handleDetails = (userId: string) => {
+      router.push(`/admin/user/${userId}`)
     }
 
     // Pagination controls
@@ -133,20 +121,19 @@ export default defineComponent({
     }
 
     // Fetch users on mount
-    onMounted(() => {
-      fetchUsers()
+    onMounted(async () => {
+      await userStore.getUsers()
     })
 
     return {
-      users,
       currentPage,
       itemsPerPage,
       paginatedUsers,
       totalPages,
       isFirstPage,
       isLastPage,
-      changeUserStatusHandler,
-      viewUser,
+      handleToggleStatus,
+      handleDetails,
       goToPreviousPage,
       goToNextPage,
       handleAdd,

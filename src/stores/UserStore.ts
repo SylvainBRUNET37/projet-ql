@@ -7,7 +7,15 @@
 import { defineStore } from 'pinia'
 import { ref, type Ref } from 'vue'
 import { auth, db } from '../firebase'
-import { getDoc, doc, deleteDoc, type DocumentData } from 'firebase/firestore'
+import {
+  getDocs,
+  getDoc,
+  doc,
+  deleteDoc,
+  updateDoc,
+  collection,
+  type DocumentData,
+} from 'firebase/firestore'
 import { FirebaseError } from 'firebase/app'
 
 /**
@@ -16,9 +24,23 @@ import { FirebaseError } from 'firebase/app'
 export const UserStore = defineStore('user', () => {
   // Référence pour stocker les informations utilisateur
   const userData: Ref<DocumentData | null> = ref(null)
+  const users: Ref<DocumentData[]> = ref([])
 
   // Référence pour stocker les messages d'erreur
   const errorMessage: Ref<string> = ref('')
+
+  // Fonction pour récupérer les utilisateurs depuis Firestore
+  const getUsers = async (): Promise<void> => {
+    try {
+      const querySnapshot = await getDocs(collection(db, 'users'))
+      users.value = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }))
+    } catch (error) {
+      console.error('Erreur lors de la récupération des utilisateurs :', error)
+    }
+  }
 
   /**
    * Récupère les informations de l'utilisateur connecté.
@@ -41,7 +63,6 @@ export const UserStore = defineStore('user', () => {
       // Stocke les données utilisateur dans userData
       if (userDoc.exists()) {
         userData.value = userDoc.data()
-        console.log(userData.value)
         errorMessage.value = ''
       } else {
         errorMessage.value = 'User not found.'
@@ -74,7 +95,8 @@ export const UserStore = defineStore('user', () => {
     // Vérifie si un utilisateur est connecté
     const currentUser = auth.currentUser
     if (currentUser) {
-      return currentUser.uid} else {
+      return currentUser.uid
+    } else {
       errorMessage.value = 'No user is logged in.'
       return null
     }
@@ -123,6 +145,54 @@ export const UserStore = defineStore('user', () => {
     }
   }
 
+  /**
+   * Met à jour le statut d'un utilisateur dans Firestore.
+   *
+   * @param {string} userId - ID de l'utilisateur à mettre à jour.
+   * @param {string} currentStatus - Le statut actuel de l'utilisateur ('active' ou 'inactive').
+   * @returns {Promise<void>} - Promesse qui se résout une fois le statut mis à jour ou en cas d'erreur.
+   */
+  const updateUserStatus = async (userId: string, currentStatus: string): Promise<void> => {
+    try {
+      // Référence au document de l'utilisateur dans Firestore
+      const userDocRef = doc(db, 'users', userId)
+      const newStatus = currentStatus === 'active' ? 'inactive' : 'active'
+
+      // Mise à jour du champ "status"
+      await updateDoc(userDocRef, {
+        status: newStatus,
+      })
+
+      // Mise à jour locale des données
+      if (userData.value?.id === userId) {
+        userData.value = { ...userData.value, status: newStatus }
+      }
+      errorMessage.value = ''
+    } catch (error: FirebaseError | unknown) {
+      if (error instanceof FirebaseError) {
+        switch (error.code) {
+          case 'not-found':
+            errorMessage.value = 'User not found.'
+            break
+          default:
+            errorMessage.value = 'Failed to update user status. Please try again later.'
+        }
+      } else {
+        errorMessage.value = 'Failed to update user status. Please try again later.'
+        console.error(error)
+      }
+    }
+  }
+
   // Retourne les données utilisateur, les erreurs et la fonction de récupération
-  return { userData, errorMessage, getUserData, deleteUserById, getUserId }
+  return {
+    userData,
+    errorMessage,
+    getUserData,
+    deleteUserById,
+    getUserId,
+    updateUserStatus,
+    getUsers,
+    users,
+  }
 })
