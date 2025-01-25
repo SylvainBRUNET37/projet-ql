@@ -1,17 +1,17 @@
 import { mount } from '@vue/test-utils'
 import { describe, it, expect, beforeEach, vi } from 'vitest'
-import RegisterFormView from '@/views/form/RegisterForm.vue'
+import RegisterForm from '@/views/form/RegisterForm.vue'
 import { RegisterStore } from '@/stores/RegisterStore'
 import { createPinia, setActivePinia } from 'pinia'
 import { nextTick } from 'vue'
 
-describe('RegisterFormView.vue', () => {
+describe('RegisterForm.vue', () => {
   let wrapper: any
   let registerStore: any
 
   beforeEach(() => {
     setActivePinia(createPinia())
-    wrapper = mount(RegisterFormView)
+    wrapper = mount(RegisterForm)
     registerStore = RegisterStore()
   })
 

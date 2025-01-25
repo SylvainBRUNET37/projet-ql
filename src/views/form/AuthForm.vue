@@ -1,4 +1,4 @@
-<!-- AuthFormView.vue -->
+<!-- AuthForm.vue -->
 <!-- Formulaire d'authentification -->
 
 <template>

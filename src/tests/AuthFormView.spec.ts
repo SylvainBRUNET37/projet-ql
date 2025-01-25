@@ -1,11 +1,11 @@
 import { mount } from '@vue/test-utils'
 import { describe, it, expect, beforeEach, vi } from 'vitest'
-import AuthFormView from '@/views/form/AuthForm.vue'
+import AuthForm from '@/views/form/AuthForm.vue'
 import { AuthStore } from '@/stores/AuthStore'
 import { createPinia, setActivePinia } from 'pinia'
 
 //Fichier qui est concerné par le test
-describe('AuthFormView.vue', () => {
+describe('AuthForm.vue', () => {
   //wrapper représente le component testé, authStore le système d'authentification
   let wrapper: any
   let authStore: any
@@ -13,7 +13,7 @@ describe('AuthFormView.vue', () => {
   //Avant chaque test, on initialise wrapper et authStore, Pinia est obligatoire pour bien initialiser les stores
   beforeEach(() => {
     setActivePinia(createPinia())
-    wrapper = mount(AuthFormView)
+    wrapper = mount(AuthForm)
     authStore = AuthStore()
   })
 

@@ -7,9 +7,9 @@
   </div>
 </template>
 <script>
-import EquipmentResearchView from '@/views/equipment/EquipmentResearch.vue'
+import EquipmentResearch from '@/views/equipment/EquipmentResearch.vue'
 import Sidebar from '../sideBar/sidebar.vue'
-import UserProfileView from '@/views/user/UserProfile.vue'
+import UserProfile from '@/views/user/UserProfile.vue'
 import UserEquipment from '../userProfile/UserEquipment.vue'
 import UserInfo from '../userProfile/UserInfo.vue'
 import UserManagment from '../management/UserManagment.vue'
@@ -19,8 +19,8 @@ export default {
   name: 'Layout',
   components: {
     Sidebar,
-    EquipmentResearchView,
-    UserProfileView,
+    EquipmentResearch,
+    UserProfile,
     UserEquipment,
     UserInfo,
     UserManagment,
@@ -28,7 +28,7 @@ export default {
   },
   data() {
     return {
-      currentContent: 'EquipmentResearchView',
+      currentContent: 'EquipmentResearch',
     }
   },
   methods: {

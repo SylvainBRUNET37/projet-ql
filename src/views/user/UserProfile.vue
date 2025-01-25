@@ -1,4 +1,4 @@
-<!-- UserProfileView.vue -->
+<!-- UserProfile.vue -->
 
 <template>
   <div class="section">

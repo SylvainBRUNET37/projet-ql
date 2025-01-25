@@ -1,4 +1,4 @@
-<!-- RegisterFormView.vue -->
+<!-- RegisterForm.vue -->
 <!-- Formulaire de création de compte -->
 
 <template>
