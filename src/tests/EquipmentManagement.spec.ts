@@ -26,5 +26,8 @@ describe('EquipmentManagement.vue', () => {
   it("Désactivation d'un matériel OK", async () => {})
 
   // TC004
+  it("Activation d'un matériel OK", async () => {})
+
+  // TC005
   it("Désactivation d'un matériel emprunté", async () => {})
 })
