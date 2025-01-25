@@ -52,4 +52,6 @@ describe('EquipmentManagement.vue', () => {
 
     expect(wrapper.vm.errorMessage).toBe('Already borrowed by user')
   })
+
+  it("Consultation des détails d'un matériel.", async () => {})
 })
