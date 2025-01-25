@@ -1,5 +1,4 @@
-<!-- GenericForm.vue -->
-<!-- Ce composant générique est utilisé pour afficher un champ de formulaire. Il peut être utilisé pour afficher des champs de texte, des champs de sélection, etc. -->
+<!-- Ce composant générique est utilisé pour afficher un champ de formulaire. Il peut être utilisé pour afficher des champs de texte et des champs de sélection -->
 
 <template>
   <div class="form-field">
@@ -26,7 +25,7 @@
       </option>
     </component>
 
-    <!-- Affiche un message d'erreur si le champ est invalide -->
+    <!-- Affiche le message d'erreur si le champ est invalide -->
     <p v-if="errors[field.name]" class="form-error-message">{{ errors[field.name] }}</p>
   </div>
 </template>
@@ -79,6 +78,7 @@ export default {
 
     /**
      * Gère la perte de focus sur le champ de formulaire.
+     * La fonction emet un événement pour signaler que l'utilisateur est "parti" du champ.
      *
      * @emits {Object} field - L'objet du champ de formulaire, utilisé pour signaler l'événement de perte de focus
      */

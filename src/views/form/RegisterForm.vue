@@ -1,4 +1,4 @@
-<!-- RegisterFormView.vue -->
+<!-- RegisterForm.vue -->
 <!-- Formulaire de création de compte -->
 
 <template>
@@ -27,11 +27,11 @@
 </template>
 
 <script lang="ts">
-import GenericForm from '../components/form/GenericForm.vue'
-import { validateEmail, validatePassword, validateName, validateRole } from '../utils/Validator.ts'
-import { RegisterStore } from '../stores/RegisterStore.ts'
+import GenericForm from '@/components/form/GenericForm.vue'
+import { validateEmail, validatePassword, validateName, validateRole } from '@/utils/Validator.ts'
+import { RegisterStore } from '@/stores/RegisterStore.ts'
 
-import '../assets/styles/form.css' // Import du style CSS pour le formulaire
+import '@/assets/styles/form.css' // Import du style CSS pour le formulaire
 
 // Définition des types pour les messages d'erreur
 type ErrorMessages = {
@@ -50,7 +50,7 @@ type ValidationField = {
 }
 
 export default {
-  name: 'RegisterFormView',
+  name: 'RegisterForm',
   components: {
     GenericForm, // Import du composant GenericForm pour gérer chaque champ
   },
@@ -174,6 +174,14 @@ export default {
      * @returns {void}
      */
     validateField(field: ValidationField): void {
+      const value = this.form[field.name as keyof typeof this.form]
+
+      // Vérifie si le champ est vide
+      if (!value) {
+        this.errors[field.name] = 'Please complete this field'
+        return
+      }
+
       const valid =
         field.name === 'confirmPassword'
           ? field.validate(this.form[field.name], this.form.password) // Validation pour le champ confirmPassword
@@ -195,6 +203,7 @@ export default {
       if (this.isFormValid) {
         const { register } = RegisterStore()
 
+        // Envoie les données d'inscription au serveur
         await register(
           this.form.firstName,
           this.form.lastName,
@@ -203,6 +212,7 @@ export default {
           this.form.password,
         )
 
+        // Récupère le message d'erreur
         const errorMessage = RegisterStore().errorMessage
 
         // Gestion des erreurs de l'inscription
@@ -216,7 +226,7 @@ export default {
             alert('User successfully registered!')
           }
 
-          // Redirige l'utilisateur vers la page d'accueil
+          // Redirige l'utilisateur vers la page d'accueil si l'inscription est réussie
           this.$router.push('/home')
         }
       }

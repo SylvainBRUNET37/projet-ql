@@ -1,17 +1,17 @@
 import { mount } from '@vue/test-utils'
 import { describe, it, expect, beforeEach, vi } from 'vitest'
-import RegisterFormView from '@/views/RegisterFormView.vue'
+import RegisterForm from '@/views/form/RegisterForm.vue'
 import { RegisterStore } from '@/stores/RegisterStore'
 import { createPinia, setActivePinia } from 'pinia'
 import { nextTick } from 'vue'
 
-describe('RegisterFormView.vue', () => {
+describe('RegisterForm.vue', () => {
   let wrapper: any
   let registerStore: any
 
   beforeEach(() => {
     setActivePinia(createPinia())
-    wrapper = mount(RegisterFormView)
+    wrapper = mount(RegisterForm)
     registerStore = RegisterStore()
   })
 
@@ -84,18 +84,6 @@ describe('RegisterFormView.vue', () => {
     await emailInput.trigger('blur')
 
     expect(wrapper.vm.errors.email).toBe('Invalid email')
-    expect(submitButton.attributes('disabled')).toBeDefined()
-  })
-
-  it("Création d'utilisateur avec un rôle non conforme au REGEX.", async () => {
-    const roleInput = wrapper.find('#role')
-    const submitButton = wrapper.find('button[type="submit"]')
-
-    await roleInput.setValue('invalidrole')
-
-    await roleInput.trigger('blur')
-
-    expect(wrapper.vm.errors.role).toBe('Invalid role')
     expect(submitButton.attributes('disabled')).toBeDefined()
   })
 

@@ -3,11 +3,9 @@ import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './router'
 
-//import 'bulma/css/bulma.css'
-import '@coreui/coreui/dist/css/coreui.min.css';
-import '@coreui/icons/css/free.min.css';
-import 'bulma/css/bulma.css';
-//import './assets\\styles/management.css'; 
+import '@coreui/coreui/dist/css/coreui.min.css'
+import '@coreui/icons/css/free.min.css'
+import 'bulma/css/bulma.css'
 
 import { db, auth } from './firebase.ts'
 

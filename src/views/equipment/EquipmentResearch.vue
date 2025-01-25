@@ -72,7 +72,7 @@
 </template>
 
 <script lang="ts">
-import { EquipmentStore } from '@/stores/EquipmentStore'
+import { EquipmentStore } from '../../stores/EquipmentStore'
 import { computed, onMounted, ref } from 'vue'
 
 export default {
