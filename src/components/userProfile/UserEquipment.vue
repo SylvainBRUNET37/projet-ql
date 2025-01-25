@@ -1,3 +1,5 @@
+<!-- Ce composant est utilisé pour afficher les emprunts en cours et à venir d'un utilisateur -->
+
 <template>
   <div>
     <h1>Borrow List</h1>
@@ -12,6 +14,7 @@
         <p><strong>Return date:</strong> {{ formatDate(borrow.returnDate) }}</p>
       </li>
     </ul>
+    <!-- Si l'utilisateur n'a pas d'emprunt en cours, affiche un message à la place -->
     <p v-else>No current borrows</p>
 
     <!-- Emprunts à venir -->
@@ -24,6 +27,7 @@
         <p><strong>Return date:</strong> {{ formatDate(borrow.returnDate) }}</p>
       </li>
     </ul>
+    <!-- Si l'utilisateur n'a pas d'emprunt futur, affiche un message à la place -->
     <p v-else>No upcoming borrows</p>
   </div>
 </template>
