@@ -188,7 +188,6 @@ export default defineComponent({
       totalPages,
       isFirstPage,
       isLastPage,
-      handleDetails,
       handleToggleStatus,
       handleDelete,
       handleAdd,

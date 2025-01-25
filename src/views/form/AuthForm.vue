@@ -3,7 +3,7 @@
 <template>
   <div id="form-container">
     <div class="form">
-      <h1 class="form-title">Login</h1>
+      <h1 class="form-title">Welcome to LocaMat !</h1>
 
       <!-- Champs du formulaire -->
       <form @submit.prevent="handleLogin">
