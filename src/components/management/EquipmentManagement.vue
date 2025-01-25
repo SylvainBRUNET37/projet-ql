@@ -122,7 +122,7 @@ export default defineComponent({
     }
 
     const handleAdd = () => {
-      router.push('/add-material')
+      router.push('/add-equipment')
     }
 
     const goToPreviousPage = () => {

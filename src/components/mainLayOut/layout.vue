@@ -7,7 +7,7 @@
   </div>
 </template>
 <script>
-import EquipmentResearchView from '@/views/equipment/EquipmentResearchView.vue'
+import EquipmentResearchView from '@/views/equipment/EquipmentResearch.vue'
 import Sidebar from '../sideBar/sidebar.vue'
 import UserProfileView from '@/views/UserProfileView.vue'
 import UserEquipment from '../userProfile/UserEquipment.vue'

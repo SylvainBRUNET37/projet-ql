@@ -1,10 +1,10 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import AuthFormView from '../views/AuthFormView.vue'
 import RegisterFormView from '../views/RegisterFormView.vue'
-import EquipmentResearchView from '../views/equipment/EquipmentResearchView.vue'
+import EquipmentResearch from '../views/equipment/EquipmentResearch.vue'
 import UserProfileView from '../views/UserProfileView.vue'
 import Layout from '@/components/mainLayOut/layout.vue'
-import AddEquipmentView from '../views/equipment/AddEquipmentView.vue'
+import AddEquipment from '../views/equipment/AddEquipment.vue'
 import EquipmentDetails from '@/views/equipment/EquipmentDetails.vue'
 import EquipmentManagement from '@/components/management/EquipmentManagement.vue'
 import UserDetails from '@/views/user/UserDetails.vue'
@@ -35,7 +35,7 @@ const router = createRouter({
     {
       path: '/equipment-research',
       name: 'equipment-research',
-      component: EquipmentResearchView,
+      component: EquipmentResearch,
     },
     {
       path: '/user-profile',
@@ -43,9 +43,9 @@ const router = createRouter({
       component: UserProfileView,
     },
     {
-      path: '/add-material',
-      name: 'add-material',
-      component: AddEquipmentView,
+      path: '/add-equipment',
+      name: 'add-equipment',
+      component: AddEquipment,
     },
     {
       path: '/components/management',

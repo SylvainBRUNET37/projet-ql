@@ -76,7 +76,7 @@ import { EquipmentStore } from '@/stores/EquipmentStore'
 import { computed, onMounted, ref } from 'vue'
 
 export default {
-  name: 'EquipmentResearchView',
+  name: 'EquipmentResearch',
   emits: ['switchContent', 'setId'],
   setup() {
     const equipmentStore = EquipmentStore()
