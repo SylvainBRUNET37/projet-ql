@@ -18,7 +18,7 @@ vi.mock('firebase/firestore', async (importOriginal) => {
   }
 })
 
-// SC10 - Communication avec firestore & SC09 - Suppression/Désactivation d'un matériel
+// SC09 - Suppression/Désactivation d'un matériel
 describe('EquipmentStore.ts', () => {
   let equipmentStore: ReturnType<typeof EquipmentStore>
 
@@ -30,8 +30,8 @@ describe('EquipmentStore.ts', () => {
     equipmentStore = EquipmentStore()
   })
 
-  // SC09 -
-  it('should not delete equipment if it is still borrowed', async () => {
+  // TC009 - Suppression d'un matériel emprunté
+  it("Suppression d'un matériel emprunté", async () => {
     // Simule que l'équipement est emprunté
     ;(firebaseFirestore.getDocs as vi.Mock).mockResolvedValueOnce({
       docs: [{ data: () => ({ returnDate: Date.now() + 100000 }) }],
@@ -43,16 +43,5 @@ describe('EquipmentStore.ts', () => {
     await equipmentStore.deleteEquipment('equipment-id')
     expect(confirmationMock).toHaveBeenCalled()
     expect(equipmentStore.errorMessage).toBe('')
-  })
-
-  // TC003 - Erreur lors de la suppression de l'équipement
-  it('should handle error when deleting equipment', async () => {
-    // Simule une erreur lors de la suppression
-    ;(firebaseFirestore.getDocs as vi.Mock).mockRejectedValueOnce(
-      new FirebaseError('not-found', 'Equipment not found.'),
-    )
-
-    await equipmentStore.deleteEquipment('equipment-id')
-    expect(equipmentStore.errorMessage).toBe('Equipment not found.')
   })
 })

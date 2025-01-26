@@ -26,17 +26,9 @@ describe('EquipmentManagement.vue', () => {
     expect(equipmentStore.equipment.find((item) => item.id === equipmentId)).toBeUndefined()
   })
 
-  // TC002
-  it("Suppression d'un matériel emprunté", async () => {
-    const equipmentId = '1234'
-    equipmentStore.equipment = [{ id: equipmentId, status: 'loaned' }]
-
-    // Simuler une tentative de suppression
-    await equipmentStore.deleteEquipment(equipmentId)
-
-    // Vérifier que l'élément est toujours présent
-    expect(equipmentStore.equipment.find((item) => item.id === equipmentId)).toBeDefined()
-  })
+  //                                        //
+  // VOIR EquipmentStore.spec.ts POUR TC002 //
+  //                                        //
 
   // TC003
   it("Désactivation d'un matériel OK", async () => {
