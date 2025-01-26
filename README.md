@@ -2,6 +2,14 @@
 
 Projet 4A qualité logicielle locaMat, BRUNET Sylvain, DUBOIS Matis, CHARTON Matthieu, SOUKI Ikram, HAKKAL Salah Eddine, NÉRON Martin.
 
+Compte administrateur :
+identifiant : admin@gmail.com
+mot de passe : password
+
+Compte utilisateur :
+identifiant : user@gmail.com
+mot de passe : password
+
 ## Recommended IDE Setup
 
 [VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
