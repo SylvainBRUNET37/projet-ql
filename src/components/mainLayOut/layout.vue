@@ -1,10 +1,14 @@
 <template>
-  <div class="layout">
-    <Sidebar @switchContent="switchContent" />
-    <div class="content">
-      <component :is="currentContent"> </component>
-    </div>
-  </div>
+  <section class="hero is-succes is-fullheight">
+      <div class="layout">
+        <Sidebar @switchContent="switchContent" />
+        
+          <div class="content">
+            <component :is="currentContent"> </component>
+          </div>
+      </div>
+  </section>
+  
 </template>
 <script>
 import EquipmentResearch from '@/views/equipment/EquipmentResearch.vue'
@@ -53,8 +57,9 @@ export default {
   grid-template-rows: 1fr;
   grid-column-gap: 0px;
   grid-row-gap: 0px;
-  height: 100vh;
-  min-height: 100vh;
+  height: 100%; /* Prend toute la hauteur disponible */
+  min-height: 100vh; /* Minimum égal à la hauteur de la fenêtre */
+  overflow: hidden; /* Empêche les débordements */
 }
 
 .content {
@@ -63,6 +68,10 @@ export default {
   flex-grow: 1;
   flex-direction: column;
   width: 100%;
-  min-height: 100vh;
+  min-height: 100%;
+}
+
+.hero {
+background-color: white;
 }
 </style>
