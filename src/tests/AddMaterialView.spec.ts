@@ -68,8 +68,16 @@ describe('AddEquipment.vue', () => {
 
     expect(wrapper.vm.errors.type).toBe('Invalid type')
     expect(addEquipmentButton.attributes('disabled')).toBeDefined()
+  })
 
-    expect(wrapper.vm.errors.type).toBe('Invalid type')
+  it('La description n est pas valide.', async () => {
+    const descriptionInput = wrapper.find('#description')
+    const addEquipmentButton = wrapper.find('button[type="submit"]')
+
+    await descriptionInput.setValue('a'.repeat(201))
+    await descriptionInput.trigger('blur')
+
+    expect(wrapper.vm.errors.description).toBe('Invalid description')
     expect(addEquipmentButton.attributes('disabled')).toBeDefined()
   })
 
