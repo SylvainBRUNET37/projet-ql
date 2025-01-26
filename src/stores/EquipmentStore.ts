@@ -51,7 +51,9 @@ export const EquipmentStore = defineStore('equipment', () => {
 
       // Demande confirmation si un emprunt est actif
       if (activeBorrow) {
-        return confirm('This equipment is still borrowed. Do you really want to remove it?')
+        return confirm(
+          'This equipment is still borrowed. Do you still want to continue the action?',
+        )
       }
 
       return true
@@ -106,10 +108,10 @@ export const EquipmentStore = defineStore('equipment', () => {
   }
 
   /**
-   * Met à jour le statut d'un équipement.
+   * Met à jour le statut d'un équipement. Si le status passe à unavailable, les emprunts en cours et futurs sont supprimés.
    *
    * @param {string} equipmentId - ID de l'équipement à mettre à jour.
-   * @param {string} currentStatus - Le statut actutel de l'équipement ('available' ou 'unavailable').
+   * @param {string} currentStatus - Le statut actuel de l'équipement ('available' ou 'unavailable').
    * @returns {Promise<void>} - Promesse qui se résout une fois le statut mis à jour ou en cas d'erreur.
    */
   const updateEquipmentStatus = async (
@@ -117,18 +119,26 @@ export const EquipmentStore = defineStore('equipment', () => {
     currentStatus: string,
   ): Promise<void> => {
     try {
+      // Vérifie si on passe de "available" à "unavailable"
+      if (currentStatus === 'available') {
+        // Vérifie si l'équipement peut être modifié
+        const canModify = await canDeleteEquipment(equipmentId)
+        if (!canModify) {
+          alert('Equipment is already borrowed by a user')
+          return
+        }
+      }
+
       // Référence au document de l'équipement dans Firestore
       const equipmentDocRef = doc(db, 'equipments', equipmentId)
 
-      // Récupère le statut actuel de l'équipement
+      // Détermine le nouveau statut
       const newStatus = currentStatus === 'available' ? 'unavailable' : 'available'
 
-      // Mise à jour du champ "status" avec la valeur fournie
-      await updateDoc(equipmentDocRef, {
-        status: newStatus,
-      })
+      // Mise à jour du champ "status"
+      await updateDoc(equipmentDocRef, { status: newStatus })
 
-      // Met à jour la liste locale après modification du statut
+      // Mise à jour de la liste locale après modification du statut
       equipment.value = equipment.value.map((item) =>
         item.id === equipmentId ? { ...item, status: newStatus } : item,
       )
