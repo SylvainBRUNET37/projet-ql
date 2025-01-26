@@ -1,34 +1,44 @@
 <!-- Ce composant est utilisé pour afficher les emprunts en cours et à venir d'un utilisateur -->
 
 <template>
-  <div>
-    <h1>Borrow List</h1>
+  <div class="container">
+    <h1 class="title">Borrow List</h1>
 
     <!-- Emprunts en cours -->
-    <h2>Current borrows</h2>
-    <ul v-if="currentBorrows.length">
-      <li v-for="borrow in currentBorrows" :key="borrow.id" style="list-style-type: none">
-        <p><strong>Equipment:</strong> {{ borrow.equipment.name }} ({{ borrow.equipment.type }})</p>
-        <p><strong>Description:</strong> {{ borrow.equipment.description }}</p>
-        <p><strong>Borrow Date:</strong> {{ formatDate(borrow.borrowDate) }}</p>
-        <p><strong>Return date:</strong> {{ formatDate(borrow.returnDate) }}</p>
-      </li>
-    </ul>
-    <!-- Si l'utilisateur n'a pas d'emprunt en cours, affiche un message à la place -->
-    <p v-else>No current borrows</p>
+    <section>
+      <h2 class="subtitle">Current borrows</h2>
+      <ul v-if="currentBorrows.length" class="borrow-list">
+        <li v-for="borrow in currentBorrows" :key="borrow.id" class="borrow-item">
+          <p>
+            <strong class="label">Equipment:</strong> {{ borrow.equipment.name }} ({{
+              borrow.equipment.type
+            }})
+          </p>
+          <p><strong class="label">Description:</strong> {{ borrow.equipment.description }}</p>
+          <p><strong class="label">Borrow Date:</strong> {{ formatDate(borrow.borrowDate) }}</p>
+          <p><strong class="label">Return date:</strong> {{ formatDate(borrow.returnDate) }}</p>
+        </li>
+      </ul>
+      <p v-else class="empty-state">No current borrows</p>
+    </section>
 
     <!-- Emprunts à venir -->
-    <h2>Upcoming borrows</h2>
-    <ul v-if="upcomingBorrows.length">
-      <li v-for="borrow in upcomingBorrows" :key="borrow.id" style="list-style-type: none">
-        <p><strong>Equipment:</strong> {{ borrow.equipment.name }} ({{ borrow.equipment.type }})</p>
-        <p><strong>Description:</strong> {{ borrow.equipment.description }}</p>
-        <p><strong>Borrow Date:</strong> {{ formatDate(borrow.borrowDate) }}</p>
-        <p><strong>Return date:</strong> {{ formatDate(borrow.returnDate) }}</p>
-      </li>
-    </ul>
-    <!-- Si l'utilisateur n'a pas d'emprunt futur, affiche un message à la place -->
-    <p v-else>No upcoming borrows</p>
+    <section>
+      <h2 class="subtitle">Upcoming borrows</h2>
+      <ul v-if="upcomingBorrows.length" class="borrow-list">
+        <li v-for="borrow in upcomingBorrows" :key="borrow.id" class="borrow-item">
+          <p>
+            <strong class="label">Equipment:</strong> {{ borrow.equipment.name }} ({{
+              borrow.equipment.type
+            }})
+          </p>
+          <p><strong class="label">Description:</strong> {{ borrow.equipment.description }}</p>
+          <p><strong class="label">Borrow Date:</strong> {{ formatDate(borrow.borrowDate) }}</p>
+          <p><strong class="label">Return date:</strong> {{ formatDate(borrow.returnDate) }}</p>
+        </li>
+      </ul>
+      <p v-else class="empty-state">No upcoming borrows</p>
+    </section>
   </div>
 </template>
 
@@ -101,8 +111,8 @@ export default defineComponent({
         )
       } catch (error) {
         console.error('Erreur lors de la récupération des emprunts :', error)
-        currentBorrows.value = [];
-        upcomingBorrows.value = [];
+        currentBorrows.value = []
+        upcomingBorrows.value = []
       }
     }
 
@@ -142,24 +152,65 @@ export default defineComponent({
 </script>
 
 <style scoped>
-h1 {
+.label {
+  color: #007bff;
+  font-weight: bold;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+  background-color: #f9f9f9;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.title {
+  font-size: 2rem;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: #333;
+}
+
+.subtitle {
   font-size: 1.5rem;
   margin-bottom: 1rem;
+  color: #555;
 }
 
-ul {
+.borrow-list {
   list-style: none;
   padding: 0;
+  margin: 0;
 }
 
-li {
+.borrow-item {
+  background: #fff;
   border: 1px solid #ddd;
   padding: 1rem;
   margin-bottom: 1rem;
   border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
+}
+
+.borrow-item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 p {
   margin: 0.5rem 0;
+  color: #444;
+}
+
+.empty-state {
+  font-size: 1rem;
+  color: #888;
+  text-align: center;
+  margin: 2rem 0;
 }
 </style>
