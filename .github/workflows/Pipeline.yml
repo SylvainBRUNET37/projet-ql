@@ -3,14 +3,17 @@ name: CI/CD Pipeline for Vue.js with Cypress
 on:
   push:
     branches:
-      - dev # pr l'instant
+      - dev
+      - main
   pull_request:
     branches:
-      - dev # pr l'instant
+      - dev
+      - main
   schedule:
     - cron: '0 1 * * 1-5'
       branches:
         - dev
+        - main
       always: true
 
 jobs:
@@ -30,7 +33,7 @@ jobs:
 
       # Étape 3 : Installation des dépendances
       - name: Install dependencies
-        run: npm install && npm i
+        run: npm install
 
       - name: Add `node_modules/.bin` to PATH
         run: |
