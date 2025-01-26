@@ -32,6 +32,126 @@ export const EquipmentStore = defineStore('equipment', () => {
   const errorMessage: Ref<string> = ref('')
 
   /**
+   * Vérifie si un équipement a un emprunt actif.
+   *
+   * @param {string} equipmentId - ID de l'équipement.
+   * @returns {Promise<boolean>} - Retourne `true` si l'équipement peut être supprimé, sinon demande une confirmation.
+   */
+  const canDeleteEquipment = async (equipmentId: string): Promise<boolean> => {
+    try {
+      // Récupère tous les emprunts liés
+      const borrowQuery = query(collection(db, 'borrow'), where('equipmentId', '==', equipmentId))
+      const borrowSnapshots = await getDocs(borrowQuery)
+
+      // Vérifie s'il y a un emprunt en cours
+      const now = Date.now()
+      const activeBorrow = borrowSnapshots.docs.some(
+        (borrowDoc) => borrowDoc.data().returnDate > now,
+      )
+
+      // Demande confirmation si un emprunt est actif
+      if (activeBorrow) {
+        return confirm('This equipment is still borrowed. Do you really want to remove it?')
+      }
+
+      return true
+    } catch (error) {
+      console.error('Error :', error)
+      return false
+    }
+  }
+
+  /**
+   * Supprime un équipement et tous ses emprunts liés à partir de son ID.
+   *
+   * @param {string} equipmentId - ID de l'équipement à supprimer.
+   * @returns {Promise<void>} - Promesse qui se résout une fois l'équipement supprimé ou en cas d'erreur.
+   */
+  const deleteEquipment = async (equipmentId: string): Promise<void> => {
+    try {
+      // Vérifie si l'équipement peut être supprimé
+      const canDelete = await canDeleteEquipment(equipmentId)
+      if (!canDelete) return
+
+      // Récupère les emprunts liés
+      const borrowQuery = query(collection(db, 'borrow'), where('equipmentId', '==', equipmentId))
+      const borrowSnapshots = await getDocs(borrowQuery)
+
+      // Supprime tous les emprunts liés
+      const deletePromises = borrowSnapshots.docs.map((borrowDoc) =>
+        deleteDoc(doc(db, 'borrow', borrowDoc.id)),
+      )
+      await Promise.all(deletePromises)
+
+      // Supprime l'équipement
+      await deleteDoc(doc(db, 'equipments', equipmentId))
+
+      // Met à jour la liste locale
+      equipment.value = equipment.value.filter((item) => item.id !== equipmentId)
+      errorMessage.value = ''
+    } catch (error: FirebaseError | unknown) {
+      if (error instanceof FirebaseError) {
+        switch (error.code) {
+          case 'not-found':
+            errorMessage.value = 'Equipment not found.'
+            break
+          default:
+            errorMessage.value = 'Failed to delete equipment. Please try again later.'
+        }
+      } else {
+        errorMessage.value = 'Failed to delete equipment. Please try again later.'
+        console.error(error)
+      }
+    }
+  }
+
+  /**
+   * Met à jour le statut d'un équipement.
+   *
+   * @param {string} equipmentId - ID de l'équipement à mettre à jour.
+   * @param {string} currentStatus - Le statut actutel de l'équipement ('available' ou 'unavailable').
+   * @returns {Promise<void>} - Promesse qui se résout une fois le statut mis à jour ou en cas d'erreur.
+   */
+  const updateEquipmentStatus = async (
+    equipmentId: string,
+    currentStatus: string,
+  ): Promise<void> => {
+    try {
+      // Référence au document de l'équipement dans Firestore
+      const equipmentDocRef = doc(db, 'equipments', equipmentId)
+
+      // Récupère le statut actuel de l'équipement
+      const newStatus = currentStatus === 'available' ? 'unavailable' : 'available'
+
+      // Mise à jour du champ "status" avec la valeur fournie
+      await updateDoc(equipmentDocRef, {
+        status: newStatus,
+      })
+
+      // Met à jour la liste locale après modification du statut
+      equipment.value = equipment.value.map((item) =>
+        item.id === equipmentId ? { ...item, status: newStatus } : item,
+      )
+
+      // Réinitialisation du message d'erreur
+      errorMessage.value = ''
+    } catch (error: FirebaseError | unknown) {
+      if (error instanceof FirebaseError) {
+        switch (error.code) {
+          case 'not-found':
+            errorMessage.value = 'Equipment not found.'
+            break
+          default:
+            errorMessage.value = 'Failed to update equipment status. Please try again later.'
+        }
+      } else {
+        errorMessage.value = 'Failed to update equipment status. Please try again later.'
+        console.error(error)
+      }
+    }
+  }
+
+  /**
    * Récupère tous les équipements depuis Firestore.
    *
    * @returns {Promise<void>} - Promesse qui se résout une fois les données récupérées ou en cas d'erreur.
@@ -98,80 +218,6 @@ export const EquipmentStore = defineStore('equipment', () => {
         }
       } else {
         errorMessage.value = 'Failed to update equipment status. Please try again later.'
-        console.error(error)
-      }
-    }
-  }
-
-  /**
-   * Met à jour le statut d'un équipement.
-   *
-   * @param {string} equipmentId - ID de l'équipement à mettre à jour.
-   * @param {string} currentStatus - Le statut actutel de l'équipement ('available' ou 'unavailable').
-   * @returns {Promise<void>} - Promesse qui se résout une fois le statut mis à jour ou en cas d'erreur.
-   */
-  const updateEquipmentStatus = async (
-    equipmentId: string,
-    currentStatus: string,
-  ): Promise<void> => {
-    try {
-      // Référence au document de l'équipement dans Firestore
-      const equipmentDocRef = doc(db, 'equipments', equipmentId)
-
-      // Récupère le statut actuel de l'équipement
-      const newStatus = currentStatus === 'available' ? 'unavailable' : 'available'
-
-      // Mise à jour du champ "status" avec la valeur fournie
-      await updateDoc(equipmentDocRef, {
-        status: newStatus,
-      })
-
-      // Met à jour la liste locale après modification du statut
-      equipment.value = equipment.value.map((item) =>
-        item.id === equipmentId ? { ...item, status: newStatus } : item,
-      )
-
-      // Réinitialisation du message d'erreur
-      errorMessage.value = ''
-    } catch (error: FirebaseError | unknown) {
-      if (error instanceof FirebaseError) {
-        switch (error.code) {
-          case 'not-found':
-            errorMessage.value = 'Equipment not found.'
-            break
-          default:
-            errorMessage.value = 'Failed to update equipment status. Please try again later.'
-        }
-      } else {
-        errorMessage.value = 'Failed to update equipment status. Please try again later.'
-        console.error(error)
-      }
-    }
-  }
-
-  /**
-   * Supprime un équipement à partir de son ID.
-   *
-   * @param {string} equipmentId - ID de l'équipement à supprimer.
-   * @returns {Promise<void>} - Promesse qui se résout une fois l'équipement supprimé ou en cas d'erreur.
-   */
-  const deleteEquipment = async (equipmentId: string): Promise<void> => {
-    try {
-      await deleteDoc(doc(db, 'equipments', equipmentId))
-      // Met à jour la liste locale après suppression
-      equipment.value = equipment.value.filter((item) => item.id !== equipmentId)
-      errorMessage.value = ''
-    } catch (error: FirebaseError | unknown) {
-      if (error instanceof FirebaseError) {
-        switch (error.code) {
-          case 'not-found':
-            errorMessage.value = 'Equipment not found.'
-            break
-          default:
-            errorMessage.value = 'Failed to delete equipment. Please try again later.'
-        }
-      } else {
-        errorMessage.value = 'Failed to delete equipment. Please try again later.'
         console.error(error)
       }
     }
