@@ -82,6 +82,45 @@ describe('AddEquipment.vue', () => {
     expect(addEquipmentButton.attributes('disabled')).toBeDefined()
   })
 
+  it("Ajout d'un matériel OK", async () => {
+    const nameInput = wrapper.find('#name')
+    const typeInput = wrapper.find('#type')
+    const refInput = wrapper.find('#ref')
+    const descriptionInput = wrapper.find('#description')
+    const addEquipmentButton = wrapper.find('button[type="submit"]')
+
+    // Mock pour simuler la méthode `addEquipment`
+    const addEquipmentMock = vi.spyOn(equipmentStore, 'addEquipment').mockImplementation(() => {
+      return Promise.resolve()
+    })
+
+    wrapper.vm.$router = { push: vi.fn() }
+
+    // Remplir le formulaire
+    await nameInput.setValue('Iphone 16')
+    await typeInput.setValue('phone')
+    await refInput.setValue('AP')
+    await descriptionInput.setValue('Un iphone')
+
+    await nameInput.trigger('blur')
+    await typeInput.trigger('blur')
+    await refInput.trigger('blur')
+    await descriptionInput.trigger('blur')
+
+    await addEquipmentButton.trigger('submit')
+
+    expect(equipmentStore.addEquipment).toHaveBeenCalledWith({
+      name: 'Iphone 16',
+      type: 'phone',
+      ref: 'AP',
+      description: 'Un iphone',
+      status: 'available',
+      image: '',
+    })
+
+    expect(wrapper.vm.$router.push).toHaveBeenCalledWith('/home')
+  })
+
   it("Vérifier si le bouton s'active correctement.", async () => {
     const nameInput = wrapper.find('#name')
     const typeInput = wrapper.find('#type')
