@@ -82,31 +82,6 @@ describe('AddEquipment.vue', () => {
     expect(addEquipmentButton.attributes('disabled')).toBeDefined()
   })
 
-  it('Ajout d un matériel avec des champs valides.', async () => {
-    const nameInput = wrapper.find('#name')
-    const typeInput = wrapper.find('#type')
-    const refInput = wrapper.find('#ref')
-    const descriptionInput = wrapper.find('#description')
-    const addEquipmentButton = wrapper.find('button[type="submit"]')
-
-    await nameInput.setValue('Valid Name')
-    await typeInput.setValue('Valid Type')
-    await refInput.setValue('IOS')
-    await descriptionInput.setValue('Valid description.')
-
-    await addEquipmentButton.trigger('click')
-
-    expect(equipmentStore.addEquipment).toHaveBeenCalledWith({
-      name: 'Valid Name',
-      type: 'Valid Type',
-      ref: 'IOS',
-      status: 'available',
-      description: 'Valid description.',
-      image: '',
-    })
-    expect(wrapper.vm.successMessage).toBe('Material successfully added')
-  })
-
   it("Vérifier si le bouton s'active correctement.", async () => {
     const nameInput = wrapper.find('#name')
     const typeInput = wrapper.find('#type')

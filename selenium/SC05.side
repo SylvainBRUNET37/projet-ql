@@ -1,0 +1,237 @@
+{
+  "id": "63666fbe-468a-448f-b597-4d8993296b42",
+  "version": "2.0",
+  "name": "SC05",
+  "url": "http://localhost:5173/add-equipment",
+  "tests": [{
+    "id": "780a6798-9030-49e4-b8f0-508c038e98ef",
+    "name": "TC001 - Ajout d'un matériel OK",
+    "commands": [{
+      "id": "3f6d3dec-d9b4-4cd4-82b7-d6d54c491296",
+      "comment": "",
+      "command": "open",
+      "target": "http://localhost:5173/add-equipment",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "876f3a41-476d-4e7a-8494-1aad9138fe4f",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "945x1020",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "a7e2de6f-8f2e-4fe8-b36c-35d16ee6d4ba",
+      "comment": "",
+      "command": "click",
+      "target": "id=name",
+      "targets": [
+        ["id=name", "id"],
+        ["css=#name", "css:finder"],
+        ["xpath=//input[@id='name']", "xpath:attributes"],
+        ["xpath=//div[@id='form-container']/div/form/div/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "353790af-5644-42a1-92ef-f8938d0d6f86",
+      "comment": "",
+      "command": "click",
+      "target": "id=name",
+      "targets": [
+        ["id=name", "id"],
+        ["css=#name", "css:finder"],
+        ["xpath=//input[@id='name']", "xpath:attributes"],
+        ["xpath=//div[@id='form-container']/div/form/div/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "f1c1ffdf-7272-4c19-a15f-c278b58f4beb",
+      "comment": "",
+      "command": "type",
+      "target": "id=name",
+      "targets": [
+        ["id=name", "id"],
+        ["css=#name", "css:finder"],
+        ["xpath=//input[@id='name']", "xpath:attributes"],
+        ["xpath=//div[@id='form-container']/div/form/div/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": "VALIDE_EQUIPMENT"
+    }, {
+      "id": "c42e9642-7171-4af5-b12e-4489e2ae15ab",
+      "comment": "",
+      "command": "click",
+      "target": "id=form-container",
+      "targets": [
+        ["id=form-container", "id"],
+        ["css=#form-container", "css:finder"],
+        ["xpath=//div[@id='form-container']", "xpath:attributes"],
+        ["xpath=(//div[@id='app']/div)[2]", "xpath:idRelative"],
+        ["xpath=//div/div/div", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "b259d172-8cba-43a8-abf6-21bb23ef11ed",
+      "comment": "",
+      "command": "click",
+      "target": "id=ref",
+      "targets": [
+        ["id=ref", "id"],
+        ["css=#ref", "css:finder"],
+        ["xpath=//select[@id='ref']", "xpath:attributes"],
+        ["xpath=//div[@id='form-container']/div/form/div[2]/select", "xpath:idRelative"],
+        ["xpath=//select", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "b5aababc-8f51-4c21-88ad-58ab2c803bb2",
+      "comment": "",
+      "command": "select",
+      "target": "id=ref",
+      "targets": [],
+      "value": "label=IOS"
+    }, {
+      "id": "68d6c814-3600-4bc2-9985-3323c87cbc34",
+      "comment": "",
+      "command": "click",
+      "target": "id=type",
+      "targets": [
+        ["id=type", "id"],
+        ["css=#type", "css:finder"],
+        ["xpath=//input[@id='type']", "xpath:attributes"],
+        ["xpath=//div[@id='form-container']/div/form/div[3]/input", "xpath:idRelative"],
+        ["xpath=//div[3]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "93cb4300-d8c7-4b7d-9093-d071dbffd8bd",
+      "comment": "",
+      "command": "type",
+      "target": "id=type",
+      "targets": [
+        ["id=type", "id"],
+        ["css=#type", "css:finder"],
+        ["xpath=//input[@id='type']", "xpath:attributes"],
+        ["xpath=//div[@id='form-container']/div/form/div[3]/input", "xpath:idRelative"],
+        ["xpath=//div[3]/input", "xpath:position"]
+      ],
+      "value": "VALIDE_TYPE"
+    }, {
+      "id": "b936816d-f7eb-4a5e-9d31-3bfddca301b3",
+      "comment": "",
+      "command": "click",
+      "target": "id=description",
+      "targets": [
+        ["id=description", "id"],
+        ["css=#description", "css:finder"],
+        ["xpath=//input[@id='description']", "xpath:attributes"],
+        ["xpath=//div[@id='form-container']/div/form/div[4]/input", "xpath:idRelative"],
+        ["xpath=//div[4]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "d538ab0a-7f0f-4563-bb38-95bd37b0c9d5",
+      "comment": "",
+      "command": "click",
+      "target": "id=description",
+      "targets": [
+        ["id=description", "id"],
+        ["css=#description", "css:finder"],
+        ["xpath=//input[@id='description']", "xpath:attributes"],
+        ["xpath=//div[@id='form-container']/div/form/div[4]/input", "xpath:idRelative"],
+        ["xpath=//div[4]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "4ff45ea6-a073-40a2-934e-9e29c1261dea",
+      "comment": "",
+      "command": "type",
+      "target": "id=description",
+      "targets": [
+        ["id=description", "id"],
+        ["css=#description", "css:finder"],
+        ["xpath=//input[@id='description']", "xpath:attributes"],
+        ["xpath=//div[@id='form-container']/div/form/div[4]/input", "xpath:idRelative"],
+        ["xpath=//div[4]/input", "xpath:position"]
+      ],
+      "value": "VALIDE_DESCRIPTION "
+    }, {
+      "id": "c9f6def8-13f0-49d0-88c0-0ce94e05b0d8",
+      "comment": "",
+      "command": "click",
+      "target": "id=form-container",
+      "targets": [
+        ["id=form-container", "id"],
+        ["css=#form-container", "css:finder"],
+        ["xpath=//div[@id='form-container']", "xpath:attributes"],
+        ["xpath=(//div[@id='app']/div)[2]", "xpath:idRelative"],
+        ["xpath=//div/div/div", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "b61b7155-18f5-41f1-b4c6-fb5ba1d5a975",
+      "comment": "",
+      "command": "click",
+      "target": "id=description",
+      "targets": [
+        ["id=description", "id"],
+        ["css=#description", "css:finder"],
+        ["xpath=//input[@id='description']", "xpath:attributes"],
+        ["xpath=//div[@id='form-container']/div/form/div[4]/input", "xpath:idRelative"],
+        ["xpath=//div[4]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "58599845-6204-4eba-9a5c-d6218935cb6d",
+      "comment": "",
+      "command": "type",
+      "target": "id=description",
+      "targets": [
+        ["id=description", "id"],
+        ["css=#description", "css:finder"],
+        ["xpath=//input[@id='description']", "xpath:attributes"],
+        ["xpath=//div[@id='form-container']/div/form/div[4]/input", "xpath:idRelative"],
+        ["xpath=//div[4]/input", "xpath:position"]
+      ],
+      "value": "VALIDE   _DESCRIPTION "
+    }, {
+      "id": "37d93ae0-57d5-4b25-92fc-cd6e350224da",
+      "comment": "",
+      "command": "click",
+      "target": "id=form-container",
+      "targets": [
+        ["id=form-container", "id"],
+        ["css=#form-container", "css:finder"],
+        ["xpath=//div[@id='form-container']", "xpath:attributes"],
+        ["xpath=(//div[@id='app']/div)[2]", "xpath:idRelative"],
+        ["xpath=//div/div/div", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "ee67b7dd-9efb-404e-b8df-8424ecd89a4c",
+      "comment": "",
+      "command": "click",
+      "target": "css=.form-submit-button",
+      "targets": [
+        ["css=.form-submit-button", "css:finder"],
+        ["xpath=//button[@type='submit']", "xpath:attributes"],
+        ["xpath=//div[@id='form-container']/div/form/button", "xpath:idRelative"],
+        ["xpath=//button", "xpath:position"],
+        ["xpath=//button[contains(.,'Add Equipment')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }]
+  }],
+  "suites": [{
+    "id": "bea53647-f023-4257-8313-c5c251e03eb9",
+    "name": "Default Suite",
+    "persistSession": false,
+    "parallel": false,
+    "timeout": 300,
+    "tests": ["780a6798-9030-49e4-b8f0-508c038e98ef"]
+  }],
+  "urls": ["http://localhost:5173/add-equipment"],
+  "plugins": []
+}
