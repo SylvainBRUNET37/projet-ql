@@ -119,13 +119,13 @@ export const BorrowStore = defineStore('borrow', () => {
         errorMessage.value = 'Start and end dates must be valid timestamps.'
         return
       }
-      
-      const status = await getEquipmentStatusPeriod(equipemntId, startDate, endDate);
-      console.log(status);
+
+      const status = await getEquipmentStatusPeriod(equipemntId, startDate, endDate)
+      console.log(status)
       //check if equipment already borrowed on this period
-      if(status === 0){
-        console.log("EMPRUNT2 SUR LA P2RIODE");
-        errorMessage.value = "Equipment is already on loan during this period";
+      if (status === 0) {
+        console.log('EMPRUNT2 SUR LA P2RIODE')
+        errorMessage.value = 'Equipment is already on loan during this period'
         return
       }
 
@@ -136,10 +136,7 @@ export const BorrowStore = defineStore('borrow', () => {
         borrowDate: start,
         returnDate: end,
       })
-<<<<<<< HEAD
-      console.log("Borrowing successful");
-=======
->>>>>>> 7f73f7f10b020bb1aed3d4508afd11f190c55cc0
+      console.log('Borrowing successful')
     } catch (error) {
       handleFirebaseError(error, errorMessage)
     }
@@ -169,35 +166,39 @@ export const BorrowStore = defineStore('borrow', () => {
       }
     } catch (error) {
       console.error('Erreur de connexion à la bdd:', error)
-      return null;
+      return null
     }
   }
 
-   /**
-   * @param equipmentId équipement pour lequel on cherche à connaître son status sur la période 
+  /**
+   * @param equipmentId équipement pour lequel on cherche à connaître son status sur la période
    * @returns 1=available, 0=borrowed
    * @returns null si erreur lors de la requete
    */
-   const getEquipmentStatusPeriod = async (equipmentId: string, borrowDate: number, returnDate: number): Promise<number> => {
+  const getEquipmentStatusPeriod = async (
+    equipmentId: string,
+    borrowDate: number,
+    returnDate: number,
+  ): Promise<number> => {
     try {
       const borrowCollection = collection(db, 'borrow')
       const q = query(borrowCollection, where('equipmentId', '==', equipmentId))
       const querySnapshot = await getDocs(q)
       if (querySnapshot.empty) {
-        // l'equipement correspondant à cet id n'est pas emprunté 
+        // l'equipement correspondant à cet id n'est pas emprunté
         return 1
       }
       // Vérifie si l'équipement est emprunté pendant la période demandée
       for (const doc of querySnapshot.docs) {
         const data = doc.data()
-        const currentBorrowDate = data.borrowDate 
-        const currentReturnDate = data.returnDate 
-        // Vérifie si l'emprunt est déjà emprunté surla période 
-        if ((currentBorrowDate < returnDate && currentReturnDate > borrowDate)) {
-          return 0; // L'équipement est déjà emprunté pendant cette période
+        const currentBorrowDate = data.borrowDate
+        const currentReturnDate = data.returnDate
+        // Vérifie si l'emprunt est déjà emprunté surla période
+        if (currentBorrowDate < returnDate && currentReturnDate > borrowDate) {
+          return 0 // L'équipement est déjà emprunté pendant cette période
+        }
       }
-    }
-      return 1; 
+      return 1
     } catch (error) {
       console.error('Erreur de connexion à la bdd:', error)
       return -1
