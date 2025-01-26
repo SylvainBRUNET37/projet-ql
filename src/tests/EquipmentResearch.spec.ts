@@ -23,24 +23,24 @@ describe('EquipmentResearch.vue', () => {
 
   // TC001
   it('Consultation des matériels OK, les matériels disponibles sont affichés', () => {
-    // Trouver tous les éléments de carte d'équipement
+    // Trouve tous les éléments de carte d'équipement
     const equipmentCards = wrapper.findAll('.card')
 
     // Vérifie qu'il n'y a que les équipements avec status 'available' dans l'affichage
     expect(equipmentCards).toHaveLength(2) // On sait qu'il y a 2 équipements disponibles
 
-    // Vérifier que la carte d'équipement contient bien "Drill" et "Asus Laptop", mais pas "Hammer"
+    // Vérifie que la carte d'équipement contient bien "Drill" et "Asus Laptop", mais pas "Hammer"
     expect(equipmentCards[0].text()).toContain('Drill')
     expect(equipmentCards[1].text()).toContain('Asus Laptop')
 
-    // Vérifier qu'il n'y a pas d'équipement "Hammer" dans l'affichage
+    // Vérifie qu'il n'y a pas d'équipement "Hammer" dans l'affichage
     expect(equipmentCards[0].text()).not.toContain('Hammer')
     expect(equipmentCards[1].text()).not.toContain('Hammer')
   })
 
   // TC002
   it("Recherche d'un matériel avec la barre de recherche", async () => {
-    // Remplir le champ de recherche et simuler la touche "Entrée"
+    // Rempli le champ de recherche et simuler la touche "Entrée"
     const searchInput = wrapper.find('input[type="text"]')
     await searchInput.setValue('Asus Laptop')
     await searchInput.trigger('keyup.enter')
@@ -50,7 +50,7 @@ describe('EquipmentResearch.vue', () => {
       { id: 3, name: 'Asus Laptop', type: 'Laptop', status: 'available', image: 'laptop.jpg' },
     ])
 
-    // Vérifier que la carte de l'équipement est affichée
+    // Vérifie que la carte de l'équipement est affichée
     const equipmentCards = wrapper.findAll('.card')
     expect(equipmentCards).toHaveLength(1)
     expect(equipmentCards[0].text()).toContain('Asus Laptop')
@@ -65,7 +65,7 @@ describe('EquipmentResearch.vue', () => {
     await searchInput.setValue('NonExistentEquipment')
     await searchInput.trigger('keyup.enter')
 
-    // Vérifiez que filteredEquipments est vide et que l'alerte a été appelée
+    // Vérifie que filteredEquipments est vide et que l'alerte a été appelée
     expect(wrapper.vm.filteredEquipments).toEqual([])
     expect(alertMock).toHaveBeenCalledWith('None of the equipment corresponds to the research')
   })
@@ -103,17 +103,17 @@ describe('EquipmentResearch.vue', () => {
 
   // TC007
   it('Les équipements affichés sont seulement ceux disponibles', async () => {
-    // Trouver tous les éléments de carte d'équipement
+    // Trouve tous les éléments de carte d'équipement
     const equipmentCards = wrapper.findAll('.card')
 
     // Vérifie qu'il n'y a que les équipements avec status 'available' dans l'affichage
     expect(equipmentCards).toHaveLength(2) // On sait qu'il y a 2 équipements disponibles
 
-    // Vérifier que la carte d'équipement contient bien "Drill" et "Asus Laptop", mais pas "Hammer"
+    // Vérifie que la carte d'équipement contient bien "Drill" et "Asus Laptop", mais pas "Hammer"
     expect(equipmentCards[0].text()).toContain('Drill')
     expect(equipmentCards[1].text()).toContain('Asus Laptop')
 
-    // Vérifier qu'il n'y a pas d'équipement "Hammer" dans l'affichage
+    // Vérifie qu'il n'y a pas d'équipement "Hammer" dans l'affichage
     expect(equipmentCards[0].text()).not.toContain('Hammer')
     expect(equipmentCards[1].text()).not.toContain('Hammer')
   })
