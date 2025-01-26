@@ -68,6 +68,13 @@ export const UserStore = defineStore('user', () => {
    */
   const deleteUserById = async (userId: string): Promise<void> => {
     try {
+      // Vérifie que l'administrateur ne supprime pas son propre compte
+      const currentUserId = auth.currentUser?.uid
+      if (currentUserId === userId) {
+        alert('You cannot delete yourself')
+        return
+      }
+
       // Vérifie si l'ID de l'utilisateur est fourni
       if (!userId) {
         errorMessage.value = 'User ID is required.'
@@ -136,6 +143,13 @@ export const UserStore = defineStore('user', () => {
    */
   const updateUserStatus = async (userId: string, currentStatus: string): Promise<void> => {
     try {
+      // Vérifie que l'administrateur ne modifie pas son propre statut
+      const currentUserId = auth.currentUser?.uid
+      if (currentUserId === userId) {
+        alert('You cannot desativate yourself')
+        return
+      }
+
       // Vérifie si on passe de "active" à "inactive"
       if (currentStatus === 'active') {
         // Vérifie si l'utilsiateur peut être modifié
@@ -143,7 +157,7 @@ export const UserStore = defineStore('user', () => {
 
         // Empêche la modification si l'utilisateur un emprunt actif
         if (canModify === false) {
-          alert('Equipment is already borrowed by a user')
+          alert('The user has outstanding borrows')
           return
         }
       }
