@@ -123,7 +123,7 @@ export default {
     },
     goBack() {
       this.$router.push('/home')
-      
+
     },
   },
 }
