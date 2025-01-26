@@ -152,25 +152,6 @@ export default {
         console.error('Error loading equipment:', error)
       }
     }
-
-    /*const saveChanges = async () => {
-      if (!equipment.value) {
-        alert('No equipment loaded to save changes.')
-        return
-      }
-
-      try {
-        const docRef = doc(db, 'equipments', equipment.value.id)
-        const { ...updatedFields } = equipment.value // Exclude unnecessary fields
-        await updateDoc(docRef, updatedFields)
-        alert('Changes saved successfully!')
-        goBack()
-      } catch (error) {
-        console.error('Error while saving changes:', error)
-        alert('Unable to save changes.')
-      }
-    }
-*/
     const goBack = () => {
       router.push('/home')
     }
@@ -179,8 +160,7 @@ export default {
 
     return {
       equipment,
-      //errorMessage,
-      //saveChanges,
+      errorMessage,
       goBack,
       startDate,
       endDate,
