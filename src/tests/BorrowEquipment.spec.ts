@@ -184,16 +184,8 @@ describe('BorrowEquipment.vue', () => {
     const endDateInput = wrapperDetails.find('#end-date')
     const borrowButton = wrapperDetails.find('#borrow-button')
 
-    // Calcule la date de début (aujourd'hui) et la date de fin (15 jours après)
-    const today = new Date()
-    const startDate = today.toLocaleDateString('fr-CA') // Aujourd'hui
-    const endDate = new Date(today.setDate(today.getDate() + 14)).toLocaleDateString('fr-CA') // 15 jours après aujourd'hui
-
-    const formattedStartDate = formatDate(startDate)
-    const formattedEndDate = formatDate(endDate)
-
-    await startDateInput.setValue(formattedStartDate)
-    await endDateInput.setValue(formattedEndDate)
+    await startDateInput.setValue('2025-02-15')
+    await endDateInput.setValue('2025-02-28')
 
     await startDateInput.trigger('blur')
     await endDateInput.trigger('blur')
