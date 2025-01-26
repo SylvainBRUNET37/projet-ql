@@ -32,21 +32,9 @@ describe('AuthStore.ts', () => {
 
   // TC001 - Serveur inaccessible ou indisponible
   it('No connection, please check your network', async () => {
-    // Simule une erreur de timeout
+    // Simule une erreur de service indisponible
     ;(firebaseAuth.signInWithEmailAndPassword as vi.Mock).mockRejectedValueOnce(
-      new FirebaseError('auth/timeout', 'No connection, please check your network'),
-    )
-
-    // Appel la méthode de login et vérifie le message d'erreur
-    await authStore.login('email@example.com', 'password')
-    expect(authStore.errorMessage).toBe('No connection, please check your network.')
-  })
-
-  // TC002 - Temps de réponse trop long du serveur
-  it('Temps de réponse trop long du serveur', async () => {
-    // Simuler une erreur de réseau
-    ;(firebaseAuth.signInWithEmailAndPassword as vi.Mock).mockRejectedValueOnce(
-      new FirebaseError('auth/network-request-failed', 'Network request failed'),
+      new FirebaseError('unavailable', ''),
     )
 
     // Appel la méthode de login et vérifie le message d'erreur
@@ -54,15 +42,39 @@ describe('AuthStore.ts', () => {
     expect(authStore.errorMessage).toBe('Service temporarily unavailable, please try again later.')
   })
 
+  // TC002 - Temps de réponse trop long du serveur
+  it('Temps de réponse trop long du serveur', async () => {
+    // Simuler une erreur de réseau
+    ;(firebaseAuth.signInWithEmailAndPassword as vi.Mock).mockRejectedValueOnce(
+      new FirebaseError('timeout', ''),
+    )
+
+    // Appel la méthode de login et vérifie le message d'erreur
+    await authStore.login('email@example.com', 'password')
+    expect(authStore.errorMessage).toBe('No connection, please check your network.')
+  })
+
   // TC003 - Erreur interne
   it('Erreur interne', async () => {
-    // Simule une erreur interne générique
+    // Simule une erreur interne
     ;(firebaseAuth.signInWithEmailAndPassword as vi.Mock).mockRejectedValueOnce(
-      new Error('Internal server error'),
+      new FirebaseError('internal-error', ''),
     )
 
     // Appel la méthode de login et vérifie le message d'erreur
     await authStore.login('email@example.com', 'password')
     expect(authStore.errorMessage).toBe('Internal error, please try again later.')
+  })
+
+  // TC004 - Erreur inconnue
+  it('Erreur interne', async () => {
+    // Simule une erreur interne générique
+    ;(firebaseAuth.signInWithEmailAndPassword as vi.Mock).mockRejectedValueOnce(
+      new Error('Erreur inconnue'),
+    )
+
+    // Appel la méthode de login et vérifie le message d'erreur
+    await authStore.login('email@example.com', 'password')
+    expect(authStore.errorMessage).toBe('Unknown error, please try again later.')
   })
 })

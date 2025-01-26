@@ -19,7 +19,7 @@ import {
   where,
   setDoc,
 } from 'firebase/firestore'
-import { FirebaseError } from 'firebase/app'
+import { handleFirebaseError } from '../utils/ErrorHandler'
 
 /**
  * Gère l'état et la récupération des informations utilisateur.
@@ -54,8 +54,7 @@ export const UserStore = defineStore('user', () => {
       if (activeBorrow) return false
       else return true
     } catch (error) {
-      console.error("Erreur lors de la vérification des emprunts de l'utilisateur :", error)
-      errorMessage.value = 'Erreur interne, veuillez réessayer plus tard.'
+      handleFirebaseError(error, errorMessage)
       return false
     }
   }
@@ -118,19 +117,8 @@ export const UserStore = defineStore('user', () => {
       // Supprime l'utilisateur de Firestore
       await deleteDoc(userDocRef)
       errorMessage.value = ''
-    } catch (error: FirebaseError | unknown) {
-      if (error instanceof FirebaseError) {
-        switch (error.code) {
-          case 'auth/network-request-failed':
-            errorMessage.value = 'Service temporarily unavailable, please try again later.'
-            break
-          default:
-            errorMessage.value = 'Internal error, please try again later.'
-        }
-      } else {
-        errorMessage.value = 'Internal error, please try again later.'
-        console.error(error)
-      }
+    } catch (error) {
+      handleFirebaseError(error, errorMessage)
     }
   }
 
@@ -176,23 +164,16 @@ export const UserStore = defineStore('user', () => {
         userData.value = { ...userData.value, status: newStatus }
       }
       errorMessage.value = ''
-    } catch (error: FirebaseError | unknown) {
-      if (error instanceof FirebaseError) {
-        switch (error.code) {
-          case 'not-found':
-            errorMessage.value = 'User not found.'
-            break
-          default:
-            errorMessage.value = 'Failed to update user status. Please try again later.'
-        }
-      } else {
-        errorMessage.value = 'Failed to update user status. Please try again later.'
-        console.error(error)
-      }
+    } catch (error) {
+      handleFirebaseError(error, errorMessage)
     }
   }
 
-  // Fonction pour récupérer les utilisateurs depuis Firestore
+  /**
+   * Récupère la liste des utilisateurs depuis Firestore.
+   *
+   * @returns {Promise<void>} - Promesse qui se résout une fois les données récupérées ou en cas d'erreur.
+   */
   const getUsers = async (): Promise<void> => {
     try {
       const querySnapshot = await getDocs(collection(db, 'users'))
@@ -201,7 +182,7 @@ export const UserStore = defineStore('user', () => {
         ...doc.data(),
       }))
     } catch (error) {
-      console.error('Erreur lors de la récupération des utilisateurs :', error)
+      handleFirebaseError(error, errorMessage)
     }
   }
 
@@ -230,30 +211,16 @@ export const UserStore = defineStore('user', () => {
       } else {
         errorMessage.value = 'User not found.'
       }
-    } catch (error: FirebaseError | unknown) {
-      // Modifie le message d'erreur en fonction du type d'erreur
-      if (error instanceof FirebaseError) {
-        switch (error.code) {
-          case 'auth/network-request-failed':
-            errorMessage.value = 'Service temporarily unavailable, please try again later.'
-            break
-          case 'auth/timeout':
-            errorMessage.value = 'No connection, please check your network.'
-            break
-          case 'auth/invalid-credential':
-            errorMessage.value = 'Incorrect email or password.'
-            break
-          default:
-            errorMessage.value = 'Internal error, please try again later.'
-        }
-      } else {
-        // Gestion d'autres types d'erreurs
-        errorMessage.value = 'Internal error, please try again later.'
-        console.error(error)
-      }
+    } catch (error) {
+      handleFirebaseError(error, errorMessage)
     }
   }
 
+  /**
+   * Récupère l'ID de l'utilisateur connecté.
+   *
+   * @returns {string | null} - L'ID de l'utilisateur connecté ou `null` s'il n'y a pas d'utilisateur connecté.
+   */
   const getUserId = (): string | null => {
     // Vérifie si un utilisateur est connecté
     const currentUser = auth.currentUser
@@ -265,42 +232,46 @@ export const UserStore = defineStore('user', () => {
     }
   }
 
+  /**
+   * Met à jour les données d'un utilisateur dans Firestore.
+   *
+   * @param {DocumentData} userDataOld - Les données de l'utilisateur à mettre à jour.
+   * @param {DocumentData} userDataNew - Les nouvelles données de l'utilisateur.
+   * @returns {Promise<void>} - Promesse qui se résout une fois les données mises à jour ou en cas d'erreur.
+   */
   const updateUser = async (
     userDataOld: DocumentData,
     userDataNew: DocumentData,
   ): Promise<void> => {
     try {
-      console.log('OLD : ', userDataOld.email, 'NEW : ', userDataNew.email)
+      // Vérifie si l'email a changé
       if (userDataOld.email !== userDataNew.email) {
         const usersRef = collection(db, 'users')
         const emailQuery = query(usersRef, where('email', '==', userDataNew.email))
         const querySnapshot = await getDocs(emailQuery)
 
+        // Vérifie si l'email est déjà utilisé
         if (!querySnapshot.empty) {
           errorMessage.value = 'This email is already in use. Please use a different email.'
           return
         }
       }
+
+      // Met à jour les données utilisateur dans Firestore
       const userDocRef = doc(db, 'users', userDataOld.id)
       await setDoc(userDocRef, userDataNew, { merge: true })
+
       errorMessage.value = ''
-      return // Met à jour uniquement les champs modifiés
-    } catch (error: FirebaseError | unknown) {
-      // Gestion des erreurs
-      if (error instanceof FirebaseError) {
-        switch (error.code) {
-          case 'auth/network-request-failed':
-            errorMessage.value = 'Service temporarily unavailable, please try again later.'
-            break
-          default:
-            errorMessage.value = 'Internal error, please try again later.'
-        }
-      } else {
-        errorMessage.value = 'Internal error, please try again later.'
-        console.error(error)
-      }
+    } catch (error) {
+      handleFirebaseError(error, errorMessage)
     }
   }
+
+  /**
+   * Récupère les informations d'un utilisateur à partir de son ID.
+   *
+   * @param {string} userId - L'ID de l'utilisateur à récupérer.
+   */
   const getUserById = async (userId: string) => {
     try {
       console.log('DANS STORE : USER ID ', userId)
@@ -311,7 +282,7 @@ export const UserStore = defineStore('user', () => {
         console.error('User not found')
       }
     } catch (error) {
-      console.error('Error getting user data:', error)
+      handleFirebaseError(error, errorMessage)
     }
   }
   // Retourne les données utilisateur, les erreurs et la fonction de récupération

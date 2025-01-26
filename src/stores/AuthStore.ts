@@ -7,9 +7,9 @@
 import { defineStore } from 'pinia'
 import { ref, type Ref } from 'vue'
 import { auth, db } from '../firebase'
-import { FirebaseError } from 'firebase/app'
 import { signInWithEmailAndPassword, signOut, type User } from 'firebase/auth'
 import { doc, getDoc, type DocumentData } from 'firebase/firestore'
+import { handleFirebaseError } from '../utils/ErrorHandler'
 
 /**
  * Gère l'état utilisateur et les actions d'authentification.
@@ -62,27 +62,8 @@ export const AuthStore = defineStore('auth', () => {
         // Modifie le message d'erreur si les données utilisateur ne sont pas trouvées
         errorMessage.value = 'Internal error, please try again later.'
       }
-    } catch (error: FirebaseError | unknown) {
-      // Modifie le message d'erreur en fonction du type d'erreur
-      if (error instanceof FirebaseError) {
-        switch (error.code) {
-          case 'auth/network-request-failed':
-            errorMessage.value = 'Service temporarily unavailable, please try again later.'
-            break
-          case 'auth/timeout':
-            errorMessage.value = 'No connection, please check your network.'
-            break
-          case 'auth/invalid-credential':
-            errorMessage.value = 'Incorrect email or password.'
-            break
-          default:
-            errorMessage.value = 'Internal error, please try again later.'
-        }
-      } else {
-        // Gestion d'autres types d'erreurs
-        errorMessage.value = 'Internal error, please try again later.'
-        console.error(error)
-      }
+    } catch (error) {
+      handleFirebaseError(error, errorMessage)
     }
   }
 
@@ -99,23 +80,8 @@ export const AuthStore = defineStore('auth', () => {
       // Réinitialise l'état utilisateur et les données associées
       user.value = null
       userData.value = null
-    } catch (error: FirebaseError | unknown) {
-      // Modifie le message d'erreur en fonction du type d'erreur
-      if (error instanceof FirebaseError) {
-        switch (error.code) {
-          case 'auth/network-request-failed':
-            errorMessage.value = 'Service temporarily unavailable, please try again later.'
-            break
-          case 'auth/timeout':
-            errorMessage.value = 'No connection, please check your network.'
-            break
-          default:
-            errorMessage.value = 'Internal error, please try again later.'
-        }
-      } else {
-        errorMessage.value = 'Internal error, please try again later.'
-        console.error(error)
-      }
+    } catch (error) {
+      handleFirebaseError(error, errorMessage)
     }
   }
 
