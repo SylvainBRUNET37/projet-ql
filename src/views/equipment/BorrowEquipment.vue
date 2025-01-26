@@ -161,8 +161,7 @@ export default {
 
     return {
       equipment,
-      //errorMessage,
-      //saveChanges,
+      errorMessage,
       goBack,
       startDate,
       endDate,
