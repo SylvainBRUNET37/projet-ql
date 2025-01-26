@@ -7,7 +7,7 @@
     <!-- Nom de l'équipement -->
     <div class="form-group">
       <label>Name:</label>
-      <input v-model="equipment.name" />
+      <input v-model="equipment.name" readonly />
     </div>
 
     <!-- Reference de l'équipement -->
@@ -19,33 +19,30 @@
     <!-- Type de l'équipement -->
     <div class="form-group">
       <label>Type:</label>
-      <input v-model="equipment.type" />
+      <input v-model="equipment.type" readonly />
     </div>
 
     <!-- Status de l'équipement -->
     <div class="form-group">
       <label>Status:</label>
-      <select v-model="equipment.status">
-        <option value="available">Available</option>
-        <option value="unavailable">Unavailable</option>
-      </select>
+      <input v-model="equipment.status" readonly />
     </div>
 
     <!-- Description de l'équipement -->
     <div class="form-group">
       <label>Description:</label>
-      <input v-model="equipment.description" />
+      <input v-model="equipment.description" readonly />
     </div>
 
     <!-- Champs pour les dates de début et de fin -->
     <div class="date-fields">
       <div class="form-group">
         <label>Start Date:</label>
-        <input type="date" v-model="startDate" id="start-date" data-test="start-date"/>
+        <input type="date" v-model="startDate" id="start-date" data-test="start-date" />
       </div>
       <div class="form-group">
         <label>End Date:</label>
-        <input type="date" v-model="endDate" id="end-date" data-test="end-date"/>
+        <input type="date" v-model="endDate" id="end-date" data-test="end-date" />
       </div>
     </div>
 
@@ -55,7 +52,15 @@
       <button type="button" class="button cancel" @click="goBack">Back</button>
 
       <!-- Bouton pour emprunter un équipement -->
-      <button type="button" class="button is-primary" id="borrow-button" data-test="borrow-button" @click="borrowEquipment">Borrow</button>
+      <button
+        type="button"
+        class="button is-primary"
+        id="borrow-button"
+        data-test="borrow-button"
+        @click="borrowEquipment"
+      >
+        Borrow
+      </button>
     </div>
   </div>
 </template>
