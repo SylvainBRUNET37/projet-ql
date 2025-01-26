@@ -1,7 +1,8 @@
 import { defineStore } from 'pinia'
 import { ref, type Ref } from 'vue'
 import { type DocumentData, addDoc, collection, getDocs, query, where } from 'firebase/firestore'
-import { db } from '@/firebase' // Assurez-vous que `db` est correctement configuré pour Firestore
+import { db } from '@/firebase'
+import { handleFirebaseError } from '@/utils/ErrorHandler'
 
 export const BorrowStore = defineStore('borrow', () => {
   // Références réactives
@@ -50,8 +51,7 @@ export const BorrowStore = defineStore('borrow', () => {
 
       return result
     } catch (error) {
-      console.error('Erreur lors de la récupération des équipements empruntés:', error)
-      errorMessage.value = 'Impossible de récupérer les équipements empruntés.'
+      handleFirebaseError(error, errorMessage)
       return []
     }
   }
@@ -110,7 +110,7 @@ export const BorrowStore = defineStore('borrow', () => {
 
       return ''
     } catch (error) {
-      console.error('Erreur lors de la récupération des équipements empruntés:', error)
+      handleFirebaseError(error, errorMessage)
       return String(error)
     }
   }
@@ -138,7 +138,7 @@ export const BorrowStore = defineStore('borrow', () => {
         return 0
       }
     } catch (error) {
-      console.error('Erreur de connexion à la bdd:', error)
+      handleFirebaseError(error, errorMessage)
       return null
     }
   }
