@@ -1,6 +1,6 @@
 # projet-ql
 
-This template should help get you started developing with Vue 3 in Vite.
+Projet 4A qualité logicielle locaMat, BRUNET Sylvain, DUBOIS Matis, CHARTON Matthieu, SOUKI Ikram, HAKKAL Salah Eddine, NÉRON Martin.
 
 ## Recommended IDE Setup
 
