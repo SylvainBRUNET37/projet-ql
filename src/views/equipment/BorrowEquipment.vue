@@ -41,11 +41,11 @@
     <div class="date-fields">
       <div class="form-group">
         <label>Start Date:</label>
-        <input type="date" v-model="startDate" id="start-date" data-test="start-date"/>
+        <input type="date" v-model="startDate" id="start-date" data-test="start-date" />
       </div>
       <div class="form-group">
         <label>End Date:</label>
-        <input type="date" v-model="endDate" id="end-date" data-test="end-date"/>
+        <input type="date" v-model="endDate" id="end-date" data-test="end-date" />
       </div>
     </div>
 
@@ -55,7 +55,15 @@
       <button type="button" class="button cancel" @click="goBack">Back</button>
 
       <!-- Bouton pour emprunter un équipement -->
-      <button type="button" class="button is-primary" id="borrow-button" data-test="borrow-button" @click="borrowEquipment">Borrow</button>
+      <button
+        type="button"
+        class="button is-primary"
+        id="borrow-button"
+        data-test="borrow-button"
+        @click="borrowEquipment"
+      >
+        Borrow
+      </button>
     </div>
   </div>
 </template>
@@ -82,6 +90,7 @@ export default {
       description: '',
     })
 
+    let errorMessage = ''
     const userStore = UserStore()
     const borrowStore = BorrowStore()
     const startDate = ref<string | null>(null)
@@ -108,12 +117,15 @@ export default {
       const startDateMs = Date.parse(startDate.value)
       const endDateMs = Date.parse(endDate.value)
       console.log(startDateMs, '   ', endDateMs)
-      try {
-        await borrowStore.borrowEquipment(userId, equipmentId, startDateMs, endDateMs)
+
+      await borrowStore.borrowEquipment(userId, equipmentId, startDateMs, endDateMs)
+
+      // Affiche un message de succès ou d'erreur
+      if (borrowStore.errorMessage) {
+        errorMessage = borrowStore.errorMessage
+        alert(errorMessage)
+      } else {
         alert('Equipment borrowed successfully!')
-      } catch (error) {
-        console.error(borrowStore.errorMessage)
-        alert(borrowStore.errorMessage);
       }
     }
 
