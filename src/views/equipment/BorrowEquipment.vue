@@ -84,8 +84,6 @@ export default {
 
     const userStore = UserStore()
     const borrowStore = BorrowStore()
-
-    const errorMessage = ref('')
     const startDate = ref<string | null>(null)
     const endDate = ref<string | null>(null)
 
@@ -114,8 +112,8 @@ export default {
         await borrowStore.borrowEquipment(userId, equipmentId, startDateMs, endDateMs)
         alert('Equipment borrowed successfully!')
       } catch (error) {
-        console.error('Error borrowing equipment:', error)
-        alert('Unable to borrow equipment. Please try again later.')
+        console.error(borrowStore.errorMessage)
+        alert(borrowStore.errorMessage);
       }
     }
 
@@ -142,7 +140,7 @@ export default {
       }
     }
 
-    const saveChanges = async () => {
+    /*const saveChanges = async () => {
       if (!equipment.value) {
         alert('No equipment loaded to save changes.')
         return
@@ -159,7 +157,7 @@ export default {
         alert('Unable to save changes.')
       }
     }
-
+*/
     const goBack = () => {
       router.push('/home')
     }
@@ -168,8 +166,8 @@ export default {
 
     return {
       equipment,
-      errorMessage,
-      saveChanges,
+      //errorMessage,
+      //saveChanges,
       goBack,
       startDate,
       endDate,

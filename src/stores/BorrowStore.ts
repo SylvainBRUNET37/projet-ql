@@ -72,36 +72,43 @@ export const BorrowStore = defineStore('borrow', () => {
     equipemntId: string,
     start: number,
     end: number,
-  ): Promise<string> => {
+  ): Promise<void> => {
     try {
-      const now = new Date(Date.now()) // Date actuelle en millisecondes
-      const currentDate = roundDayUTC(now)
-      const oneYearLater = currentDate + 365 * 24 * 60 * 60 * 1000 // +1 an
-      const sixMonthsInMillis = 6 * 30 * 24 * 60 * 60 * 1000 // 6 mois
-
+       // Date actuelle en millisecondes (number)
+      const currentDate = roundDayUTC(new Date()) 
+      const oneYearLater = currentDate + (365 * 24 * 60 * 60 * 1000); // +1 an
+      const sixMonthsInMillis = Math.floor((365 * 24 * 60 * 60 * 1000)/2) // 6 mois
+    
       // dates round on hours because start < currentDate will alway be true on UTC format with milisecondes
       const startDate = roundDayUTC(new Date(start))
-      const endDate = roundDayUTC(new Date(start))
-      console.log(startDate, '    ', currentDate)
+      const endDate = roundDayUTC(new Date(end))
+      console.log("sart date round ", startDate, '    ', "end date round", endDate, '   ',"one year later ", oneYearLater, "\n", "current date ", currentDate)
       // Vérifications des contraintes sur les dates
       if (startDate < currentDate) {
-        throw new Error('The start date cannot be in the past.')
+        errorMessage.value = "The start date cannot be in the past.";
+        return;
       }
 
       if (startDate > oneYearLater) {
-        throw new Error('The start date must not exceed 1 year from the current date.')
+        errorMessage.value = "The start date must not exceed 1 year from the current date.";
+        return
       }
 
       if (endDate < startDate) {
-        throw new Error('The end date must be after the start date.')
+        errorMessage.value = "The end date must be after the start date.";
+        return 
       }
 
       if (endDate > startDate + sixMonthsInMillis) {
-        throw new Error('The borrowing period must not exceed 6 months.')
+        errorMessage.value = "The borrowing period must not exceed 6 months.";
+        return
+      }
+      if (start == null || end == null) {
+        errorMessage.value = "Start and end dates must be valid timestamps.";
+        return
       }
 
       // Ajout de l'emprunt dans Firestore
-      alert('BORROW')
       await addDoc(collection(db, 'borrow'), {
         userId: userId,
         equipmentId: equipemntId,
@@ -109,10 +116,9 @@ export const BorrowStore = defineStore('borrow', () => {
         returnDate: end,
       })
 
-      return ''
     } catch (error) {
-      console.error('Erreur lors de la récupération des équipements empruntés:', error)
-      return String(error)
+      console.error(error)
+      throw(error)
     }
   }
 
