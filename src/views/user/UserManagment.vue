@@ -125,6 +125,7 @@ export default defineComponent({
       // Sinon, suppression de l'utilisateur
       try {
         await userStore.deleteUserById(userId)
+        userStore.getUsers()
       } catch (error) {
         console.error('Error deleting user: ', error)
       }
@@ -156,7 +157,7 @@ export default defineComponent({
      */
     const handleDetails = (userId: string) => {
       router.push(`/admin/user/${userId}`)
-      console.log(userId);
+      console.log(userId)
     }
 
     /**

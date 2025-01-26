@@ -219,6 +219,12 @@ export const EquipmentStore = defineStore('equipment', () => {
         case 'computer':
           newEquipment.image = 'computer.jpg'
           break
+        case 'keyboard':
+          newEquipment.image = 'keyboard.jpg'
+          break
+        case 'drill':
+          newEquipment.image = 'drill.jpg'
+          break
         default:
           newEquipment.image = 'unknown.png'
       }
