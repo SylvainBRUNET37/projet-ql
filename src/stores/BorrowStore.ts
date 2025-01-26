@@ -101,7 +101,6 @@ export const BorrowStore = defineStore('borrow', () => {
       }
 
       // Ajout de l'emprunt dans Firestore
-      alert('BORROW')
       await addDoc(collection(db, 'borrow'), {
         userId: userId,
         equipmentId: equipemntId,
