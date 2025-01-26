@@ -7,7 +7,7 @@
     <!-- Nom de l'équipement -->
     <div class="form-group">
       <label>Name:</label>
-      <input v-model="equipment.name" />
+      <input v-model="equipment.name" readonly />
     </div>
 
     <!-- Reference de l'équipement -->
@@ -19,22 +19,19 @@
     <!-- Type de l'équipement -->
     <div class="form-group">
       <label>Type:</label>
-      <input v-model="equipment.type" />
+      <input v-model="equipment.type" readonly />
     </div>
 
     <!-- Status de l'équipement -->
     <div class="form-group">
       <label>Status:</label>
-      <select v-model="equipment.status">
-        <option value="available">Available</option>
-        <option value="unavailable">Unavailable</option>
-      </select>
+      <input v-model="equipment.status" readonly />
     </div>
 
     <!-- Description de l'équipement -->
     <div class="form-group">
       <label>Description:</label>
-      <input v-model="equipment.description" />
+      <input v-model="equipment.description" readonly />
     </div>
 
     <!-- Champs pour les dates de début et de fin -->

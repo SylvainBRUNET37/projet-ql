@@ -19,7 +19,7 @@ import {
   query,
   where,
 } from 'firebase/firestore'
-import { FirebaseError } from 'firebase/app'
+import { handleFirebaseError } from '../utils/ErrorHandler'
 
 /**
  * Gère l'état et la récupération des équipements.
@@ -53,7 +53,7 @@ export const EquipmentStore = defineStore('equipment', () => {
       if (activeBorrow) return false
       else return true
     } catch (error) {
-      console.error('Error :', error)
+      handleFirebaseError(error, errorMessage)
       return false
     }
   }
@@ -92,19 +92,8 @@ export const EquipmentStore = defineStore('equipment', () => {
       // Met à jour la liste locale
       equipment.value = equipment.value.filter((item) => item.id !== equipmentId)
       errorMessage.value = ''
-    } catch (error: FirebaseError | unknown) {
-      if (error instanceof FirebaseError) {
-        switch (error.code) {
-          case 'not-found':
-            errorMessage.value = 'Equipment not found.'
-            break
-          default:
-            errorMessage.value = 'Failed to delete equipment. Please try again later.'
-        }
-      } else {
-        errorMessage.value = 'Failed to delete equipment. Please try again later.'
-        console.error(error)
-      }
+    } catch (error) {
+      handleFirebaseError(error, errorMessage)
     }
   }
 
@@ -148,19 +137,8 @@ export const EquipmentStore = defineStore('equipment', () => {
 
       // Réinitialisation du message d'erreur
       errorMessage.value = ''
-    } catch (error: FirebaseError | unknown) {
-      if (error instanceof FirebaseError) {
-        switch (error.code) {
-          case 'not-found':
-            errorMessage.value = 'Equipment not found.'
-            break
-          default:
-            errorMessage.value = 'Failed to update equipment status. Please try again later.'
-        }
-      } else {
-        errorMessage.value = 'Failed to update equipment status. Please try again later.'
-        console.error(error)
-      }
+    } catch (error) {
+      handleFirebaseError(error, errorMessage)
     }
   }
 
@@ -178,27 +156,8 @@ export const EquipmentStore = defineStore('equipment', () => {
         ...doc.data(),
       }))
       errorMessage.value = ''
-    } catch (error: FirebaseError | unknown) {
-      // Modifie le message d'erreur en fonction du type d'erreur
-      if (error instanceof FirebaseError) {
-        switch (error.code) {
-          case 'auth/network-request-failed':
-            errorMessage.value = 'Service temporarily unavailable, please try again later.'
-            break
-          case 'auth/timeout':
-            errorMessage.value = 'No connection, please check your network.'
-            break
-          case 'auth/invalid-credential':
-            errorMessage.value = 'Incorrect email or password.'
-            break
-          default:
-            errorMessage.value = 'Internal error, please try again later.'
-        }
-      } else {
-        // Gestion d'autres types d'erreurs
-        errorMessage.value = 'Internal error, please try again later.'
-        console.error(error)
-      }
+    } catch (error) {
+      handleFirebaseError(error, errorMessage)
     }
   }
 
@@ -220,20 +179,22 @@ export const EquipmentStore = defineStore('equipment', () => {
         id: doc.id,
         ...doc.data(),
       }))
-    } catch (error: FirebaseError | unknown) {
-      if (error instanceof FirebaseError) {
-        switch (error.code) {
-          case 'not-found':
-            errorMessage.value = 'Equipment not found.'
-            break
-          default:
-            errorMessage.value = 'Failed to update equipment status. Please try again later.'
-        }
-      } else {
-        errorMessage.value = 'Failed to update equipment status. Please try again later.'
-        console.error(error)
-      }
+    } catch (error) {
+      handleFirebaseError(error, errorMessage)
     }
+  }
+
+  /**
+   * Vérifie si une référence existe déjà dans Firestore.
+   *
+   * @param {string} ref - La référence à vérifier.
+   * @returns {Promise<boolean>} - Renvoie true si la référence existe déjà, sinon false.
+   */
+  const doesRefExist = async (ref: string): Promise<boolean> => {
+    const equipmentRef = collection(db, 'equipments')
+    const q = query(equipmentRef, where('ref', '==', ref))
+    const querySnapshot = await getDocs(q)
+    return !querySnapshot.empty
   }
 
   /**
@@ -257,6 +218,12 @@ export const EquipmentStore = defineStore('equipment', () => {
           break
         case 'computer':
           newEquipment.image = 'computer.jpg'
+          break
+        case 'keyboard':
+          newEquipment.image = 'keyboard.jpg'
+          break
+        case 'drill':
+          newEquipment.image = 'drill.jpg'
           break
         default:
           newEquipment.image = 'unknown.png'
@@ -284,21 +251,8 @@ export const EquipmentStore = defineStore('equipment', () => {
       // Met à jour l'ID de l'équipement dans Firestore
       await setDoc(docRef, { ...newEquipment, id: docRef.id })
     } catch (error) {
-      console.error("Erreur lors de l'ajout de l'équipement :", error)
+      handleFirebaseError(error, errorMessage)
     }
-  }
-
-  /**
-   * Vérifie si une référence existe déjà dans Firestore.
-   *
-   * @param {string} ref - La référence à vérifier.
-   * @returns {Promise<boolean>} - Renvoie true si la référence existe déjà, sinon false.
-   */
-  const doesRefExist = async (ref: string): Promise<boolean> => {
-    const equipmentRef = collection(db, 'equipments')
-    const q = query(equipmentRef, where('ref', '==', ref))
-    const querySnapshot = await getDocs(q)
-    return !querySnapshot.empty
   }
 
   // Retourne les équipements, les erreurs et les fonctions

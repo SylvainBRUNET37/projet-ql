@@ -7,7 +7,6 @@
 import { defineStore } from 'pinia'
 import { ref, type Ref } from 'vue'
 import { auth, db } from '../firebase'
-import { FirebaseError } from 'firebase/app'
 import { createUserWithEmailAndPassword, type User } from 'firebase/auth'
 import {
   doc,
@@ -19,6 +18,7 @@ import {
   getDocs,
   type DocumentData,
 } from 'firebase/firestore'
+import { handleFirebaseError } from '../utils/ErrorHandler'
 
 /**
  * Gère l'état d'enregistrement d'un utilisateur et l'ajout des données dans Firestore.
@@ -98,26 +98,8 @@ export const RegisterStore = defineStore('register', () => {
       // Stocke les données utilisateur dans le store
       userData.value = { lastName, firstName, role, email: normalizedEmail }
       errorMessage.value = ''
-    } catch (error: FirebaseError | unknown) {
-      // Gestion des erreurs
-      if (error instanceof FirebaseError) {
-        switch (error.code) {
-          case 'auth/network-request-failed':
-            errorMessage.value = 'Service temporarily unavailable, please try again later.'
-            break
-          case 'auth/timeout':
-            errorMessage.value = 'No connection, please check your network.'
-            break
-          case 'auth/invalid-credential':
-            errorMessage.value = 'Incorrect email or password.'
-            break
-          default:
-            errorMessage.value = 'Internal error, please try again later.'
-        }
-      } else {
-        errorMessage.value = 'Internal error, please try again later.'
-        console.error(error)
-      }
+    } catch (error) {
+      handleFirebaseError(error, errorMessage)
     }
   }
 
