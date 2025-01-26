@@ -1,7 +1,3 @@
-<!--
-Ce composant permet d'afficher les détails d'un équipement.
--->
-
 <template>
   <div class="form-container">
     <h1>Equipment Details</h1>
@@ -14,7 +10,7 @@ Ce composant permet d'afficher les détails d'un équipement.
         <input v-model="equipment.name" />
       </div>
 
-      <!-- Reference de l'équipement -->
+      <!-- Référence de l'équipement -->
       <div class="form-group">
         <label>Reference:</label>
         <input v-model="equipment.ref" readonly />
@@ -26,7 +22,7 @@ Ce composant permet d'afficher les détails d'un équipement.
         <input v-model="equipment.type" />
       </div>
 
-      <!-- Status de l'équipement -->
+      <!-- Statut de l'équipement -->
       <div class="form-group">
         <label>Status:</label>
         <select v-model="equipment.status">
@@ -51,16 +47,16 @@ Ce composant permet d'afficher les détails d'un équipement.
 </template>
 
 <script lang="ts">
-import { doc, getDoc, updateDoc } from 'firebase/firestore'
-import { db } from '@/firebase'
-import { onMounted, ref } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
+import { doc, getDoc, updateDoc } from 'firebase/firestore';
+import { db } from '@/firebase';
+import { onMounted, ref } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
 
 export default {
   setup() {
-    const route = useRoute()
-    const router = useRouter()
-    const equipmentId = route.params.id.toString()
+    const route = useRoute();
+    const router = useRouter();
+    const equipmentId = route.params.id.toString();
     const equipment = ref({
       id: '',
       name: '',
@@ -68,69 +64,75 @@ export default {
       type: '',
       status: '',
       description: '',
-    })
-
-    const errorMessage = ref('')
-    const startDate = ref<string | null>(null)
-    const endDate = ref<string | null>(null)
+    });
 
     const loadEquipment = async () => {
       try {
-        const docRef = doc(db, 'equipments', equipmentId)
-        const docSnap = await getDoc(docRef)
+        const docRef = doc(db, 'equipments', equipmentId);
+        const docSnap = await getDoc(docRef);
 
         if (docSnap.exists()) {
           const data = docSnap.data() as {
-            name: string
-            ref: string
-            type: string
-            status: string
-            description: string
-          }
-          equipment.value = { id: docSnap.id, ...data }
+            name: string;
+            ref: string;
+            type: string;
+            status: string;
+            description: string;
+          };
+          equipment.value = { id: docSnap.id, ...data };
         } else {
-          alert('Equipment not found!')
-          router.push('/home')
+          alert('Equipment not found!');
+          router.push('/home');
         }
       } catch (error) {
-        console.error('Error loading equipment:', error)
+        console.error('Error loading equipment:', error);
       }
-    }
+    };
 
     const saveChanges = async () => {
-      if (!equipment.value) {
-        alert('No equipment loaded to save changes.')
-        return
+      // Validation des champs obligatoires
+      if (!equipment.value.name.trim()) {
+        alert('Name is required.');
+        return;
+      }
+      if (!equipment.value.type.trim()) {
+        alert('Type is required.');
+        return;
+      }
+      if (!equipment.value.status.trim()) {
+        alert('Status is required.');
+        return;
+      }
+      if (!equipment.value.description.trim()) {
+        alert('Description is required.');
+        return;
       }
 
       try {
-        const docRef = doc(db, 'equipments', equipment.value.id)
-        const { ...updatedFields } = equipment.value // Exclude unnecessary fields
-        await updateDoc(docRef, updatedFields)
-        alert('Changes saved successfully!')
-        goBack()
+        const docRef = doc(db, 'equipments', equipment.value.id);
+        const { ...updatedFields } = equipment.value; // Exclure les champs inutiles
+        await updateDoc(docRef, updatedFields);
+        alert('Changes saved successfully!');
+        goBack();
       } catch (error) {
-        console.error('Error while saving changes:', error)
-        alert('Unable to save changes.')
+        console.error('Error while saving changes:', error);
+        alert('Unable to save changes.');
       }
-    }
+    };
 
     const goBack = () => {
-      router.push('/home')
-    }
+      router.push('/home');
+    };
 
-    onMounted(loadEquipment)
+    onMounted(loadEquipment);
 
     return {
       equipment,
-      errorMessage,
       saveChanges,
       goBack,
-      startDate,
-      endDate,
-    }
+    };
   },
-}
+};
 </script>
 
 <style scoped>
