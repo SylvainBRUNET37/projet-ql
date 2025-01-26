@@ -1,15 +1,37 @@
 <!-- Ce composant est utilisé pour afficher les informations de compte d'un utilisateur -->
 
 <template>
-  <div class="content">
-    <!-- Puisque l'utilisateur ne peut pas changer lui même ses informations, affiche ce message pour lui indiquer -->
-    <p class="mb-4">Need to change something ? Ask an administrator !</p>
+  <div class="container">
+    <h1 class="title">Your Profile</h1>
+    <div class="card">
+      <div class="card-content">
+        <!-- Puisque l'utilisateur ne peut pas changer lui même ses informations, affiche ce message pour lui indiquer -->
+        <p class="info-message">
+          <i class="icon-alert"></i>
+          Need to change something? Ask an administrator!
+        </p>
 
-    <!-- Informations de l'utilisateur -->
-    <p><strong>Last name:</strong> {{ userInfo?.lastName || 'Not available' }}</p>
-    <p><strong>First name:</strong> {{ userInfo?.firstName || 'Not available' }}</p>
-    <p><strong>Mail:</strong> {{ userInfo?.email || 'Not available' }}</p>
-    <p><strong>Role:</strong> {{ userInfo?.role || 'Not available' }}</p>
+        <!-- Informations de l'utilisateur -->
+        <ul class="user-info">
+          <li>
+            <span class="label">Last name:</span>
+            <span class="value">{{ userInfo?.lastName || 'Not available' }}</span>
+          </li>
+          <li>
+            <span class="label">First name:</span>
+            <span class="value">{{ userInfo?.firstName || 'Not available' }}</span>
+          </li>
+          <li>
+            <span class="label">Mail:</span>
+            <span class="value">{{ userInfo?.email || 'Not available' }}</span>
+          </li>
+          <li>
+            <span class="label">Role:</span>
+            <span class="value">{{ userInfo?.role || 'Not available' }}</span>
+          </li>
+        </ul>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -41,151 +63,79 @@ export default defineComponent({
 </script>
 
 <style scoped>
-body {
-  font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-.section {
-  padding: 2rem;
-  background-color: #f9f9f9;
-}
-
+/* Global container */
 .container {
-  max-width: 1200px;
+  max-width: 600px;
   margin: 0 auto;
-  background: white;
+  padding: 2rem;
+  text-align: center;
+  background: #f8f9fa;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  padding: 1.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-button {
-  display: inline-block;
-  padding: 0.5rem 1rem;
-  background-color: #3273dc;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 1rem;
-  transition: background-color 0.3s ease;
-}
-
-button:hover {
-  background-color: #275bb5;
-}
-
-h1 {
+/* Title */
+.title {
   font-size: 2rem;
-  text-align: center;
+  color: #343a40;
   margin-bottom: 1.5rem;
-  color: #363636;
 }
 
-.tabs {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 1.5rem;
-  border-bottom: 2px solid #eaeaea;
-}
-
-.tabs ul {
-  list-style: none;
-  padding: 0;
-  display: flex;
-  gap: 1rem;
-}
-
-.tabs li {
-  cursor: pointer;
-  padding: 0.5rem 1rem;
-  border-radius: 4px 4px 0 0;
-  transition: background-color 0.3s ease;
-}
-
-.tabs li:hover {
-  background-color: #f2f2f2;
-}
-
-.tabs li.is-active {
-  background-color: white;
-  border: 2px solid #eaeaea;
-  border-bottom: none;
-}
-
-.tabs a {
-  text-decoration: none;
-  color: #363636;
-  font-weight: bold;
-}
-
-/* Content */
-.content {
-  text-align: center;
-  font-size: 1rem;
-  line-height: 1.5;
-  color: #4a4a4a;
-}
-
-.content strong {
-  font-weight: bold;
-}
-
-.mb-4 {
-  margin-bottom: 1rem;
-}
-
-/* Cards */
-.columns {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  justify-content: center;
-}
-
-.column {
-  flex: 1;
-  min-width: 220px;
-  max-width: 25%;
-}
-
+/* Card */
 .card {
   background: white;
   border-radius: 8px;
+  padding: 1.5rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-}
-
-.card-image img {
-  width: 100%;
-  height: auto;
 }
 
 .card-content {
-  padding: 1rem;
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
-.card-content .title {
+.info-message {
   font-size: 1rem;
-  margin-bottom: 0.5rem;
+  color: #495057;
+  background: #e9ecef;
+  padding: 0.75rem;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
-.card-content .subtitle {
-  font-size: 0.875rem;
-  color: #7a7a7a;
+.info-message .icon-alert {
+  font-size: 1.2rem;
+  color: #ffc107;
 }
 
-.card-content .has-text-success {
-  color: #23d160;
+.user-info {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
 }
 
-.card-content .has-text-danger {
-  color: #ff3860;
+.user-info li {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.user-info li:last-child {
+  border-bottom: none;
+}
+
+.label {
+  font-weight: bold;
+  color: #343a40;
+}
+
+.value {
+  color: #6c757d;
 }
 </style>
