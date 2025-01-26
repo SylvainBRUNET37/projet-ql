@@ -29,7 +29,7 @@ describe('EquipmentManagement.vue', () => {
   // TC002
   it("Suppression d'un matériel emprunté", async () => {
     const equipmentId = '1234'
-    equipmentStore.equipment = [{ id: equipmentId, status: 'loaned' }]
+    equipmentStore.equipment = [{ id: equipmentId, status: 'unavailable' }]
 
     // Simuler une tentative de suppression
     await equipmentStore.deleteEquipment(equipmentId)
@@ -41,13 +41,13 @@ describe('EquipmentManagement.vue', () => {
   // TC003
   it("Désactivation d'un matériel OK", async () => {
     const equipmentId = '1234'
-    equipmentStore.equipment = [{ id: equipmentId, status: 'active' }]
+    equipmentStore.equipment = [{ id: equipmentId, status: 'available' }]
 
     // Simuler l'action de désactivation
-    await equipmentStore.updateEquipmentStatus(equipmentId, 'active')
+    await equipmentStore.updateEquipmentStatus(equipmentId, 'unavailable')
 
     // Vérifier que le statut est bien mis à jour
-    expect(equipmentStore.equipment.find((item) => item.id === equipmentId)?.status).toBe('active')
+    expect(equipmentStore.equipment.find((item) => item.id === equipmentId)?.status).toBe('unavailable')
   })
 
   // TC004
@@ -56,21 +56,21 @@ describe('EquipmentManagement.vue', () => {
     equipmentStore.equipment = [{ id: equipmentId, status: 'unavailable' }]
 
     // Simuler l'action d'activation
-    await equipmentStore.updateEquipmentStatus(equipmentId, 'unavailable')
+    await equipmentStore.updateEquipmentStatus(equipmentId, 'available')
 
     // Vérifier que le statut est bien mis à jour
-    expect(equipmentStore.equipment.find((item) => item.id === equipmentId)?.status).toBeUndefined()
+    expect(equipmentStore.equipment.find((item) => item.id === equipmentId)?.status).toBe('available')
   })
 
   // TC005
   it("Désactivation d'un matériel emprunté", async () => {
     const equipmentId = '1234'
-    equipmentStore.equipment = [{ id: equipmentId, status: 'loaned' }]
+    equipmentStore.equipment = [{ id: equipmentId, status: 'unavailable' }]
 
     // Simuler une tentative de désactivation
-    await equipmentStore.updateEquipmentStatus(equipmentId, 'loaned')
+    await equipmentStore.updateEquipmentStatus(equipmentId, 'unavailable')
 
     // Vérifier que le statut reste inchangé
-    expect(equipmentStore.equipment.find((item) => item.id === equipmentId)?.status).toBe('loaned')
+    expect(equipmentStore.equipment.find((item) => item.id === equipmentId)?.status).toBe('unavailable')
   })
 })
