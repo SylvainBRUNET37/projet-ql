@@ -21,6 +21,11 @@ import {
 } from 'firebase/firestore'
 import { handleFirebaseError } from '../utils/ErrorHandler'
 
+import { getFunctions, httpsCallable } from 'firebase/functions'
+
+const functions = getFunctions()
+const deleteAuthUser = httpsCallable(functions, 'deleteUser')
+
 /**
  * Gère l'état et la récupération des informations utilisateur.
  */
@@ -116,6 +121,10 @@ export const UserStore = defineStore('user', () => {
 
       // Supprime l'utilisateur de Firestore
       await deleteDoc(userDocRef)
+
+      // Supprime l'utilisateur de Firebase Authentication
+      await deleteAuthUser({ userId })
+
       errorMessage.value = ''
     } catch (error) {
       handleFirebaseError(error, errorMessage)
