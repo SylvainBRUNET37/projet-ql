@@ -167,6 +167,7 @@ describe('BorrowEquipment.vue', () => {
     expect(alertMock).toHaveBeenCalledWith('Equipment borrowed successfully!')
   })
 
+  // Le test passe mais le message d'erreur n'est pas le bon
   it('Emprunt sur un matériel déjà emprunté sur la période souhaitée.', async () => {
     const alertMock = vi.spyOn(window, 'alert').mockImplementation(() => {}) // Mock alert
 
