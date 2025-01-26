@@ -40,29 +40,19 @@ export const UserStore = defineStore('user', () => {
    */
   const canDeleteUser = async (userId: string): Promise<boolean> => {
     try {
+      // Récupère tous les emprunts liés
       const borrowQuery = query(collection(db, 'borrow'), where('userId', '==', userId))
-      const borrowsSnapshot = await getDocs(borrowQuery)
+      const borrowSnapshots = await getDocs(borrowQuery)
 
-      const borrowIds: string[] = []
+      // Vérifie s'il y a un emprunt en cours ou futur
+      const now = Date.now()
+      const activeBorrow = borrowSnapshots.docs.some(
+        (borrowDoc) => borrowDoc.data().returnDate > now,
+      )
 
-      // Récupère les ID des emprunts de l'utilisateur
-      borrowsSnapshot.forEach((doc) => {
-        borrowIds.push(doc.id)
-      })
-
-      // Si l'utilisateur a des emprunts, demande confirmation
-      if (borrowIds.length > 0) {
-        const confirmDelete = confirm(
-          'The user has outstanding borrows, are you sure you want to delete him?',
-        )
-        if (!confirmDelete) return false
-      }
-
-      // Supprime tous les emprunts liés à l'utilisateur
-      const deletePromises = borrowIds.map((borrowId) => deleteDoc(doc(db, 'borrow', borrowId)))
-      await Promise.all(deletePromises)
-
-      return true
+      // Retourne true si un emprunt actif est trouvé sinon false
+      if (activeBorrow) return false
+      else return true
     } catch (error) {
       console.error("Erreur lors de la vérification des emprunts de l'utilisateur :", error)
       errorMessage.value = 'Erreur interne, veuillez réessayer plus tard.'
@@ -96,7 +86,27 @@ export const UserStore = defineStore('user', () => {
 
       // Vérifie les emprunts avant suppression
       const canDelete = await canDeleteUser(userId)
-      if (!canDelete) return
+      if (canDelete === false) {
+        // Demande de confirmation pour supprimer l'utilisateur
+        const confirmDelete = confirm(
+          'The user has outstanding borrows, are you sure you want to delete him?',
+        )
+        if (!confirmDelete) return
+      }
+
+      // Récupère tous les emprunts liés à cet utilisateur
+      const borrowQuery = query(collection(db, 'borrow'), where('userId', '==', userId))
+      const borrowsSnapshot = await getDocs(borrowQuery)
+      const borrowIds: string[] = []
+
+      // Récupère les ID des emprunts de l'utilisateur
+      borrowsSnapshot.forEach((doc) => {
+        borrowIds.push(doc.id)
+      })
+
+      // Supprime tous les emprunts liés à l'utilisateur
+      const deletePromises = borrowIds.map((borrowId) => deleteDoc(doc(db, 'borrow', borrowId)))
+      await Promise.all(deletePromises)
 
       // Supprime l'utilisateur de Firestore
       await deleteDoc(userDocRef)
@@ -126,6 +136,18 @@ export const UserStore = defineStore('user', () => {
    */
   const updateUserStatus = async (userId: string, currentStatus: string): Promise<void> => {
     try {
+      // Vérifie si on passe de "active" à "inactive"
+      if (currentStatus === 'active') {
+        // Vérifie si l'utilsiateur peut être modifié
+        const canModify = await canDeleteUser(userId)
+
+        // Empêche la modification si l'utilisateur un emprunt actif
+        if (canModify === false) {
+          alert('Equipment is already borrowed by a user')
+          return
+        }
+      }
+
       // Référence au document de l'utilisateur dans Firestore
       const userDocRef = doc(db, 'users', userId)
       const newStatus = currentStatus === 'active' ? 'inactive' : 'active'

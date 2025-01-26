@@ -43,20 +43,15 @@ export const EquipmentStore = defineStore('equipment', () => {
       const borrowQuery = query(collection(db, 'borrow'), where('equipmentId', '==', equipmentId))
       const borrowSnapshots = await getDocs(borrowQuery)
 
-      // Vérifie s'il y a un emprunt en cours
+      // Vérifie s'il y a un emprunt en cours ou futur
       const now = Date.now()
       const activeBorrow = borrowSnapshots.docs.some(
         (borrowDoc) => borrowDoc.data().returnDate > now,
       )
 
-      // Demande confirmation si un emprunt est actif
-      if (activeBorrow) {
-        return confirm(
-          'This equipment is still borrowed. Do you still want to continue the action?',
-        )
-      }
-
-      return true
+      // Retourne true si un emprunt actif est trouvé sinon false
+      if (activeBorrow) return false
+      else return true
     } catch (error) {
       console.error('Error :', error)
       return false
@@ -73,7 +68,13 @@ export const EquipmentStore = defineStore('equipment', () => {
     try {
       // Vérifie si l'équipement peut être supprimé
       const canDelete = await canDeleteEquipment(equipmentId)
-      if (!canDelete) return
+      if (canDelete === false) {
+        // Demande une confirmation si l'équipement est toujours emprunté
+        const confirmation = confirm(
+          'This equipment is still borrowed. Do you still want to continue the action?',
+        )
+        if (!confirmation) return
+      }
 
       // Récupère les emprunts liés
       const borrowQuery = query(collection(db, 'borrow'), where('equipmentId', '==', equipmentId))
@@ -123,7 +124,9 @@ export const EquipmentStore = defineStore('equipment', () => {
       if (currentStatus === 'available') {
         // Vérifie si l'équipement peut être modifié
         const canModify = await canDeleteEquipment(equipmentId)
-        if (!canModify) {
+
+        // Empêche la modification si l'équipement est déjà emprunté
+        if (canModify === false) {
           alert('Equipment is already borrowed by a user')
           return
         }
