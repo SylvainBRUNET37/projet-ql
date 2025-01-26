@@ -99,6 +99,11 @@ export default {
     const borrowEquipment = async () => {
       const userId = userStore.getUserId()
 
+      if (equipment.value.status === 'unavailable') {
+        alert('You cannot borrow unavailable equipment.')
+        return
+      }
+
       if (!userId) {
         alert('You must be logged in to borrow equipment.')
         return
