@@ -1,7 +1,8 @@
 import { defineStore } from 'pinia'
 import { ref, type Ref } from 'vue'
 import { type DocumentData, addDoc, collection, getDocs, query, where } from 'firebase/firestore'
-import { db } from '@/firebase' // Assurez-vous que `db` est correctement configuré pour Firestore
+import { db } from '@/firebase'
+import { handleFirebaseError } from '../utils/ErrorHandler'
 
 export const BorrowStore = defineStore('borrow', () => {
   // Références réactives
@@ -50,8 +51,7 @@ export const BorrowStore = defineStore('borrow', () => {
 
       return result
     } catch (error) {
-      console.error('Erreur lors de la récupération des équipements empruntés:', error)
-      errorMessage.value = 'Impossible de récupérer les équipements empruntés.'
+      handleFirebaseError(error, errorMessage)
       return []
     }
   }
@@ -74,37 +74,49 @@ export const BorrowStore = defineStore('borrow', () => {
     end: number,
   ): Promise<void> => {
     try {
-       // Date actuelle en millisecondes (number)
-      const currentDate = roundDayUTC(new Date()) 
-      const oneYearLater = currentDate + (365 * 24 * 60 * 60 * 1000); // +1 an
-      const sixMonthsInMillis = Math.floor((365 * 24 * 60 * 60 * 1000)/2) // 6 mois
-    
+      // Date actuelle en millisecondes (number)
+      const currentDate = roundDayUTC(new Date())
+      const oneYearLater = currentDate + 365 * 24 * 60 * 60 * 1000 // +1 an
+      const sixMonthsInMillis = Math.floor((365 * 24 * 60 * 60 * 1000) / 2) // 6 mois
+
       // dates round on hours because start < currentDate will alway be true on UTC format with milisecondes
       const startDate = roundDayUTC(new Date(start))
       const endDate = roundDayUTC(new Date(end))
-      console.log("sart date round ", startDate, '    ', "end date round", endDate, '   ',"one year later ", oneYearLater, "\n", "current date ", currentDate)
+      console.log(
+        'sart date round ',
+        startDate,
+        '    ',
+        'end date round',
+        endDate,
+        '   ',
+        'one year later ',
+        oneYearLater,
+        '\n',
+        'current date ',
+        currentDate,
+      )
       // Vérifications des contraintes sur les dates
       if (startDate < currentDate) {
-        errorMessage.value = "The start date cannot be in the past.";
-        return;
+        errorMessage.value = 'The start date cannot be in the past.'
+        return
       }
 
       if (startDate > oneYearLater) {
-        errorMessage.value = "The start date must not exceed 1 year from the current date.";
+        errorMessage.value = 'The start date must not exceed 1 year from the current date.'
         return
       }
 
       if (endDate < startDate) {
-        errorMessage.value = "The end date must be after the start date.";
-        return 
+        errorMessage.value = 'The end date must be after the start date.'
+        return
       }
 
       if (endDate > startDate + sixMonthsInMillis) {
-        errorMessage.value = "The borrowing period must not exceed 6 months.";
+        errorMessage.value = 'The borrowing period must not exceed 6 months.'
         return
       }
       if (start == null || end == null) {
-        errorMessage.value = "Start and end dates must be valid timestamps.";
+        errorMessage.value = 'Start and end dates must be valid timestamps.'
         return
       }
 
@@ -115,10 +127,8 @@ export const BorrowStore = defineStore('borrow', () => {
         borrowDate: start,
         returnDate: end,
       })
-
     } catch (error) {
-      console.error(error)
-      throw(error)
+      handleFirebaseError(error, errorMessage)
     }
   }
 
@@ -145,7 +155,7 @@ export const BorrowStore = defineStore('borrow', () => {
         return 0
       }
     } catch (error) {
-      console.error('Erreur de connexion à la bdd:', error)
+      handleFirebaseError(error, errorMessage)
       return null
     }
   }
