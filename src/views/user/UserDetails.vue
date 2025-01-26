@@ -4,11 +4,19 @@
     <form @submit.prevent="saveChanges" class="user-form">
       <div class="form-group">
         <label>First Name:</label>
-        <input v-model="userStore.userData.firstName" class="input-field" placeholder="Enter first name" />
+        <input
+          v-model="userStore.userData.firstName"
+          class="input-field"
+          placeholder="Enter first name"
+        />
       </div>
       <div class="form-group">
         <label>Last Name:</label>
-        <input v-model="userStore.userData.lastName" class="input-field" placeholder="Enter last name" />
+        <input
+          v-model="userStore.userData.lastName"
+          class="input-field"
+          placeholder="Enter last name"
+        />
       </div>
       <div class="form-group">
         <label>Email:</label>
@@ -36,49 +44,52 @@
         </select>
       </div>
       <div class="form-actions">
-        <button type="submit" class="button save" @click="saveChanges">Save</button>
         <button type="button" class="button cancel" @click="goBack">Back</button>
+        <button type="submit" class="button save" @click="saveChanges">Save</button>
       </div>
     </form>
   </div>
 </template>
 
 <script>
-import { onMounted, ref, watch } from 'vue';
-import { useRoute } from 'vue-router';
+import { onMounted, ref, watch } from 'vue'
+import { useRoute } from 'vue-router'
 import { validateEmail, validateRole } from '@/utils/Validator'
-import { UserStore } from '@/stores/UserStore';
+import { UserStore } from '@/stores/UserStore'
 
 export default {
-
   setup() {
-    const route = useRoute();
-    const userId = ref(route.params.id);
-  
-    console.log("ID USER ", userId);
-    const userStore = UserStore();
+    const route = useRoute()
+    const userId = ref(route.params.id)
 
-    const localUserData  = ref(null);
-     // Charger les données utilisateur lorsque le composant est monté
-     onMounted(() => {
-      userStore.getUserById(userId.value);
-      localUserData .value = { ...userStore.userData };
-    });
+    console.log('ID USER ', userId)
+    const userStore = UserStore()
 
-      // Observer les changements du paramètre id dans la route
-      watch(() => route.params.id, (newId, oldId) => {
-      if (newId !== oldId) {  // Si l'ID a changé
-        userId.value = newId;
-        userStore.getUserById(userId.value); // Recharger les données lorsque l'ID change
-      }
-    });
+    const localUserData = ref(null)
+    // Charger les données utilisateur lorsque le composant est monté
+    onMounted(() => {
+      userStore.getUserById(userId.value)
+      localUserData.value = { ...userStore.userData }
+    })
+
+    // Observer les changements du paramètre id dans la route
+    watch(
+      () => route.params.id,
+      (newId, oldId) => {
+        if (newId !== oldId) {
+          // Si l'ID a changé
+          userId.value = newId
+          userStore.getUserById(userId.value) // Recharger les données lorsque l'ID change
+        }
+      },
+    )
 
     return {
       userStore, // Rendre userStore accessible dans le template
       localUserData,
-    };
+    }
   },
-  
+
   methods: {
     validateEmailField() {
       if (!validateEmail(this.localUserData.email)) {
@@ -99,22 +110,26 @@ export default {
       this.validateRoleField()
       try {
         const OlddUserData = {
-          id: this.localUserData.id, 
+          id: this.localUserData.id,
           email: this.localUserData.email,
           firstName: this.localUserData.firstName,
           lastName: this.localUserData.lastName,
           role: this.localUserData.role,
           status: this.localUserData.status,
-        };
-        console.log("new ", this.userStore.userData, "old ", OlddUserData)
+        }
+        console.log('new ', this.userStore.userData, 'old ', OlddUserData)
         await this.userStore.updateUser(OlddUserData, this.userStore.userData)
-        if (this.userStore.errorMessage.includes("This email is already in use. Please use a different email.")) {
+        if (
+          this.userStore.errorMessage.includes(
+            'This email is already in use. Please use a different email.',
+          )
+        ) {
           // Si l'erreur est liée à l'email, on n'effectue pas la redirection
-          alert(this.userStore.errorMessage);
+          alert(this.userStore.errorMessage)
         } else {
           // Si tout se passe bien, on redirige
-          alert("Changes saved successfully");
-          this.goBack();
+          alert('Changes saved successfully')
+          this.goBack()
         }
       } catch (error) {
         alert(this.userStore.errorMessage)
@@ -123,6 +138,7 @@ export default {
     },
     goBack() {
       this.$router.push('/home')
+
     },
   },
 }

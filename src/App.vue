@@ -1,7 +1,9 @@
 <template>
-  <div id="app">
-    <router-view />
-  </div>
+  <section class="hero is-succes is-fullheight">
+    <div id="app">
+      <router-view />
+    </div>
+  </section>
 </template>
 
 <script lang="ts">
@@ -12,8 +14,19 @@ export default {
 
 <style scoped>
 html, body {
-  height: 100%;
-  margin: 0; /* Retirer les marges par défaut */
+  margin: 0; 
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #ffffff; 
+  height: 100vh;
+ 
+}
+#app{
+  height: inherit;
+  width: inherit;
+  background-color: #ffffff; 
 }
 
 .app-container {
@@ -21,5 +34,11 @@ html, body {
   display: flex;
   flex-direction: column;
   overflow-y: auto;
+  background-color: #ffffff; 
+}
+
+*,*::before,*::after{
+margin: 0;
+padding:0;
 }
 </style>

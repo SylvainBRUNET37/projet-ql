@@ -17,17 +17,28 @@ describe('EquipmentManagement.vue', () => {
   })
 
   // TC001
-  it("Suppression d'un matériel OK", async () => {})
+  it("Suppression d'un matériel OK", async () => {
+    const equipmentId = '1234'
+    equipmentStore.equipment = [{ id: equipmentId }]
 
-  // TC002
-  it("Suppression d'un matériel emprunté", async () => {})
+    // Simuler l'action de suppression
+    await equipmentStore.deleteEquipment(equipmentId)
+    expect(equipmentStore.equipment.find((item) => item.id === equipmentId)).toBeUndefined()
+  })
 
-  // TC003
-  it("Désactivation d'un matériel OK", async () => {})
+  //                                        //
+  // VOIR EquipmentStore.spec.ts POUR TC002 //
+  //                                        //
 
-  // TC004
-  it("Activation d'un matériel OK", async () => {})
+  //                                        //
+  // VOIR EquipmentStore.spec.ts POUR TC003 //
+  //                                        //
 
-  // TC005
-  it("Désactivation d'un matériel emprunté", async () => {})
+  //                                        //
+  // VOIR EquipmentStore.spec.ts POUR TC004 //
+  //                                        //
+
+  //                                        //
+  // VOIR EquipmentStore.spec.ts POUR TC005 //
+  //                                        //
 })

@@ -150,6 +150,7 @@ export default defineComponent({
       // Sinon, suppression de l'équipement
       try {
         await equipmentStore.deleteEquipment(id)
+        equipmentStore.getAllEquipment()
       } catch (error) {
         console.error('Error deleting equipment:', error)
       }

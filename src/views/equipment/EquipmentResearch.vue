@@ -179,6 +179,7 @@ export default {
   grid-template-rows: 1fr;
   grid-column-gap: 10px;
   height: 100%;
+  background-color: white;
 }
 
 .filter-container {

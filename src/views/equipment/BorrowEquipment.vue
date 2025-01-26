@@ -7,7 +7,7 @@
     <!-- Nom de l'équipement -->
     <div class="form-group">
       <label>Name:</label>
-      <input v-model="equipment.name" />
+      <input v-model="equipment.name" readonly />
     </div>
 
     <!-- Reference de l'équipement -->
@@ -19,33 +19,30 @@
     <!-- Type de l'équipement -->
     <div class="form-group">
       <label>Type:</label>
-      <input v-model="equipment.type" />
+      <input v-model="equipment.type" readonly />
     </div>
 
     <!-- Status de l'équipement -->
     <div class="form-group">
       <label>Status:</label>
-      <select v-model="equipment.status">
-        <option value="available">Available</option>
-        <option value="unavailable">Unavailable</option>
-      </select>
+      <input v-model="equipment.status" readonly />
     </div>
 
     <!-- Description de l'équipement -->
     <div class="form-group">
       <label>Description:</label>
-      <input v-model="equipment.description" />
+      <input v-model="equipment.description" readonly />
     </div>
 
     <!-- Champs pour les dates de début et de fin -->
     <div class="date-fields">
       <div class="form-group">
         <label>Start Date:</label>
-        <input type="date" v-model="startDate" id="start-date" data-test="start-date"/>
+        <input type="date" v-model="startDate" id="start-date" data-test="start-date" />
       </div>
       <div class="form-group">
         <label>End Date:</label>
-        <input type="date" v-model="endDate" id="end-date" data-test="end-date"/>
+        <input type="date" v-model="endDate" id="end-date" data-test="end-date" />
       </div>
     </div>
 
@@ -55,13 +52,21 @@
       <button type="button" class="button cancel" @click="goBack">Back</button>
 
       <!-- Bouton pour emprunter un équipement -->
-      <button type="button" class="button is-primary" id="borrow-button" data-test="borrow-button" @click="borrowEquipment">Borrow</button>
+      <button
+        type="button"
+        class="button is-primary"
+        id="borrow-button"
+        data-test="borrow-button"
+        @click="borrowEquipment"
+      >
+        Borrow
+      </button>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { doc, getDoc, updateDoc } from 'firebase/firestore'
+import { doc, getDoc } from 'firebase/firestore'
 import { db } from '@/firebase'
 import { onMounted, ref } from 'vue'
 import { UserStore } from '@/stores/UserStore'
@@ -82,15 +87,19 @@ export default {
       description: '',
     })
 
+    let errorMessage = ''
     const userStore = UserStore()
     const borrowStore = BorrowStore()
-
-    const errorMessage = ref('')
     const startDate = ref<string | null>(null)
     const endDate = ref<string | null>(null)
 
     const borrowEquipment = async () => {
       const userId = userStore.getUserId()
+
+      if (equipment.value.status === 'unavailable') {
+        alert('You cannot borrow unavailable equipment.')
+        return
+      }
 
       if (!userId) {
         alert('You must be logged in to borrow equipment.')
@@ -109,13 +118,15 @@ export default {
 
       const startDateMs = Date.parse(startDate.value)
       const endDateMs = Date.parse(endDate.value)
-      console.log(startDateMs, '   ', endDateMs)
-      try {
-        await borrowStore.borrowEquipment(userId, equipmentId, startDateMs, endDateMs)
+
+      borrowStore.borrowEquipment(userId, equipmentId, startDateMs, endDateMs)
+
+      // Affiche un message de succès ou d'erreur
+      if (borrowStore.errorMessage) {
+        errorMessage = borrowStore.errorMessage
+        alert(errorMessage)
+      } else {
         alert('Equipment borrowed successfully!')
-      } catch (error) {
-        console.error('Error borrowing equipment:', error)
-        alert('Unable to borrow equipment. Please try again later.')
       }
     }
 
@@ -142,7 +153,7 @@ export default {
       }
     }
 
-    const saveChanges = async () => {
+    /*const saveChanges = async () => {
       if (!equipment.value) {
         alert('No equipment loaded to save changes.')
         return
@@ -159,7 +170,7 @@ export default {
         alert('Unable to save changes.')
       }
     }
-
+*/
     const goBack = () => {
       router.push('/home')
     }
@@ -168,8 +179,8 @@ export default {
 
     return {
       equipment,
-      errorMessage,
-      saveChanges,
+      //errorMessage,
+      //saveChanges,
       goBack,
       startDate,
       endDate,
