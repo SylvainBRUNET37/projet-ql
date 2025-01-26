@@ -1,8 +1,8 @@
 // https://on.cypress.io/api
 
-describe('My First Test', () => {
+describe('AuthForm', () => {
   it('visits the app root url', () => {
-    cy.visit('/')
-    cy.contains('h1', 'You did it!')
+    cy.visit('/auth')
+    cy.contains('h1', 'Welcome to LocaMat !')
   })
 })
