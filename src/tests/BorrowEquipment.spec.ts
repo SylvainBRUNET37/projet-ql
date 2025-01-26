@@ -32,7 +32,6 @@ describe('BorrowEquipment.vue', () => {
     // Enregistre un utilisateur fictif via register
     await authStore.login('johndoe3@example.com', 'password123')
     await registerStore.register('Doe', 'John', 'admin', 'johndoe3@example.com', 'password123')
-    
 
     equipmentStore.equipment = [
       {
@@ -91,7 +90,9 @@ describe('BorrowEquipment.vue', () => {
 
     await borrowButton.trigger('click')
 
-    expect(alertMock).toHaveBeenCalledWith('The start date must not exceed 1 year from the current date.')
+    expect(alertMock).toHaveBeenCalledWith(
+      'The start date must not exceed 1 year from the current date.',
+    )
   })
 
   it('Emprunt avec la date de fin avant la date de début.', async () => {
@@ -185,7 +186,7 @@ describe('BorrowEquipment.vue', () => {
         },
         borrowDate: Date.now() + 1000 * 60 * 60 * 24 * 10, // Dans 10 jours
         returnDate: Date.now() + 1000 * 60 * 60 * 24 * 15, // Dans 15 jours
-      }
+      },
     ]
 
     const startDateInput = wrapperDetails.find('#start-date')
