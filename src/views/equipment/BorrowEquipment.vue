@@ -66,7 +66,7 @@
 </template>
 
 <script lang="ts">
-import { doc, getDoc, updateDoc } from 'firebase/firestore'
+import { doc, getDoc } from 'firebase/firestore'
 import { db } from '@/firebase'
 import { onMounted, ref } from 'vue'
 import { UserStore } from '@/stores/UserStore'
@@ -118,9 +118,8 @@ export default {
 
       const startDateMs = Date.parse(startDate.value)
       const endDateMs = Date.parse(endDate.value)
-      console.log(startDateMs, '   ', endDateMs)
 
-      await borrowStore.borrowEquipment(userId, equipmentId, startDateMs, endDateMs)
+      borrowStore.borrowEquipment(userId, equipmentId, startDateMs, endDateMs)
 
       // Affiche un message de succès ou d'erreur
       if (borrowStore.errorMessage) {
