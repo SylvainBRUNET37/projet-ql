@@ -8,6 +8,12 @@ import { createPinia, setActivePinia } from 'pinia'
 import { createRouter, createWebHistory } from 'vue-router'
 import { BorrowStore } from '@/stores/BorrowStore'
 
+// Converti une date au format JJ-MM-AAAA
+const formatDate = (date: string): string => {
+  const [year, month, day] = date.split('-')
+  return `${day}-${month}-${year}`
+}
+
 describe('BorrowEquipment.vue', () => {
   let wrapperDetails: any
   let equipmentStore: any
@@ -32,7 +38,6 @@ describe('BorrowEquipment.vue', () => {
     // Enregistre un utilisateur fictif via register
     await authStore.login('johndoe3@example.com', 'password123')
     await registerStore.register('Doe', 'John', 'admin', 'johndoe3@example.com', 'password123')
-    
 
     equipmentStore.equipment = [
       {
@@ -83,15 +88,24 @@ describe('BorrowEquipment.vue', () => {
     const endDateInput = wrapperDetails.find('#end-date')
     const borrowButton = wrapperDetails.find('#borrow-button')
 
-    await startDateInput.setValue('2026-03-29')
-    await endDateInput.setValue('2026-04-03')
+    // Calcule la date de début (2 ans après aujourd'hui) et la date de fin (plus d'un an après)
+    const today = new Date()
+    const startDate = new Date(today.setFullYear(today.getFullYear() + 2)).toLocaleDateString(
+      'fr-CA',
+    ) // 2 ans après aujourd'hui
+    const endDate = new Date(today.setDate(today.getDate() + 5)).toLocaleDateString('fr-CA') // 5 jours après la date de début
+
+    await startDateInput.setValue(startDate)
+    await endDateInput.setValue(endDate)
 
     await startDateInput.trigger('blur')
     await endDateInput.trigger('blur')
 
     await borrowButton.trigger('click')
 
-    expect(alertMock).toHaveBeenCalledWith('The start date must not exceed 1 year from the current date.')
+    expect(alertMock).toHaveBeenCalledWith(
+      'The start date must not exceed 1 year from the current date.',
+    )
   })
 
   it('Emprunt avec la date de fin avant la date de début.', async () => {
@@ -101,8 +115,13 @@ describe('BorrowEquipment.vue', () => {
     const endDateInput = wrapperDetails.find('#end-date')
     const borrowButton = wrapperDetails.find('#borrow-button')
 
-    await startDateInput.setValue('2025-02-10')
-    await endDateInput.setValue('2025-02-07')
+    // Calcule la date de début (aujourd'hui) et la date de fin (avant la date de début)
+    const today = new Date()
+    const startDate = today.toLocaleDateString('fr-CA') // Aujourd'hui
+    const endDate = new Date(today.setDate(today.getDate() - 3)).toLocaleDateString('fr-CA') // 3 jours avant aujourd'hui, donc avant la date de début
+
+    await startDateInput.setValue(startDate)
+    await endDateInput.setValue(endDate)
 
     await startDateInput.trigger('blur')
     await endDateInput.trigger('blur')
@@ -119,8 +138,13 @@ describe('BorrowEquipment.vue', () => {
     const endDateInput = wrapperDetails.find('#end-date')
     const borrowButton = wrapperDetails.find('#borrow-button')
 
-    await startDateInput.setValue('2025-01-10')
-    await endDateInput.setValue('2025-02-07')
+    // Calcule la date de début (10 jours avant aujourd'hui) et la date de fin (7 jours après la date de début)
+    const today = new Date()
+    const startDate = new Date(today.setDate(today.getDate() - 10)).toLocaleDateString('fr-CA') // 10 jours avant aujourd'hui (date déjà passée)
+    const endDate = new Date(today.setDate(today.getDate() + 17)).toLocaleDateString('fr-CA') // 7 jours après la date de début
+
+    await startDateInput.setValue(startDate)
+    await endDateInput.setValue(endDate)
 
     await startDateInput.trigger('blur')
     await endDateInput.trigger('blur')
@@ -137,8 +161,13 @@ describe('BorrowEquipment.vue', () => {
     const endDateInput = wrapperDetails.find('#end-date')
     const borrowButton = wrapperDetails.find('#borrow-button')
 
-    await startDateInput.setValue('2025-01-30')
-    await endDateInput.setValue('2025-08-07')
+    // Calcule la date de début (aujourd'hui) et la date de fin (plus de 6 mois après)
+    const today = new Date()
+    const startDate = today.toLocaleDateString('fr-CA') // Aujourd'hui
+    const endDate = new Date(today.setMonth(today.getMonth() + 7)).toLocaleDateString('fr-CA') // 7 mois après aujourd'hui
+
+    await startDateInput.setValue(startDate)
+    await endDateInput.setValue(endDate)
 
     await startDateInput.trigger('blur')
     await endDateInput.trigger('blur')
@@ -155,8 +184,16 @@ describe('BorrowEquipment.vue', () => {
     const endDateInput = wrapperDetails.find('#end-date')
     const borrowButton = wrapperDetails.find('#borrow-button')
 
-    await startDateInput.setValue('2025-02-15')
-    await endDateInput.setValue('2025-02-28')
+    // Calcule la date de début (aujourd'hui) et la date de fin (15 jours après)
+    const today = new Date()
+    const startDate = today.toLocaleDateString('fr-CA') // Aujourd'hui
+    const endDate = new Date(today.setDate(today.getDate() + 14)).toLocaleDateString('fr-CA') // 15 jours après aujourd'hui
+
+    const formattedStartDate = formatDate(startDate)
+    const formattedEndDate = formatDate(endDate)
+
+    await startDateInput.setValue(formattedStartDate)
+    await endDateInput.setValue(formattedEndDate)
 
     await startDateInput.trigger('blur')
     await endDateInput.trigger('blur')
@@ -185,15 +222,20 @@ describe('BorrowEquipment.vue', () => {
         },
         borrowDate: Date.now() + 1000 * 60 * 60 * 24 * 10, // Dans 10 jours
         returnDate: Date.now() + 1000 * 60 * 60 * 24 * 15, // Dans 15 jours
-      }
+      },
     ]
 
     const startDateInput = wrapperDetails.find('#start-date')
     const endDateInput = wrapperDetails.find('#end-date')
     const borrowButton = wrapperDetails.find('#borrow-button')
 
-    await startDateInput.setValue('2025-02-04')
-    await endDateInput.setValue('2025-02-09')
+    // Calcule la date de début (10 jours après aujourd'hui) et la date de fin (5 jours après)
+    const today = new Date()
+    const startDate = new Date(today.setDate(today.getDate() + 10)).toLocaleDateString('fr-CA') // 10 jours après aujourd'hui
+    const endDate = new Date(today.setDate(today.getDate() + 5)).toLocaleDateString('fr-CA') // 5 jours après la date de début
+
+    await startDateInput.setValue(startDate)
+    await endDateInput.setValue(endDate)
 
     await startDateInput.trigger('blur')
     await endDateInput.trigger('blur')
