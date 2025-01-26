@@ -32,6 +32,130 @@ export const UserStore = defineStore('user', () => {
   // Référence pour stocker les messages d'erreur
   const errorMessage: Ref<string> = ref('')
 
+  /**
+   * Vérifie si un utilisateur peut être supprimé et gère tous ses emprunts.
+   *
+   * @param {string} userId - L'ID de l'utilisateur.
+   * @returns {Promise<boolean>} - Retourne `true` si la suppression peut continuer, sinon `false`.
+   */
+  const canDeleteUser = async (userId: string): Promise<boolean> => {
+    try {
+      const borrowQuery = query(collection(db, 'borrow'), where('userId', '==', userId))
+      const borrowsSnapshot = await getDocs(borrowQuery)
+
+      const borrowIds: string[] = []
+
+      // Récupère les ID des emprunts de l'utilisateur
+      borrowsSnapshot.forEach((doc) => {
+        borrowIds.push(doc.id)
+      })
+
+      // Si l'utilisateur a des emprunts, demande confirmation
+      if (borrowIds.length > 0) {
+        const confirmDelete = confirm(
+          'The user has outstanding borrows, are you sure you want to delete him?',
+        )
+        if (!confirmDelete) return false
+      }
+
+      // Supprime tous les emprunts liés à l'utilisateur
+      const deletePromises = borrowIds.map((borrowId) => deleteDoc(doc(db, 'borrow', borrowId)))
+      await Promise.all(deletePromises)
+
+      return true
+    } catch (error) {
+      console.error("Erreur lors de la vérification des emprunts de l'utilisateur :", error)
+      errorMessage.value = 'Erreur interne, veuillez réessayer plus tard.'
+      return false
+    }
+  }
+
+  /**
+   * Supprime un utilisateur de Firestore à partir de son ID.
+   *
+   * @param {string} userId - L'ID de l'utilisateur à supprimer.
+   * @returns {Promise<void>} - Promesse qui se résout une fois l'utilisateur supprimé ou en cas d'erreur.
+   */
+  const deleteUserById = async (userId: string): Promise<void> => {
+    try {
+      // Vérifie si l'ID de l'utilisateur est fourni
+      if (!userId) {
+        errorMessage.value = 'User ID is required.'
+        return
+      }
+
+      // Référence au document de l'utilisateur dans Firestore
+      const userDocRef = doc(db, 'users', userId)
+      const userDoc = await getDoc(userDocRef)
+
+      // Vérifie si l'utilisateur existe
+      if (!userDoc.exists()) {
+        errorMessage.value = 'User not found.'
+        return
+      }
+
+      // Vérifie les emprunts avant suppression
+      const canDelete = await canDeleteUser(userId)
+      if (!canDelete) return
+
+      // Supprime l'utilisateur de Firestore
+      await deleteDoc(userDocRef)
+      errorMessage.value = ''
+    } catch (error: FirebaseError | unknown) {
+      if (error instanceof FirebaseError) {
+        switch (error.code) {
+          case 'auth/network-request-failed':
+            errorMessage.value = 'Service temporarily unavailable, please try again later.'
+            break
+          default:
+            errorMessage.value = 'Internal error, please try again later.'
+        }
+      } else {
+        errorMessage.value = 'Internal error, please try again later.'
+        console.error(error)
+      }
+    }
+  }
+
+  /**
+   * Met à jour le statut d'un utilisateur dans Firestore.
+   *
+   * @param {string} userId - ID de l'utilisateur à mettre à jour.
+   * @param {string} currentStatus - Le statut actuel de l'utilisateur ('active' ou 'inactive').
+   * @returns {Promise<void>} - Promesse qui se résout une fois le statut mis à jour ou en cas d'erreur.
+   */
+  const updateUserStatus = async (userId: string, currentStatus: string): Promise<void> => {
+    try {
+      // Référence au document de l'utilisateur dans Firestore
+      const userDocRef = doc(db, 'users', userId)
+      const newStatus = currentStatus === 'active' ? 'inactive' : 'active'
+
+      // Mise à jour du champ "status"
+      await updateDoc(userDocRef, {
+        status: newStatus,
+      })
+
+      // Mise à jour locale des données
+      if (userData.value?.id === userId) {
+        userData.value = { ...userData.value, status: newStatus }
+      }
+      errorMessage.value = ''
+    } catch (error: FirebaseError | unknown) {
+      if (error instanceof FirebaseError) {
+        switch (error.code) {
+          case 'not-found':
+            errorMessage.value = 'User not found.'
+            break
+          default:
+            errorMessage.value = 'Failed to update user status. Please try again later.'
+        }
+      } else {
+        errorMessage.value = 'Failed to update user status. Please try again later.'
+        console.error(error)
+      }
+    }
+  }
+
   // Fonction pour récupérer les utilisateurs depuis Firestore
   const getUsers = async (): Promise<void> => {
     try {
@@ -105,32 +229,26 @@ export const UserStore = defineStore('user', () => {
     }
   }
 
-  /**
-   * Supprime un utilisateur de Firestore à partir de son ID.
-   *
-   * @param {string} userId - L'ID de l'utilisateur à supprimer.
-   * @returns {Promise<void>} - Promesse qui se résout une fois l'utilisateur supprimé ou en cas d'erreur.
-   */
-  const deleteUserById = async (userId: string): Promise<void> => {
+  const updateUser = async (
+    userDataOld: DocumentData,
+    userDataNew: DocumentData,
+  ): Promise<void> => {
     try {
-      // Vérifie si l'ID est valide
-      if (!userId) {
-        errorMessage.value = 'User ID is required.'
-        return
+      console.log('OLD : ', userDataOld.email, 'NEW : ', userDataNew.email)
+      if (userDataOld.email !== userDataNew.email) {
+        const usersRef = collection(db, 'users')
+        const emailQuery = query(usersRef, where('email', '==', userDataNew.email))
+        const querySnapshot = await getDocs(emailQuery)
+
+        if (!querySnapshot.empty) {
+          errorMessage.value = 'This email is already in use. Please use a different email.'
+          return
+        }
       }
-
-      // Vérifie si l'utilisateur existe dans Firestore
-      const userDocRef = doc(db, 'users', userId)
-      const userDoc = await getDoc(userDocRef)
-
-      if (!userDoc.exists()) {
-        errorMessage.value = 'User not found.'
-        return
-      }
-
-      // Supprime l'utilisateur de Firestore
-      await deleteDoc(userDocRef)
+      const userDocRef = doc(db, 'users', userDataOld.id)
+      await setDoc(userDocRef, userDataNew, { merge: true })
       errorMessage.value = ''
+      return // Met à jour uniquement les champs modifiés
     } catch (error: FirebaseError | unknown) {
       // Gestion des erreurs
       if (error instanceof FirebaseError) {
@@ -147,92 +265,17 @@ export const UserStore = defineStore('user', () => {
       }
     }
   }
-
-  /**
-   * Met à jour le statut d'un utilisateur dans Firestore.
-   *
-   * @param {string} userId - ID de l'utilisateur à mettre à jour.
-   * @param {string} currentStatus - Le statut actuel de l'utilisateur ('active' ou 'inactive').
-   * @returns {Promise<void>} - Promesse qui se résout une fois le statut mis à jour ou en cas d'erreur.
-   */
-  const updateUserStatus = async (userId: string, currentStatus: string): Promise<void> => {
-    try {
-      // Référence au document de l'utilisateur dans Firestore
-      const userDocRef = doc(db, 'users', userId)
-      const newStatus = currentStatus === 'active' ? 'inactive' : 'active'
-
-      // Mise à jour du champ "status"
-      await updateDoc(userDocRef, {
-        status: newStatus,
-      })
-
-      // Mise à jour locale des données
-      if (userData.value?.id === userId) {
-        userData.value = { ...userData.value, status: newStatus }
-      }
-      errorMessage.value = ''
-    } catch (error: FirebaseError | unknown) {
-      if (error instanceof FirebaseError) {
-        switch (error.code) {
-          case 'not-found':
-            errorMessage.value = 'User not found.'
-            break
-          default:
-            errorMessage.value = 'Failed to update user status. Please try again later.'
-        }
-      } else {
-        errorMessage.value = 'Failed to update user status. Please try again later.'
-        console.error(error)
-      }
-    }
-  }
-
-
-  const updateUser = async (userDataOld: DocumentData, userDataNew: DocumentData): Promise<void> => {
-    try {
-        console.log("OLD : ",userDataOld.email,"NEW : ",userDataNew.email);
-        if (userDataOld.email !== userDataNew.email) {
-          const usersRef = collection(db, "users");
-          const emailQuery = query(usersRef, where("email", "==", userDataNew.email));
-          const querySnapshot = await getDocs(emailQuery);
-    
-          if (!querySnapshot.empty) {
-            errorMessage.value = "This email is already in use. Please use a different email.";
-            return;
-          }
-        }
-        const userDocRef = doc(db, "users", userDataOld.id); 
-        await setDoc(userDocRef, userDataNew, { merge: true });
-        errorMessage.value ='';
-        return; // Met à jour uniquement les champs modifiés
-        
-      }catch (error: FirebaseError | unknown) {
-        // Gestion des erreurs
-        if (error instanceof FirebaseError) {
-          switch (error.code) {
-            case 'auth/network-request-failed':
-              errorMessage.value = 'Service temporarily unavailable, please try again later.'
-              break
-            default:
-              errorMessage.value = 'Internal error, please try again later.'
-          }
-        } else {
-          errorMessage.value = 'Internal error, please try again later.'
-          console.error(error)
-      }      
-    }
-  }
   const getUserById = async (userId: string) => {
     try {
-      console.log("DANS STORE : USER ID ", userId);
-      const docRef = doc(db, "users", userId);
-      const docSnap = await getDoc(docRef);
+      console.log('DANS STORE : USER ID ', userId)
+      const docRef = doc(db, 'users', userId)
+      const docSnap = await getDoc(docRef)
       if (docSnap.exists()) {
-        userData.value = { id: docSnap.id, ...docSnap.data() }; 
-        console.error('User not found');
+        userData.value = { id: docSnap.id, ...docSnap.data() }
+        console.error('User not found')
       }
     } catch (error) {
-      console.error('Error getting user data:', error);
+      console.error('Error getting user data:', error)
     }
   }
   // Retourne les données utilisateur, les erreurs et la fonction de récupération
