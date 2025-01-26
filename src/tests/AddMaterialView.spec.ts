@@ -8,13 +8,14 @@ import { createPinia, setActivePinia } from 'pinia'
 describe('AddEquipment.vue', () => {
   //wrapper représente le component testé, authStore le système d'authentification
   let wrapper: any
-  let authStore: any
+  let equipmentStore: any
 
   //Avant chaque test, on initialise wrapper et authStore, Pinia est obligatoire pour bien initialiser les stores
   beforeEach(() => {
     setActivePinia(createPinia())
     wrapper = mount(AddEquipment)
-    authStore = EquipmentStore()
+    equipmentStore = EquipmentStore()
+    equipmentStore.addEquipment = vi.fn() // Mock de la méthode addEquipment
   })
 
   //Tous les tests qui utilisent le mot clé await doivent être async !
@@ -95,11 +96,13 @@ describe('AddEquipment.vue', () => {
 
     await addEquipmentButton.trigger('click')
 
-    expect(authStore.addEquipment).toHaveBeenCalledWith({
+    expect(equipmentStore.addEquipment).toHaveBeenCalledWith({
       name: 'Valid Name',
       type: 'Valid Type',
       ref: 'IOS',
+      status: 'available',
       description: 'Valid description.',
+      image: '',
     })
     expect(wrapper.vm.successMessage).toBe('Material successfully added')
   })
