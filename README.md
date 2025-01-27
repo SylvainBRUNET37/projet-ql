@@ -28,6 +28,10 @@ See [Vite Configuration Reference](https://vite.dev/config/).
 npm install
 ```
 
+## Selenium IDE Projects
+
+The Selenium IDE projects used for testing are located in the `selenium` folder. These files contain the automated test scenarios used to validate some functionalities.
+
 ### Compile and Hot-Reload for Development
 
 ```sh
